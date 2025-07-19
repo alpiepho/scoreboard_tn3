@@ -31,8 +31,12 @@
   transition: background-color 0.2s, transform 0.1s;
   overflow: visible; /* Allow content to overflow if needed */
   touch-action: none; /* Prevent default touch actions like scrolling */
-  padding: 10px; /* Reduced padding to allow more space for content */
+  padding: 0; /* Remove all padding to maximize space */
   box-sizing: border-box;
+  /* Set min-height to ensure sufficient space */
+  min-height: 100px;
+  /* Ensure content is centered */
+  text-align: center;
 }
 
 .score-button:active,
@@ -68,40 +72,46 @@
 }
 
 .team-name {
-  font-size: 1.8rem;
-  font-weight: 500;
+  font-size: 2.2rem; /* Increased from 1.4rem */
+  font-weight: 600; /* Made slightly bolder */
   text-transform: uppercase;
-  margin-bottom: 0.5rem; /* Reduced margin to allow more space for score */
+  margin-bottom: 0.2rem; /* Small margin to separate from score */
   z-index: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Added subtle shadow for better readability */
 }
 
 .score {
-  font-size: clamp(10rem, 35vw, 25rem); /* Significantly increased font size */
+  font-size: clamp(15rem, 52.5vw, 37.5rem); /* Increased by 50% from base size */
   font-weight: bold;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 1;
-  line-height: 0.9; /* Tighter line height to fit larger text */
+  line-height: 0.8; /* Tighter line height to fit larger text */
   width: 100%;
   text-align: center;
-  /* Ensure scores are consistently sized to fit two digits */
-  min-width: 2ch;
   display: flex;
   justify-content: center;
   align-items: center; /* Center vertically */
   padding: 0; /* Remove padding to allow for larger text */
   margin: 0;
   overflow: visible; /* Allow text to overflow its container if needed */
+  /* Force minimum width based on content */
+  min-width: max-content;
+  /* Ensure numbers don't break to next line */
+  white-space: nowrap;
 }
 
 /* Landscape orientation adjustments */
 @media (orientation: landscape) {
   .score {
-    font-size: clamp(10rem, 40vh, 25rem); /* Significantly increased for landscape */
+    font-size: clamp(12rem, 45vh, 30rem); /* Increased by 50% for side-by-side view */
+    /* Ensure the score fits within the available width while maximizing size */
+    max-width: 100%;
   }
   
   .team-name {
-    font-size: 1.5rem;
-    margin-bottom: 0.2rem; /* Further reduced in landscape */
+    font-size: 2rem; /* Increased from 1.5rem */
+    margin-bottom: 0.1rem; /* Further reduced in landscape */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Added shadow for readability */
   }
   
   /* Adjust the container layout for landscape */
@@ -110,7 +120,11 @@
   }
   
   .score-button {
-    padding: 5px; /* Even less padding in landscape */
+    padding: 2px; /* Even less padding in landscape */
+    /* Make sure each score panel takes exactly half the width */
+    width: 50%;
+    /* Improve sizing constraints */
+    box-sizing: border-box;
   }
   
   /* Reposition settings button in landscape */
@@ -130,17 +144,30 @@
 /* Portrait orientation with various screen sizes */
 @media (orientation: portrait) and (max-width: 768px) {
   .score {
-    font-size: clamp(12rem, 40vw, 20rem);
+    font-size: clamp(18rem, 60vw, 30rem); /* Increased by 50% for mid-sized devices */
+  }
+  
+  /* Ensure enough vertical space for two scores */
+  .score-button {
+    height: 50vh; /* Each button takes half the viewport height */
+    /* Make sure it doesn't exceed available space */
+    max-height: 50vh;
+    box-sizing: border-box;
+    /* Reduce vertical padding to maximize score size */
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
 @media (orientation: portrait) and (max-width: 480px) {
   .score {
-    font-size: clamp(10rem, 35vw, 18rem);
+    font-size: clamp(12rem, 52.5vw, 27rem); /* Increased by 50% for smaller devices */
   }
   
   .team-name {
-    font-size: 1.4rem;
+    font-size: 1.8rem; /* Increased from 1.2rem */
+    /* Small space between team name and score */
+    margin-bottom: 0.1rem;
   }
 }
 
@@ -236,39 +263,26 @@
 /* Responsive styles */
 @media (max-width: 480px) {
   .team-name {
-    font-size: 1.5rem;
-  }
-  
-  .score {
-    font-size: 6rem;
+    font-size: 1.2rem;
   }
   
   .settings-button {
-    width: 50px;
-    height: 50px;
-    bottom: 15px;
-    right: 15px;
+    width: 40px; /* Make even smaller to save space */
+    height: 40px;
+    bottom: 10px;
+    right: 10px;
   }
   
   .settings-button svg {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
   }
 }
 
-/* Landscape mode */
-@media (orientation: landscape) {
-  .scoreboard-buttons {
-    flex-direction: row;
-    height: 100vh;
-  }
-  
+/* Further optimize for small screens by reducing team name size */
+@media (max-height: 500px) or (max-width: 350px) {
   .team-name {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .score {
-    font-size: 5rem;
+    font-size: 1rem;
+    margin: 0;
   }
 }

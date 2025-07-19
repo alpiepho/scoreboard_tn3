@@ -10,8 +10,6 @@ function App() {
   const defaultSettings: AppSettings = {
     homeTeamName: 'Home',
     awayTeamName: 'Away',
-    initialHomeScore: 0,
-    initialAwayScore: 0,
     enableScoreWarning: true, // Default to enable warnings at multiples of 7
     vibrateOnButtonPress: true,
     theme: 'light',
@@ -24,9 +22,14 @@ function App() {
   });
 
   // Initialize game state - the current scores
-  const [gameState, setGameState] = useState<GameState>({
-    homeScore: settings.initialHomeScore,
-    awayScore: settings.initialAwayScore
+  const [gameState, setGameState] = useState<GameState>(() => {
+    // Try to get saved game state from localStorage
+    const savedGameState = localStorage.getItem('scoresTN3GameState');
+    // Return saved state or default to zeros
+    return savedGameState ? JSON.parse(savedGameState) : {
+      homeScore: 0,
+      awayScore: 0
+    };
   });
 
   // Save settings to localStorage whenever they change
@@ -48,21 +51,11 @@ function App() {
     localStorage.setItem('scoresTN3GameState', JSON.stringify(gameState));
   }, [gameState]);
 
-  // Check if the app is installed as PWA
-  const [isPWA, setIsPWA] = useState(false);
-  useEffect(() => {
-    // Check if the app is running in standalone mode (installed PWA)
-    if (window.matchMedia('(display-mode: standalone)').matches || 
-        (window.navigator as any).standalone === true) {
-      setIsPWA(true);
-    }
-  }, []);
-
-  // Reset scores to initial values
+  // Reset scores to zero
   const resetScores = () => {
     setGameState({
-      homeScore: settings.initialHomeScore,
-      awayScore: settings.initialAwayScore
+      homeScore: 0,
+      awayScore: 0
     });
   };
 

@@ -39,19 +39,21 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
   
   // Reset to defaults
   const resetToDefaults = () => {
-    // Only reset team names and options, not the current scores
-    const currentHomeScore = localSettings.initialHomeScore;
-    const currentAwayScore = localSettings.initialAwayScore;
-    
-    setLocalSettings({
+    // Set settings to defaults
+    const defaultSettings = {
       homeTeamName: 'Home',
       awayTeamName: 'Away',
-      initialHomeScore: currentHomeScore, // Keep current scores
-      initialAwayScore: currentAwayScore, // Keep current scores
       enableScoreWarning: true,
       vibrateOnButtonPress: true,
-      theme: 'light',
-    });
+      theme: 'light' as 'light' | 'dark',
+    };
+    
+    // Update local settings and apply them
+    setLocalSettings(defaultSettings);
+    setSettings(defaultSettings);
+    
+    // Navigate back to the scoreboard
+    navigate('/');
   };
 
   // Back/Cancel without saving changes
@@ -69,6 +71,22 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
           </svg>
         </div>
         <h1>Settings</h1>
+      </div>
+      
+      <div className="settings-section usage-instructions">
+        <h2>How to Use</h2>
+        <div className="instruction-item">
+          <div className="instruction-title">Increment Score</div>
+          <div className="instruction-description">Single tap on a team's score panel to add 1 point</div>
+        </div>
+        <div className="instruction-item">
+          <div className="instruction-title">Decrement Score</div>
+          <div className="instruction-description">Press and hold on a team's score panel to continuously decrease the score</div>
+        </div>
+        <div className="instruction-item">
+          <div className="instruction-title">Access Settings</div>
+          <div className="instruction-description">Tap the gear icon in the bottom-right corner of the scoreboard</div>
+        </div>
       </div>
       
       <div className="settings-form">
@@ -101,30 +119,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
         <div className="settings-section">
           <h2>Scores</h2>
           
-          <div className="form-group">
-            <label htmlFor="initialHomeScore">Initial Home Score</label>
-            <input
-              type="number"
-              id="initialHomeScore"
-              name="initialHomeScore"
-              value={localSettings.initialHomeScore}
-              onChange={handleChange}
-              min="0"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="initialAwayScore">Initial Away Score</label>
-            <input
-              type="number"
-              id="initialAwayScore"
-              name="initialAwayScore"
-              value={localSettings.initialAwayScore}
-              onChange={handleChange}
-              min="0"
-            />
-          </div>
-
           <div className="form-group checkbox">
             <label htmlFor="enableScoreWarning">Enable Score Warnings</label>
             <input
@@ -175,12 +169,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
           Reset Settings
         </button>
         <button className="reset-button" onClick={() => {
-          // Update local settings
-          setLocalSettings({
-            ...localSettings,
-            initialHomeScore: 0,
-            initialAwayScore: 0
-          });
           // Immediately reset the actual game scores
           resetScores();
           // Navigate back to the scoreboard to show the reset scores

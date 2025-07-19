@@ -110,13 +110,12 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     resetAllWarnings();
   }, []);
   
-  // Effect to reset warnings when scores are reset to initial values
+  // Effect to reset warnings when scores are reset to zero
   useEffect(() => {
-    if (gameState.homeScore === settings.initialHomeScore && 
-        gameState.awayScore === settings.initialAwayScore) {
+    if (gameState.homeScore === 0 && gameState.awayScore === 0) {
       resetAllWarnings();
     }
-  }, [gameState, settings.initialHomeScore, settings.initialAwayScore]);
+  }, [gameState]);
 
   // Check if we should show a warning for a multiple of 7
   const checkForWarning = (totalScore: number) => {

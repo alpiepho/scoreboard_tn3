@@ -1,8 +1,6 @@
 export interface AppSettings {
   homeTeamName: string;
   awayTeamName: string;
-  initialHomeScore: number;
-  initialAwayScore: number;
   enableScoreWarning: boolean; // Setting to enable warning at multiples of 7
   vibrateOnButtonPress: boolean;
   theme: 'light' | 'dark';

@@ -22,6 +22,64 @@
   text-transform: uppercase;
 }
 
+/* New styles for usage instructions */
+.usage-instructions {
+  margin-bottom: 24px;
+}
+
+.instruction-item {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.instruction-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.instruction-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  color: var(--primary-color);
+}
+
+.instruction-description {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+  .instruction-title {
+    font-size: 1rem;
+  }
+  
+  .instruction-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-height: 500px) {
+  .usage-instructions {
+    margin-bottom: 12px;
+  }
+  
+  .instruction-item {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+  
+  .instruction-title {
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+  }
+  
+  .instruction-description {
+    font-size: 0.8rem;
+  }
+}
+
 .back-button {
   position: absolute;
   left: 0;
