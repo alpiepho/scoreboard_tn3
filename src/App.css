@@ -1,0 +1,58 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.app.light {
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --scoreboard-bg: #ffffff;
+  --scoreboard-border: #dee2e6;
+  --score-color: #212529;
+  --timer-color: #dc3545;
+}
+
+.app.dark {
+  --bg-color: #343a40;
+  --text-color: #f8f9fa;
+  --scoreboard-bg: #212529;
+  --scoreboard-border: #495057;
+  --score-color: #f8f9fa;
+  --timer-color: #ff6b6b;
+}
+
+.navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 16px;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--scoreboard-border);
+  z-index: 10;
+}
+
+.navigation button {
+  flex: 1;
+  margin: 0 8px;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+@media (max-height: 500px) {
+  /* Landscape mode on small screens */
+  .navigation {
+    padding: 8px;
+  }
+  
+  .navigation button {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}

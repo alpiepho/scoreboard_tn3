@@ -1,0 +1,142 @@
+.scoreboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+  padding-bottom: 80px; /* Space for navigation */
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.scoreboard {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+}
+
+.scoreboard-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.scoreboard-header h1 {
+  margin-bottom: 16px;
+  font-size: 1.8rem;
+}
+
+.timer-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.timer-button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  min-width: 80px;
+}
+
+.timer-button.play {
+  background-color: var(--success-color);
+}
+
+.timer-button.pause {
+  background-color: var(--primary-color);
+}
+
+.timer-button.reset {
+  background-color: var(--secondary-color);
+}
+
+.scores-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.action-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .scoreboard-container {
+    padding: 12px;
+    padding-bottom: 70px;
+  }
+
+  .scoreboard-header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .scores-container {
+    margin-bottom: 16px;
+  }
+  
+  .action-buttons {
+    margin-top: 16px;
+    gap: 8px;
+  }
+  
+  .action-button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-height: 500px) {
+  /* Landscape mode on small screens */
+  .scoreboard-container {
+    padding: 8px;
+    padding-bottom: 60px;
+  }
+  
+  .scoreboard-header {
+    margin-bottom: 12px;
+  }
+  
+  .scoreboard-header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
+  .timer-controls {
+    flex-direction: row;
+    margin-top: 4px;
+  }
+  
+  .timer-button {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    min-width: 70px;
+  }
+  
+  .action-buttons {
+    margin-top: 12px;
+  }
+}

@@ -1,0 +1,188 @@
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  padding-bottom: 80px; /* Space for navigation */
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settings-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.settings-header h1 {
+  font-size: 1.8rem;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.settings-section {
+  background-color: var(--scoreboard-bg);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.settings-section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input, 
+.form-group select {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.form-group.checkbox {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-group.checkbox input {
+  width: 20px;
+  height: 20px;
+}
+
+.settings-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.settings-actions button {
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.save-button {
+  background-color: var(--success-color);
+}
+
+.reset-button {
+  background-color: var(--danger-color);
+}
+
+.cancel-button {
+  background-color: var(--secondary-color);
+}
+
+.app-info {
+  margin-top: 32px;
+  text-align: center;
+  padding: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.app-info h3 {
+  margin-bottom: 8px;
+}
+
+.app-info p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 12px;
+    padding-bottom: 70px;
+  }
+  
+  .settings-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .settings-section {
+    padding: 12px;
+  }
+  
+  .settings-section h2 {
+    font-size: 1.1rem;
+  }
+  
+  .form-group input, 
+  .form-group select {
+    padding: 8px;
+  }
+  
+  .settings-actions button {
+    padding: 10px;
+  }
+}
+
+@media (max-height: 500px) {
+  /* Landscape mode on small screens */
+  .settings-container {
+    padding: 8px;
+    padding-bottom: 60px;
+  }
+  
+  .settings-header {
+    margin-bottom: 12px;
+  }
+  
+  .settings-header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .settings-form {
+    gap: 12px;
+  }
+  
+  .settings-section {
+    padding: 8px;
+  }
+  
+  .settings-section h2 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+  }
+  
+  .form-group {
+    margin-bottom: 8px;
+  }
+  
+  .form-group label {
+    margin-bottom: 4px;
+  }
+  
+  .settings-actions {
+    margin-top: 12px;
+    gap: 8px;
+  }
+  
+  .app-info {
+    margin-top: 16px;
+    padding: 8px;
+  }
+}
