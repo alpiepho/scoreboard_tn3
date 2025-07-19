@@ -35,8 +35,26 @@
   box-sizing: border-box;
 }
 
-.score-button:active {
+.score-button:active,
+.score-button.pressed {
   transform: scale(0.98);
+  filter: brightness(0.9);
+}
+
+.score-button.auto-decrementing {
+  transform: scale(0.97);
+  animation: pulse 0.4s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    filter: brightness(0.8);
+    transform: scale(0.97);
+  }
+  100% {
+    filter: brightness(1);
+    transform: scale(0.99);
+  }
 }
 
 .score-button.home {

@@ -11,13 +11,35 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   
-  // Touch tracking data
-  const homeButtonRef = useRef<HTMLDivElement>(null);
-  const awayButtonRef = useRef<HTMLDivElement>(null);
-  const homeStartY = useRef<number | null>(null);
-  const awayStartY = useRef<number | null>(null);
-  const homeSwipeProcessed = useRef(false);
-  const awaySwipeProcessed = useRef(false);
+  // Long press state
+  const longPressDelay = 500; // ms to hold for a long press
+  const decrementInterval = 200; // ms between auto-decrements (faster)
+  const homeTimeoutRef = useRef<number | null>(null);
+  const awayTimeoutRef = useRef<number | null>(null);
+  const homeIntervalRef = useRef<number | null>(null);
+  const awayIntervalRef = useRef<number | null>(null);
+  const [homePressed, setHomePressed] = useState(false);
+  const [awayPressed, setAwayPressed] = useState(false);
+  const [homeAutoDecrementing, setHomeAutoDecrementing] = useState(false);
+  const [awayAutoDecrementing, setAwayAutoDecrementing] = useState(false);
+  
+  // Use refs to track the current pressed state for access in timeouts
+  const homePressedRef = useRef<boolean>(false);
+  const awayPressedRef = useRef<boolean>(false);
+  const gameStateRef = useRef(gameState);
+  
+  // Update refs when state changes
+  useEffect(() => {
+    homePressedRef.current = homePressed;
+  }, [homePressed]);
+  
+  useEffect(() => {
+    awayPressedRef.current = awayPressed;
+  }, [awayPressed]);
+  
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
   
   // Track which multiples of 7 we've already warned about
   const shownWarningsRef = useRef<Set<number>>(new Set());
@@ -65,8 +87,42 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     };
   }, []);
 
+  // Effect to stop auto-decrement when score reaches zero
+  useEffect(() => {
+    if (gameState.homeScore === 0 && homeIntervalRef.current !== null) {
+      window.clearTimeout(homeIntervalRef.current);
+      homeIntervalRef.current = null;
+    }
+    
+    if (gameState.awayScore === 0 && awayIntervalRef.current !== null) {
+      window.clearTimeout(awayIntervalRef.current);
+      awayIntervalRef.current = null;
+    }
+  }, [gameState.homeScore, gameState.awayScore]);
+  
+  // Reset all warnings
+  const resetAllWarnings = () => {
+    shownWarningsRef.current.clear();
+  };
+  
+  // Effect to reset warnings on component mount/remount
+  useEffect(() => {
+    resetAllWarnings();
+  }, []);
+  
+  // Effect to reset warnings when scores are reset to initial values
+  useEffect(() => {
+    if (gameState.homeScore === settings.initialHomeScore && 
+        gameState.awayScore === settings.initialAwayScore) {
+      resetAllWarnings();
+    }
+  }, [gameState, settings.initialHomeScore, settings.initialAwayScore]);
+
   // Check if we should show a warning for a multiple of 7
   const checkForWarning = (totalScore: number) => {
+    // Don't show a new warning if an alert is already visible
+    if (alertVisible) return;
+    
     // Only show a warning if:
     // 1. Warnings are enabled in settings
     // 2. The total score is a positive multiple of 7
@@ -92,18 +148,41 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     }
   };
   
+  // Reset warnings when scores change
+  const resetWarningsOnDecrement = (oldTotalScore: number, newTotalScore: number) => {
+    // If we've decremented past a multiple of 7, remove that warning from the shown warnings
+    if (oldTotalScore > newTotalScore) {
+      // Check all multiples of 7 between the old and new total score
+      for (let i = oldTotalScore; i > newTotalScore; i--) {
+        if (i % 7 === 0 && shownWarningsRef.current.has(i)) {
+          shownWarningsRef.current.delete(i);
+        }
+      }
+    }
+  };
+  
   // Handle home score changes
   const incrementHomeScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    const newHomeScore = gameState.homeScore + 1;
-    setGameState({
-      ...gameState,
-      homeScore: newHomeScore
+    // Get the latest scores directly from gameStateRef
+    const currentHomeScore = gameStateRef.current.homeScore;
+    const currentAwayScore = gameStateRef.current.awayScore;
+    const newHomeScore = currentHomeScore + 1;
+    
+    // Update both the state and the ref
+    setGameState(prevState => {
+      const updatedState = {
+        ...prevState,
+        homeScore: newHomeScore
+      };
+      // Update ref immediately
+      gameStateRef.current = updatedState;
+      return updatedState;
     });
     
     // Calculate the new total score directly
-    const newTotalScore = newHomeScore + gameState.awayScore;
+    const newTotalScore = newHomeScore + currentAwayScore;
     
     // Check if we need to show a warning
     checkForWarning(newTotalScore);
@@ -114,11 +193,29 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const decrementHomeScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    const newHomeScore = Math.max(0, gameState.homeScore - 1);
-    setGameState({
-      ...gameState,
-      homeScore: newHomeScore
+    // Get the latest score directly from gameStateRef to avoid stale closures
+    const currentHomeScore = gameStateRef.current.homeScore;
+    const currentAwayScore = gameStateRef.current.awayScore;
+    const newHomeScore = Math.max(0, currentHomeScore - 1);
+    
+    // Calculate old and new total scores to check for warning resets
+    const oldTotalScore = currentHomeScore + currentAwayScore;
+    const newTotalScore = newHomeScore + currentAwayScore;
+    
+    // Reset warnings if we've decremented past a multiple of 7
+    resetWarningsOnDecrement(oldTotalScore, newTotalScore);
+    
+    // Update both the state and the ref
+    setGameState(prevState => {
+      const updatedState = {
+        ...prevState,
+        homeScore: newHomeScore
+      };
+      // Update ref immediately to avoid race conditions
+      gameStateRef.current = updatedState;
+      return updatedState;
     });
+    
     vibrate();
   };
   
@@ -126,14 +223,24 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const incrementAwayScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    const newAwayScore = gameState.awayScore + 1;
-    setGameState({
-      ...gameState,
-      awayScore: newAwayScore
+    // Get the latest scores directly from gameStateRef
+    const currentHomeScore = gameStateRef.current.homeScore;
+    const currentAwayScore = gameStateRef.current.awayScore;
+    const newAwayScore = currentAwayScore + 1;
+    
+    // Update both the state and the ref
+    setGameState(prevState => {
+      const updatedState = {
+        ...prevState,
+        awayScore: newAwayScore
+      };
+      // Update ref immediately
+      gameStateRef.current = updatedState;
+      return updatedState;
     });
     
     // Calculate the new total score directly
-    const newTotalScore = gameState.homeScore + newAwayScore;
+    const newTotalScore = currentHomeScore + newAwayScore;
     
     // Check if we need to show a warning
     checkForWarning(newTotalScore);
@@ -144,103 +251,241 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const decrementAwayScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    const newAwayScore = Math.max(0, gameState.awayScore - 1);
-    setGameState({
-      ...gameState,
-      awayScore: newAwayScore
+    // Get the latest score directly from gameStateRef to avoid stale closures
+    const currentHomeScore = gameStateRef.current.homeScore;
+    const currentAwayScore = gameStateRef.current.awayScore;
+    const newAwayScore = Math.max(0, currentAwayScore - 1);
+    
+    // Calculate old and new total scores to check for warning resets
+    const oldTotalScore = currentHomeScore + currentAwayScore;
+    const newTotalScore = currentHomeScore + newAwayScore;
+    
+    // Reset warnings if we've decremented past a multiple of 7
+    resetWarningsOnDecrement(oldTotalScore, newTotalScore);
+    
+    // Update both the state and the ref
+    setGameState(prevState => {
+      const updatedState = {
+        ...prevState,
+        awayScore: newAwayScore
+      };
+      // Update ref immediately to avoid race conditions
+      gameStateRef.current = updatedState;
+      return updatedState;
     });
+    
     vibrate();
   };
   
-  // Home team touch handlers
-  const handleHomeTouchStart = (e: React.TouchEvent) => {
-    // Don't process touches when alert is visible
+  // Home team handlers for long press
+  const handleHomeMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+    // Don't process when alert is visible
     if (alertVisible) {
       e.preventDefault();
       return;
     }
     
-    e.preventDefault();
-    homeStartY.current = e.touches[0].clientY;
-    homeSwipeProcessed.current = false;
+    // Start long press detection
+    setHomePressed(true);
+    homePressedRef.current = true;
+    
+    // Clear any existing timers first
+    if (homeTimeoutRef.current !== null) {
+      clearTimeout(homeTimeoutRef.current);
+      homeTimeoutRef.current = null;
+    }
+    if (homeIntervalRef.current !== null) {
+      clearTimeout(homeIntervalRef.current);
+      homeIntervalRef.current = null;
+    }
+    
+    // Start the long press timer
+    homeTimeoutRef.current = window.setTimeout(() => {
+      // First decrement after initial delay
+      decrementHomeScore();
+      
+      // Set auto-decrementing state for visual feedback
+      setHomeAutoDecrementing(true);
+      
+      // Start continuous decrement using recursive setTimeout to avoid React state closure issues
+      const startRecursiveDecrement = () => {
+        // Check if we should continue
+        if (!homePressedRef.current) return;
+        
+        // Get the current score directly from DOM to ensure we're always using the latest value
+        const scoreElement = document.querySelector('.score-button.home .score');
+        const currentScore = scoreElement ? parseInt(scoreElement.textContent || '0', 10) : 0;
+        
+        if (currentScore > 0) {
+          decrementHomeScore();
+          // Schedule the next decrement with a slight delay to allow the DOM to update
+          homeIntervalRef.current = window.setTimeout(startRecursiveDecrement, decrementInterval);
+        } else {
+          // Stop auto-decrementing and reset state when score reaches zero
+          setHomeAutoDecrementing(false);
+        }
+      };
+      
+      // Start the recursive process
+      startRecursiveDecrement();
+      
+      // Clear the initial timeout reference
+      homeTimeoutRef.current = null;
+    }, longPressDelay);
+  };
+  
+  const handleHomeMouseUp = () => {
+    // Cancel pressed state
+    setHomePressed(false);
+    homePressedRef.current = false;
+    
+    // Reset auto-decrementing state
+    setHomeAutoDecrementing(false);
+    
+    // If interval exists, clear it (stop auto-decrement)
+    if (homeIntervalRef.current !== null) {
+      clearTimeout(homeIntervalRef.current);
+      homeIntervalRef.current = null;
+    }
+    
+    // If timeout still exists, it was a short press (increment)
+    if (homeTimeoutRef.current !== null) {
+      clearTimeout(homeTimeoutRef.current);
+      incrementHomeScore();
+      homeTimeoutRef.current = null;
+    }
+  };
+  
+  const handleHomeMouseLeave = () => {
+    // Cancel all timers when moving out of the button
+    if (homeTimeoutRef.current !== null) {
+      clearTimeout(homeTimeoutRef.current);
+      homeTimeoutRef.current = null;
+    }
+    
+    if (homeIntervalRef.current !== null) {
+      clearTimeout(homeIntervalRef.current);
+      homeIntervalRef.current = null;
+    }
+    
+    setHomePressed(false);
+    homePressedRef.current = false;
+    setHomeAutoDecrementing(false);
   };
 
-  const handleHomeTouchMove = (e: React.TouchEvent) => {
-    // Don't process touches when alert is visible
+  // Away team handlers for long press
+  const handleAwayMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+    // Don't process when alert is visible
     if (alertVisible) {
       e.preventDefault();
       return;
     }
     
-    e.preventDefault();
-    if (homeStartY.current === null || homeSwipeProcessed.current) return;
+    // Start long press detection
+    setAwayPressed(true);
+    awayPressedRef.current = true;
     
-    const touchY = e.touches[0].clientY;
-    const diff = homeStartY.current - touchY;
+    // Clear any existing timers first
+    if (awayTimeoutRef.current !== null) {
+      clearTimeout(awayTimeoutRef.current);
+      awayTimeoutRef.current = null;
+    }
+    if (awayIntervalRef.current !== null) {
+      clearTimeout(awayIntervalRef.current);
+      awayIntervalRef.current = null;
+    }
     
-    // Threshold for swipe detection
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) {
-        // Swipe up - increment
-        incrementHomeScore();
-      } else {
-        // Swipe down - decrement
-        decrementHomeScore();
+    // Start the long press timer
+    awayTimeoutRef.current = window.setTimeout(() => {
+      // First decrement after initial delay
+      decrementAwayScore();
+      
+      // Set auto-decrementing state for visual feedback
+      setAwayAutoDecrementing(true);
+      
+      // Start continuous decrement using recursive setTimeout to avoid React state closure issues
+      const startRecursiveDecrement = () => {
+        // Check if we should continue
+        if (!awayPressedRef.current) return;
+        
+        // Get the current score directly from DOM to ensure we're always using the latest value
+        const scoreElement = document.querySelector('.score-button.away .score');
+        const currentScore = scoreElement ? parseInt(scoreElement.textContent || '0', 10) : 0;
+        
+        if (currentScore > 0) {
+          decrementAwayScore();
+          // Schedule the next decrement with a slight delay to allow the DOM to update
+          awayIntervalRef.current = window.setTimeout(startRecursiveDecrement, decrementInterval);
+        } else {
+          // Stop auto-decrementing and reset state when score reaches zero
+          setAwayAutoDecrementing(false);
+        }
+      };
+      
+      // Start the recursive process
+      startRecursiveDecrement();
+      
+      // Clear the initial timeout reference
+      awayTimeoutRef.current = null;
+    }, longPressDelay);
+  };
+  
+  const handleAwayMouseUp = () => {
+    // Cancel pressed state
+    setAwayPressed(false);
+    awayPressedRef.current = false;
+    
+    // Reset auto-decrementing state
+    setAwayAutoDecrementing(false);
+    
+    // If interval exists, clear it (stop auto-decrement)
+    if (awayIntervalRef.current !== null) {
+      clearTimeout(awayIntervalRef.current);
+      awayIntervalRef.current = null;
+    }
+    
+    // If timeout still exists, it was a short press (increment)
+    if (awayTimeoutRef.current !== null) {
+      clearTimeout(awayTimeoutRef.current);
+      incrementAwayScore();
+      awayTimeoutRef.current = null;
+    }
+  };
+  
+  const handleAwayMouseLeave = () => {
+    // Cancel all timers when moving out of the button
+    if (awayTimeoutRef.current !== null) {
+      clearTimeout(awayTimeoutRef.current);
+      awayTimeoutRef.current = null;
+    }
+    
+    if (awayIntervalRef.current !== null) {
+      clearTimeout(awayIntervalRef.current);
+      awayIntervalRef.current = null;
+    }
+    
+    setAwayPressed(false);
+    awayPressedRef.current = false;
+    setAwayAutoDecrementing(false);
+  };
+
+  // Clean up timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      if (homeTimeoutRef.current !== null) {
+        window.clearTimeout(homeTimeoutRef.current);
       }
-      homeSwipeProcessed.current = true;
-    }
-  };
-
-  const handleHomeTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
-    homeStartY.current = null;
-    homeSwipeProcessed.current = false;
-  };
-
-  // Away team touch handlers
-  const handleAwayTouchStart = (e: React.TouchEvent) => {
-    // Don't process touches when alert is visible
-    if (alertVisible) {
-      e.preventDefault();
-      return;
-    }
-    
-    e.preventDefault();
-    awayStartY.current = e.touches[0].clientY;
-    awaySwipeProcessed.current = false;
-  };
-
-  const handleAwayTouchMove = (e: React.TouchEvent) => {
-    // Don't process touches when alert is visible
-    if (alertVisible) {
-      e.preventDefault();
-      return;
-    }
-    
-    e.preventDefault();
-    if (awayStartY.current === null || awaySwipeProcessed.current) return;
-    
-    const touchY = e.touches[0].clientY;
-    const diff = awayStartY.current - touchY;
-    
-    // Threshold for swipe detection
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) {
-        // Swipe up - increment
-        incrementAwayScore();
-      } else {
-        // Swipe down - decrement
-        decrementAwayScore();
+      if (awayTimeoutRef.current !== null) {
+        window.clearTimeout(awayTimeoutRef.current);
       }
-      awaySwipeProcessed.current = true;
-    }
-  };
-
-  const handleAwayTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
-    awayStartY.current = null;
-    awaySwipeProcessed.current = false;
-  };
+      if (homeIntervalRef.current !== null) {
+        window.clearTimeout(homeIntervalRef.current);
+      }
+      if (awayIntervalRef.current !== null) {
+        window.clearTimeout(awayIntervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="scoreboard-container">
@@ -254,38 +499,26 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       />
       <div className="scoreboard-buttons">
         <div 
-          ref={homeButtonRef}
-          className="score-button home"
-          onClick={(e) => {
-            // Don't process clicks when alert is visible
-            if (alertVisible) {
-              e.preventDefault();
-              return;
-            }
-            incrementHomeScore();
-          }}
-          onTouchStart={handleHomeTouchStart}
-          onTouchMove={handleHomeTouchMove}
-          onTouchEnd={handleHomeTouchEnd}
+          className={`score-button home ${homePressed ? 'pressed' : ''} ${homeAutoDecrementing ? 'auto-decrementing' : ''}`}
+          onMouseDown={handleHomeMouseDown}
+          onMouseUp={handleHomeMouseUp}
+          onMouseLeave={handleHomeMouseLeave}
+          onTouchStart={handleHomeMouseDown}
+          onTouchEnd={handleHomeMouseUp}
+          onTouchCancel={handleHomeMouseLeave}
         >
           <div className="team-name">{settings.homeTeamName}</div>
           <div className="score">{gameState.homeScore}</div>
         </div>
         
         <div 
-          ref={awayButtonRef}
-          className="score-button away"
-          onClick={(e) => {
-            // Don't process clicks when alert is visible
-            if (alertVisible) {
-              e.preventDefault();
-              return;
-            }
-            incrementAwayScore();
-          }}
-          onTouchStart={handleAwayTouchStart}
-          onTouchMove={handleAwayTouchMove}
-          onTouchEnd={handleAwayTouchEnd}
+          className={`score-button away ${awayPressed ? 'pressed' : ''} ${awayAutoDecrementing ? 'auto-decrementing' : ''}`}
+          onMouseDown={handleAwayMouseDown}
+          onMouseUp={handleAwayMouseUp}
+          onMouseLeave={handleAwayMouseLeave}
+          onTouchStart={handleAwayMouseDown}
+          onTouchEnd={handleAwayMouseUp}
+          onTouchCancel={handleAwayMouseLeave}
         >
           <div className="team-name">{settings.awayTeamName}</div>
           <div className="score">{gameState.awayScore}</div>

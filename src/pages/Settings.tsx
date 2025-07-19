@@ -183,6 +183,8 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
           });
           // Immediately reset the actual game scores
           resetScores();
+          // Navigate back to the scoreboard to show the reset scores
+          navigate('/');
         }}>
           Reset Scores
         </button>
