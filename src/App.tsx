@@ -1,23 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import Scoreboard from './pages/Scoreboard'
 import Settings from './pages/Settings'
-import { AppSettings } from './types'
+import { AppSettings, GameState } from './types'
 
 function App() {
-  const navigate = useNavigate();
-  
   // Default settings
   const defaultSettings: AppSettings = {
     homeTeamName: 'Home',
     awayTeamName: 'Away',
     initialHomeScore: 0,
     initialAwayScore: 0,
-    scoreIncrement: 1,
-    timerDuration: 20 * 60, // 20 minutes in seconds
-    timerDirection: 'down',
-    showTimer: true,
+    enableScoreWarning: true, // Default to enable warnings at multiples of 7
     vibrateOnButtonPress: true,
     theme: 'light',
   };
@@ -28,10 +23,30 @@ function App() {
     return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
   });
 
+  // Initialize game state - the current scores
+  const [gameState, setGameState] = useState<GameState>({
+    homeScore: settings.initialHomeScore,
+    awayScore: settings.initialAwayScore
+  });
+
   // Save settings to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('scoresTN3Settings', JSON.stringify(settings));
   }, [settings]);
+
+  // Initialize game state when the app first loads
+  useEffect(() => {
+    // Only set the initial game state once when the app loads
+    const savedGameState = localStorage.getItem('scoresTN3GameState');
+    if (savedGameState) {
+      setGameState(JSON.parse(savedGameState));
+    }
+  }, []);
+
+  // Save the game state whenever it changes
+  useEffect(() => {
+    localStorage.setItem('scoresTN3GameState', JSON.stringify(gameState));
+  }, [gameState]);
 
   // Check if the app is installed as PWA
   const [isPWA, setIsPWA] = useState(false);
@@ -43,16 +58,32 @@ function App() {
     }
   }, []);
 
+  // Reset scores to initial values
+  const resetScores = () => {
+    setGameState({
+      homeScore: settings.initialHomeScore,
+      awayScore: settings.initialAwayScore
+    });
+  };
+
   return (
     <div className={`app ${settings.theme}`}>
       <Routes>
-        <Route path="/" element={<Scoreboard settings={settings} />} />
-        <Route path="/settings" element={<Settings settings={settings} setSettings={setSettings} />} />
+        <Route path="/" element={
+          <Scoreboard 
+            settings={settings} 
+            gameState={gameState} 
+            setGameState={setGameState} 
+          />
+        } />
+        <Route path="/settings" element={
+          <Settings 
+            settings={settings} 
+            setSettings={setSettings} 
+            resetScores={resetScores}
+          />
+        } />
       </Routes>
-      <div className="navigation">
-        <button onClick={() => navigate('/')}>Scoreboard</button>
-        <button onClick={() => navigate('/settings')}>Settings</button>
-      </div>
     </div>
   )
 }

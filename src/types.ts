@@ -3,21 +3,26 @@ export interface AppSettings {
   awayTeamName: string;
   initialHomeScore: number;
   initialAwayScore: number;
-  scoreIncrement: number;
-  timerDuration: number;
-  timerDirection: 'up' | 'down';
-  showTimer: boolean;
+  enableScoreWarning: boolean; // Setting to enable warning at multiples of 7
   vibrateOnButtonPress: boolean;
   theme: 'light' | 'dark';
 }
 
+export interface GameState {
+  homeScore: number;
+  awayScore: number;
+}
+
 export interface ScoreboardProps {
   settings: AppSettings;
+  gameState: GameState;
+  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
 }
 
 export interface SettingsProps {
   settings: AppSettings;
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
+  resetScores: () => void;
 }
 
 export interface TimerProps {

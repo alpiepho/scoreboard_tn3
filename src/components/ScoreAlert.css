@@ -1,0 +1,63 @@
+.score-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
+}
+
+.score-alert.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.score-alert-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80vw;
+  max-width: 400px;
+  padding: 24px;
+  background-color: #f57c00; /* Orange color for warning */
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s ease-out;
+}
+
+.score-alert.active .score-alert-content {
+  transform: scale(1);
+}
+
+.score-alert-message {
+  font-size: 24px;
+  font-weight: 500;
+  white-space: pre-line;
+  line-height: 1.4;
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .score-alert-content {
+    background-color: #ff9800; /* Brighter orange for dark theme */
+  }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .score-alert-content {
+    background-color: #ff9800; /* Brighter orange for dark theme */
+  }
+}

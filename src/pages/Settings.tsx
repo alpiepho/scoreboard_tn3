@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
 import './Settings.css';
 
-const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
+const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores }) => {
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
   
@@ -39,23 +39,35 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
   
   // Reset to defaults
   const resetToDefaults = () => {
+    // Only reset team names and options, not the current scores
+    const currentHomeScore = localSettings.initialHomeScore;
+    const currentAwayScore = localSettings.initialAwayScore;
+    
     setLocalSettings({
       homeTeamName: 'Home',
       awayTeamName: 'Away',
-      initialHomeScore: 0,
-      initialAwayScore: 0,
-      scoreIncrement: 1,
-      timerDuration: 20 * 60, // 20 minutes in seconds
-      timerDirection: 'down',
-      showTimer: true,
+      initialHomeScore: currentHomeScore, // Keep current scores
+      initialAwayScore: currentAwayScore, // Keep current scores
+      enableScoreWarning: true,
       vibrateOnButtonPress: true,
       theme: 'light',
     });
   };
 
+  // Back/Cancel without saving changes
+  const handleCancel = () => {
+    // Navigate back without updating settings
+    navigate('/');
+  };
+  
   return (
     <div className="settings-container">
       <div className="settings-header">
+        <div className="back-button" onClick={handleCancel}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+          </svg>
+        </div>
         <h1>Settings</h1>
       </div>
       
@@ -112,60 +124,17 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
               min="0"
             />
           </div>
-          
-          <div className="form-group">
-            <label htmlFor="scoreIncrement">Score Increment</label>
-            <input
-              type="number"
-              id="scoreIncrement"
-              name="scoreIncrement"
-              value={localSettings.scoreIncrement}
-              onChange={handleChange}
-              min="1"
-            />
-          </div>
-        </div>
-        
-        <div className="settings-section">
-          <h2>Timer</h2>
-          
+
           <div className="form-group checkbox">
-            <label htmlFor="showTimer">Show Timer</label>
+            <label htmlFor="enableScoreWarning">Enable Score Warnings</label>
             <input
               type="checkbox"
-              id="showTimer"
-              name="showTimer"
-              checked={localSettings.showTimer}
+              id="enableScoreWarning"
+              name="enableScoreWarning"
+              checked={localSettings.enableScoreWarning}
               onChange={handleChange}
             />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="timerDuration">Timer Duration (minutes)</label>
-            <input
-              type="number"
-              id="timerDuration"
-              name="timerDuration"
-              value={Math.floor(localSettings.timerDuration / 60)}
-              onChange={(e) => setLocalSettings({
-                ...localSettings,
-                timerDuration: (parseInt(e.target.value, 10) || 0) * 60
-              })}
-              min="1"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="timerDirection">Timer Direction</label>
-            <select
-              id="timerDirection"
-              name="timerDirection"
-              value={localSettings.timerDirection}
-              onChange={handleChange}
-            >
-              <option value="down">Count Down</option>
-              <option value="up">Count Up</option>
-            </select>
+            <div className="setting-hint">Shows notification when total score is a multiple of 7</div>
           </div>
         </div>
         
@@ -203,22 +172,23 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings }) => {
           Save Settings
         </button>
         <button className="reset-button" onClick={resetToDefaults}>
-          Reset to Defaults
+          Reset Settings
         </button>
-        <button className="cancel-button" onClick={() => navigate('/')}>
+        <button className="reset-button" onClick={() => {
+          // Update local settings
+          setLocalSettings({
+            ...localSettings,
+            initialHomeScore: 0,
+            initialAwayScore: 0
+          });
+          // Immediately reset the actual game scores
+          resetScores();
+        }}>
+          Reset Scores
+        </button>
+        <button className="cancel-button" onClick={handleCancel}>
           Cancel
         </button>
-      </div>
-      
-      <div className="app-info">
-        <h3>About ScoresTN3</h3>
-        <p>Version 0.1.0</p>
-        <p>A TypeScript PWA conversion of the ScoresTN2 Flutter application.</p>
-        <p>
-          <a href="https://github.com/alpiepho/scoreboard_tn2" target="_blank" rel="noopener noreferrer">
-            View Original Project
-          </a>
-        </p>
       </div>
     </div>
   );
