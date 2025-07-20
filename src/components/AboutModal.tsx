@@ -11,7 +11,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ visible, onClose }) => {
   if (!visible) return null;
 
   // Generate QR code URL using a free QR code API
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://alpiepho.github.io/scoreboard_tn3/#/')}`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://alpiepho.github.io/scoreboard_tn3/')}`;
 
   return (
     <div className="about-modal-overlay" onClick={onClose}>
@@ -34,11 +34,11 @@ const AboutModal: React.FC<AboutModalProps> = ({ visible, onClose }) => {
           <div className="about-links">
             <p>
               <a 
-                href="https://alpiepho.github.io/scoreboard_tn3/#/" 
+                href="https://alpiepho.github.io/scoreboard_tn3/" 
                 target="_blank" 
                 rel="noopener noreferrer"
               >
-                https://alpiepho.github.io/scoreboard_tn3/#/
+                https://alpiepho.github.io/scoreboard_tn3/
               </a>
             </p>
             

@@ -23,7 +23,7 @@ const updateSW = registerSW({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename="/">
+    <BrowserRouter basename="/scoreboard_tn3">
       <App />
     </BrowserRouter>
   </React.StrictMode>,
