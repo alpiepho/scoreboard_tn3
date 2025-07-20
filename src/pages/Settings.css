@@ -272,6 +272,72 @@
   font-size: 0.9rem;
 }
 
+.swap-teams-button {
+  width: 100%;
+  padding: 12px 8px;
+  margin-top: 20px;
+  border-radius: 24px;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.swap-teams-button:active {
+  transform: scale(0.98);
+}
+
+.app.dark .swap-teams-button {
+  color: white;
+}
+
+.swap-icon {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-right: 2px;
+}
+
+.swap-text {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.settings-team-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+}
+
+.home-color-dot, .away-color-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.home-color-dot {
+  background-color: var(--home-team-color);
+}
+
+.away-color-dot {
+  background-color: var(--away-team-color);
+}
+
 @media (max-width: 480px) {
   .settings-container {
     padding: 12px;
@@ -344,6 +410,23 @@
   .app-info {
     margin-top: 16px;
     padding: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .swap-teams-button {
+    padding: 10px 4px;
+    gap: 4px;
+  }
+  
+  .settings-team-name {
+    font-size: 0.75rem;
+    max-width: 60px;
+  }
+  
+  .home-color-dot, .away-color-dot {
+    width: 8px;
+    height: 8px;
   }
 }
 

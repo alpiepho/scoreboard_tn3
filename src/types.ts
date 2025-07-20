@@ -6,6 +6,7 @@ export interface AppSettings {
   theme: 'light' | 'dark';
   maxSets: 3 | 5; // Maximum number of sets to play (3 or 5)
   showSets: boolean; // Toggle visibility of sets display
+  colorsSwapped: boolean; // Track if team colors have been swapped
 }
 
 export interface GameState {
@@ -26,6 +27,7 @@ export interface SettingsProps {
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
   resetScores: () => void;
   resetScoresAndSets: () => void;
+  swapHomeAndAway: () => void;
 }
 
 export interface TimerProps {

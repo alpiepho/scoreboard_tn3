@@ -23,8 +23,7 @@
   --success-color: #4caf50;
   --danger-color: #f44336;
   --info-color: #2196f3;
-  --home-team-color: #2196f3; /* Blue for home team */
-  --away-team-color: #f44336; /* Red for away team */
+  /* Colors are now set via JavaScript based on colorsSwapped state */
   --sets-label-color: #ffffff; /* White for set labels in light mode */
 }
 
@@ -49,8 +48,7 @@
   --success-color: #4caf50;
   --danger-color: #f44336;
   --info-color: #2196f3;
-  --home-team-color: #2196f3; /* Blue for home team */
-  --away-team-color: #f44336; /* Red for away team */
+  /* Colors are now set via JavaScript based on colorsSwapped state */
   --sets-label-color: #000000; /* Black for set labels in dark mode */
 }
 

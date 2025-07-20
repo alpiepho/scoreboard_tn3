@@ -4,7 +4,7 @@ import { SettingsProps } from '../types';
 import './Settings.css';
 import AboutModal from '../components/AboutModal';
 
-const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores, resetScoresAndSets }) => {
+const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores, resetScoresAndSets, swapHomeAndAway }) => {
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
   const [showAboutModal, setShowAboutModal] = useState(false);
@@ -56,6 +56,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
       theme: 'light' as 'light' | 'dark',
       maxSets: 5 as 3 | 5,
       showSets: true,
+      colorsSwapped: false,
     };
     
     // Update local settings and apply them
@@ -137,6 +138,22 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
               onChange={handleChange}
             />
           </div>
+          
+          <div className="form-group">
+            <button 
+              className="swap-teams-button" 
+              title="Swap team names, scores, sets, and colors"
+              onClick={() => {
+                swapHomeAndAway();
+                navigate('/');
+              }}
+            >
+              <span className="swap-icon">⇄</span>
+              <span className="home-color-dot"></span>
+              Swap Teams
+              <span className="away-color-dot"></span>
+            </button>
+          </div>
         </div>
         
         <div className="settings-section">
@@ -197,7 +214,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
               <option value={3}>3 Sets</option>
               <option value={5}>5 Sets</option>
             </select>
-            <div className="setting-hint">Number of set indicators to display</div>
           </div>
           
           <div className="form-group checkbox">

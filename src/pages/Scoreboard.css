@@ -46,13 +46,16 @@
 /* Add specific styling for team name and score */
 .team-name {
   color: var(--text-color); /* Use theme text color */
-  font-size: 2.2rem;
-  font-weight: 600;
+  font-size: clamp(3rem, 9vw, 5rem); /* Increased and made responsive */
+  font-weight: 700; /* Increased from 600 for better visibility */
   text-transform: uppercase;
   margin-top: 1rem; /* Add top margin to move team name down a bit */
   margin-bottom: 0.2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Enhanced shadow for better readability */
+  letter-spacing: 0.05em; /* Slightly increase letter spacing for readability */
+  text-align: center;
+  width: 100%;
   z-index: 1;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .score {
@@ -105,7 +108,7 @@
   }
   
   .team-name {
-    font-size: 2rem; /* Increased from 1.5rem */
+    font-size: clamp(2.5rem, 7vw, 4rem); /* Adjusted for landscape */
     margin-bottom: 0.1rem; /* Further reduced in landscape */
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Added shadow for readability */
   }
@@ -181,7 +184,7 @@
   }
   
   .team-name {
-    font-size: 1.8rem; /* Increased from 1.2rem */
+    font-size: clamp(2.2rem, 8vw, 3.5rem); /* Adjusted for smaller screens */
     /* Small space between team name and score */
     margin-bottom: 0.1rem;
   }
@@ -298,7 +301,7 @@
 /* Responsive styles */
 @media (max-width: 480px) {
   .team-name {
-    font-size: 1.2rem;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
   }
   
   .settings-button {
@@ -317,7 +320,7 @@
 /* Further optimize for small screens by reducing team name size */
 @media (max-height: 500px) or (max-width: 350px) {
   .team-name {
-    font-size: 1rem;
+    font-size: clamp(1.5rem, 5vw, 2rem);
     margin: 0;
   }
 }
@@ -546,7 +549,7 @@
 /* Responsive adjustments for team names and scores */
 @media (max-width: 768px) {
   .team-name {
-    font-size: 2rem;
+    font-size: clamp(3rem, 9vw, 5rem);
   }
   
   .score {
@@ -556,7 +559,7 @@
 
 @media (max-width: 480px) {
   .team-name {
-    font-size: 1.8rem;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
   }
   
   .score {
@@ -567,7 +570,7 @@
 /* Landscape orientation adjustments */
 @media (orientation: landscape) and (max-height: 500px) {
   .team-name {
-    font-size: 1.5rem;
+    font-size: clamp(2rem, 7vw, 3.5rem);
     margin-bottom: 0.2rem;
   }
   
