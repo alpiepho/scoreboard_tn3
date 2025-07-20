@@ -1,5 +1,6 @@
 import React from 'react';
 import './AboutModal.css';
+import { APP_VERSION } from '../utils/constants';
 
 interface AboutModalProps {
   visible: boolean;
@@ -20,6 +21,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ visible, onClose }) => {
           <button className="about-modal-close" onClick={onClose}>×</button>
         </div>
         <div className="about-modal-body">
+          <p className="version-info">Version {APP_VERSION}</p>
           <p>Scan this QR code to access the app:</p>
           <div className="qr-code-container">
             <img 

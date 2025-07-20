@@ -69,6 +69,17 @@
   text-align: center;
 }
 
+.version-info {
+  font-size: 0.9rem;
+  color: #1976d2;
+  font-weight: 500;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  background-color: rgba(25, 118, 210, 0.1);
+  border-radius: 16px;
+  display: inline-block;
+}
+
 .qr-code-container {
   margin: 15px 0;
   padding: 10px;
