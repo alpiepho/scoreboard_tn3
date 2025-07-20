@@ -46,6 +46,6 @@ export interface ScoreDisplayProps {
 export interface ScorePanelProps {
   team: string;
   score: number;
-  onScoreChange: (newScore: number) => void;
+  onScoreChange: (newScore: number | ((prevScore: number) => number)) => void;
   increment: number;
 }
