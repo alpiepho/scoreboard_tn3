@@ -11,10 +11,10 @@
 
 .app.light {
   --bg-color: #f5f5f5;
-  --text-color: #212121;
+  --text-color: #ffffff; /* White text for light mode scoreboard (inverted theme) */
   --scoreboard-bg: #ffffff;
   --scoreboard-border: #e0e0e0;
-  --score-color: #212121;
+  --score-color: #ffffff; /* White score for light mode scoreboard (inverted theme) */
   --timer-color: #f44336;
   --surface-color: #ffffff;
   --border-color: #bdbdbd;
@@ -23,6 +23,9 @@
   --success-color: #4caf50;
   --danger-color: #f44336;
   --info-color: #2196f3;
+  --home-team-color: #2196f3; /* Blue for home team */
+  --away-team-color: #f44336; /* Red for away team */
+  --sets-label-color: #ffffff; /* White for set labels in light mode */
 }
 
 .app.light input,
@@ -34,10 +37,10 @@
 
 .app.dark {
   --bg-color: #121212;
-  --text-color: #ffffff;
+  --text-color: #000000; /* Black text for dark mode scoreboard (inverted theme) */
   --scoreboard-bg: #1e1e1e;
   --scoreboard-border: #424242;
-  --score-color: #ffffff;
+  --score-color: #000000; /* Black score for dark mode scoreboard (inverted theme) */
   --timer-color: #ff5252;
   --surface-color: #1e1e1e;
   --border-color: #424242;
@@ -46,4 +49,38 @@
   --success-color: #4caf50;
   --danger-color: #f44336;
   --info-color: #2196f3;
+  --home-team-color: #2196f3; /* Blue for home team */
+  --away-team-color: #f44336; /* Red for away team */
+  --sets-label-color: #000000; /* Black for set labels in dark mode */
+}
+
+.app.dark input,
+.app.dark select {
+  color: #ffffff !important;
+  background-color: #333333 !important;
+  border: 1px solid #555555 !important;
+}
+
+/* Override theme text colors for non-scoreboard UI elements */
+.settings-container, 
+.about-modal-content,
+.score-alert-container {
+  color: initial; /* Reset to browser default */
+}
+
+.app.light .settings-container, 
+.app.light .about-modal-content,
+.app.light .score-alert-container {
+  color: #212121; /* Dark text for light mode settings */
+}
+
+.app.dark .settings-container,
+.app.dark .about-modal-content,
+.app.dark .score-alert-container {
+  color: #ffffff; /* White text for dark mode settings */
+}
+
+/* Make sure all buttons in dark mode have white text for contrast */
+.app.dark button {
+  color: white;
 }

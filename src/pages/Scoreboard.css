@@ -37,6 +37,40 @@
   min-height: 100px;
   /* Ensure content is centered */
   text-align: center;
+  /* Add theme-based styling */
+  background-color: var(--scoreboard-bg);
+  color: var(--text-color);
+  border: 1px solid var(--scoreboard-border);
+}
+
+/* Add specific styling for team name and score */
+.team-name {
+  color: var(--text-color); /* Use theme text color */
+  font-size: 2.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+  z-index: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.score {
+  color: var(--score-color); /* Use theme score color */
+  font-size: clamp(15rem, 52.5vw, 37.5rem);
+  font-weight: bold;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  line-height: 0.8;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  min-width: max-content;
+  white-space: nowrap;
 }
 
 .score-button:active,
@@ -59,45 +93,6 @@
     filter: brightness(1);
     transform: scale(0.99);
   }
-}
-
-.score-button.home {
-  background-color: #1e88e5;
-  color: white;
-}
-
-.score-button.away {
-  background-color: #e53935;
-  color: white;
-}
-
-.team-name {
-  font-size: 2.2rem; /* Increased from 1.4rem */
-  font-weight: 600; /* Made slightly bolder */
-  text-transform: uppercase;
-  margin-bottom: 0.2rem; /* Small margin to separate from score */
-  z-index: 1;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Added subtle shadow for better readability */
-}
-
-.score {
-  font-size: clamp(15rem, 52.5vw, 37.5rem); /* Increased by 50% from base size */
-  font-weight: bold;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  z-index: 1;
-  line-height: 0.8; /* Tighter line height to fit larger text */
-  width: 100%;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center; /* Center vertically */
-  padding: 0; /* Remove padding to allow for larger text */
-  margin: 0;
-  overflow: visible; /* Allow text to overflow its container if needed */
-  /* Force minimum width based on content */
-  min-width: max-content;
-  /* Ensure numbers don't break to next line */
-  white-space: nowrap;
 }
 
 /* Landscape orientation adjustments */
@@ -216,7 +211,8 @@
   width: 50px; /* Slightly smaller */
   height: 50px; /* Slightly smaller */
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.6); /* More opaque */
+  background-color: var(--primary-color); /* Use theme color */
+  color: white; /* Always white text for contrast */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -352,7 +348,7 @@
   justify-content: space-between;
   width: 100%;
   padding: 0.5rem 1rem;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.4); /* Default background, will be overridden by theme */
   z-index: 5;
   box-sizing: border-box;
 }
@@ -365,7 +361,7 @@
 
 .sets-label {
   font-size: 0.8rem;
-  color: white;
+  color: var(--sets-label-color);
   text-transform: uppercase;
   opacity: 0.8;
 }
@@ -379,7 +375,7 @@
 .sets-value {
   font-size: 1.2rem;
   font-weight: bold;
-  color: white;
+  color: var(--sets-label-color);
   margin: 0 0.5rem;
   min-width: 1.5rem;
   text-align: center;
@@ -471,8 +467,8 @@
   height: 28px;
   border-radius: 50%;
   border: none;
-  background-color: rgba(255, 255, 255, 0.4);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.4); /* Default background, will be overridden by theme */
+  color: white; /* Default color, will be overridden by theme */
   font-size: 1.2rem;
   font-weight: bold;
   display: flex;
@@ -547,5 +543,38 @@
     right: 15px;
     top: 50%; /* Center vertically in landscape */
     transform: translateY(-50%);
+  }
+}
+
+/* Responsive adjustments for team names and scores */
+@media (max-width: 768px) {
+  .team-name {
+    font-size: 2rem;
+  }
+  
+  .score {
+    font-size: 6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-name {
+    font-size: 1.8rem;
+  }
+  
+  .score {
+    font-size: 5rem;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  .team-name {
+    font-size: 1.5rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .score {
+    font-size: 4rem;
   }
 }

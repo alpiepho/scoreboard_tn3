@@ -147,8 +147,25 @@
   border-radius: 8px;
   border: 1px solid var(--border-color);
   background-color: var(--surface-color);
-  color: var(--text-color);
+  color: inherit; /* Use inherited color instead of theme text color */
   font-size: 1rem;
+}
+
+/* Ensure text inputs and selects have correct contrast in dark mode */
+.app.dark .form-group input,
+.app.dark .form-group select {
+  color: #ffffff;
+  background-color: #333333;
+  border-color: #555555;
+}
+
+/* Ensure labels have good contrast in dark mode */
+.app.dark .form-group label {
+  color: #ffffff;
+}
+
+.app.dark .setting-hint {
+  color: #aaaaaa;
 }
 
 .form-group.checkbox {

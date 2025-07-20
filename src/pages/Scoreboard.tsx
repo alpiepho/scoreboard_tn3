@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ScoreboardProps } from '../types';
 import ScoreAlert from '../components/ScoreAlert';
 import './Scoreboard.css';
+import './ScoreboardTheme.css'; // Import theme-specific styles
 
 const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState }) => {
   const navigate = useNavigate();
