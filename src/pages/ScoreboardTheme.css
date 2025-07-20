@@ -27,14 +27,14 @@
 .app.light .score-button.home .score,
 .app.light .score-button.away .team-name,
 .app.light .score-button.away .score {
-  color: white; /* White text in light mode */
+  color: white; /* White text on colored buttons in light mode */
 }
 
 .app.dark .score-button.home .team-name,
 .app.dark .score-button.home .score,
 .app.dark .score-button.away .team-name,
 .app.dark .score-button.away .score {
-  color: black; /* Black text in dark mode */
+  color: white; /* White text on colored buttons in dark mode */
 }
 
 /* Set circle colors based on theme */

@@ -3,7 +3,7 @@
   flex-direction: column;
   padding: 20px;
   height: 100%;
-  width: 100%;
+  width: 95%; /* Use 95% in portrait by default */
   max-width: 800px;
   margin: 0 auto;
   background-color: var(--bg-color);
@@ -12,6 +12,13 @@
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   position: relative;
+}
+
+/* Limit width in landscape mode */
+@media (orientation: landscape) {
+  .settings-container {
+    width: 80%; /* Use 80% in landscape mode */
+  }
 }
 
 .settings-header {
@@ -435,4 +442,66 @@
   color: var(--secondary-color);
   margin-top: 4px;
   font-style: italic;
+}
+
+/* Slider container for size controls */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.size-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.size-button:disabled {
+  background-color: var(--disabled-color, #ccc);
+  cursor: not-allowed;
+}
+
+.size-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
 }

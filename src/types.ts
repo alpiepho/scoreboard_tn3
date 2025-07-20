@@ -7,6 +7,8 @@ export interface AppSettings {
   maxSets: 3 | 5; // Maximum number of sets to play (3 or 5)
   showSets: boolean; // Toggle visibility of sets display
   colorsSwapped: boolean; // Track if team colors have been swapped
+  scoreSize: number; // Size multiplier for score (0.8 to 1.2)
+  nameSize: number; // Size multiplier for team names (0.8 to 1.2)
 }
 
 export interface GameState {

@@ -22,34 +22,40 @@
 .score-button {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; /* Changed to center content vertically */
   align-items: center;
   flex: 1;
-  position: relative;
+  position: relative; /* Ensure absolute positioning context */
   cursor: pointer;
   user-select: none;
   transition: background-color 0.2s, transform 0.1s;
   overflow: visible; /* Allow content to overflow if needed */
   touch-action: none; /* Prevent default touch actions like scrolling */
-  padding: 0; /* Remove all padding to maximize space */
+  padding-bottom: 90px; /* Increased bottom padding for set circles */
   box-sizing: border-box;
-  /* Set min-height to ensure sufficient space */
   min-height: 100px;
-  /* Ensure content is centered */
   text-align: center;
-  /* Add theme-based styling */
   background-color: var(--scoreboard-bg);
   color: var(--text-color);
   border: 1px solid var(--scoreboard-border);
 }
 
+.score-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* This will be auto-height based on contents */
+}
+
 /* Add specific styling for team name and score */
 .team-name {
   color: var(--text-color); /* Use theme text color */
-  font-size: clamp(3rem, 9vw, 5rem); /* Increased and made responsive */
+  font-size: calc(clamp(3rem, 9vw, 5rem) * var(--name-size-multiplier, 1)); /* Responsive with multiplier */
   font-weight: 700; /* Increased from 600 for better visibility */
   text-transform: uppercase;
-  margin-top: 1rem; /* Add top margin to move team name down a bit */
+  margin-top: 0; /* Removed top margin to help with centering */
   margin-bottom: 0.2rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Enhanced shadow for better readability */
   letter-spacing: 0.05em; /* Slightly increase letter spacing for readability */
@@ -60,7 +66,7 @@
 
 .score {
   color: var(--score-color); /* Use theme score color */
-  font-size: clamp(15rem, 52.5vw, 37.5rem);
+  font-size: calc(clamp(15rem, 52.5vw, 37.5rem) * var(--score-size-multiplier, 1)); /* Responsive with multiplier */
   font-weight: bold;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 1;
@@ -70,7 +76,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 0 10px 0; /* Added bottom padding to make room for set circles */
+  padding: 0; /* Removed padding to help with centering */
   margin: 0;
   overflow: visible;
   min-width: max-content;
@@ -101,92 +107,142 @@
 
 /* Landscape orientation adjustments */
 @media (orientation: landscape) {
+  /* Adjust scoreboard container */
+  .scoreboard-container {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+  
+  .score-content {
+    margin-bottom: 40px; /* Add space below the content for set circles */
+  }
+  
   .score {
-    font-size: clamp(12rem, 45vh, 30rem); /* Increased by 50% for side-by-side view */
-    /* Ensure the score fits within the available width while maximizing size */
-    max-width: 100%;
+    font-size: calc(clamp(8rem, 18vh, 16rem) * var(--score-size-multiplier, 1)); /* Multiplier applied */
+    padding-bottom: 0; /* Remove padding as we're using margin on score-content */
   }
   
   .team-name {
-    font-size: clamp(2.5rem, 7vw, 4rem); /* Adjusted for landscape */
-    margin-bottom: 0.1rem; /* Further reduced in landscape */
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Added shadow for readability */
+    font-size: calc(clamp(1.8rem, 4vh, 3rem) * var(--name-size-multiplier, 1)); /* Multiplier applied */
+    margin-bottom: 0.1rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
   
-  /* Adjust the container layout for landscape */
+  /* Critical: Set layout to horizontal in landscape */
   .scoreboard-buttons {
-    flex-direction: row; /* Display teams side by side in landscape */
+    flex-direction: row; /* Display teams side by side */
+    overflow: hidden; /* Prevent scrolling */
+    width: 100vw;
+    height: 100vh;
   }
   
   .score-button {
-    padding: 2px; /* Even less padding in landscape */
-    /* Make sure each score panel takes exactly half the width */
-    width: 50%;
-    /* Improve sizing constraints */
-    box-sizing: border-box;
+    width: 50%; /* Each takes half the width */
+    height: 100%; /* Full height of the container */
+    max-height: 100vh;
+    padding: 0 0 80px 0; /* Increased space for set circles */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center;
+    overflow: visible;
+    position: relative; /* Ensure absolute positioning works */
   }
   
-  /* Reposition settings button in landscape */
+  /* Reposition settings button */
   .settings-button {
     bottom: 15px;
     right: 15px;
-    width: 45px;
-    height: 45px;
   }
   
-  .settings-button svg {
-    width: 25px;
-    height: 25px;
+  /* Additional styling for set circles in landscape */
+  .team-sets-circles {
+    bottom: 5px; /* Position at the bottom */
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin: 0 auto; /* Ensure centered */
   }
   
-  /* Media queries for responsive sets display */
-  .sets-container {
-    top: 0;
-    height: auto;
-    flex-direction: row;
+  /* Make circles and buttons slightly smaller in landscape */
+  .set-circle {
+    width: 20px;
+    height: 20px;
   }
   
-  .team-sets {
-    flex-direction: row;
-    align-items: center;
-  }
-  
-  .sets-label {
-    margin-right: 1rem;
-  }
-  
-  .sets-controls {
-    margin-top: 0;
+  .sets-button {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    font-size: 14px;
   }
 }
 
 /* Portrait orientation with various screen sizes */
-@media (orientation: portrait) and (max-width: 768px) {
-  .score {
-    font-size: clamp(18rem, 60vw, 30rem); /* Increased by 50% for mid-sized devices */
-  }
-  
-  /* Ensure enough vertical space for two scores */
+@media (orientation: portrait) {
   .score-button {
-    height: 50vh; /* Each button takes half the viewport height */
-    /* Make sure it doesn't exceed available space */
+    height: 50vh; /* Each button takes exactly half the viewport height */
+    min-height: 0; /* Override the min-height from the base style */
     max-height: 50vh;
     box-sizing: border-box;
-    /* Reduce vertical padding to maximize score size */
-    padding-top: 0;
-    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center the content vertically */
+    align-items: center;
+    padding-top: 20px; /* Add padding at the top */
+    padding-bottom: 80px; /* Increased space at the bottom for set circles */
+    overflow: visible;
+    position: relative; /* Ensure position context for absolute children */
+  }
+  
+  /* Score content container in portrait mode */
+  .score-content {
+    margin-top: -40px; /* Adjust this value to help with vertical centering */
+  }
+  
+  /* Create a wrapper for team name and score to center them together */
+  .team-name {
+    margin-top: 0; /* Remove top margin in portrait */
+    margin-bottom: 0.2rem;
+  }
+  
+  /* Adjust score size for portrait */
+  .score {
+    font-size: calc(clamp(15rem, 52.5vw, 30rem) * var(--score-size-multiplier, 1)); /* Use multiplier */
+    padding-bottom: 0; /* Remove padding as we'll position set circles absolutely */
+    line-height: 0.9;
+  }
+  
+  /* Ensure sets are fixed at the very bottom of each button in portrait */
+  .team-sets-circles {
+    position: absolute;
+    bottom: 15px; /* Position closer to the bottom */
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0 auto;
   }
 }
 
 @media (orientation: portrait) and (max-width: 480px) {
   .score {
-    font-size: clamp(12rem, 52.5vw, 27rem); /* Increased by 50% for smaller devices */
+    font-size: calc(clamp(12rem, 52.5vw, 27rem) * var(--score-size-multiplier, 1)); /* Increased with multiplier */
   }
   
   .team-name {
-    font-size: clamp(2.2rem, 8vw, 3.5rem); /* Adjusted for smaller screens */
+    font-size: calc(clamp(2.2rem, 8vw, 3.5rem) * var(--name-size-multiplier, 1)); /* Adjusted with multiplier */
     /* Small space between team name and score */
     margin-bottom: 0.1rem;
+  }
+  
+  /* Ensure set circles are positioned properly on small screens */
+  .team-sets-circles {
+    bottom: 10px; /* Adjusted for smaller screens */
   }
 }
 
@@ -212,8 +268,8 @@
   position: fixed; /* Change to fixed to ensure it stays in position */
   bottom: 20px;
   right: 20px;
-  width: 50px; /* Slightly smaller */
-  height: 50px; /* Slightly smaller */
+  width: 45px; /* Consistent size */
+  height: 45px; /* Consistent size */
   border-radius: 50%;
   background-color: var(--primary-color); /* Use theme color */
   color: white; /* Always white text for contrast */
@@ -232,9 +288,22 @@
 }
 
 .settings-button svg {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   color: white;
+}
+
+/* Ensure consistent settings button size in both orientations */
+@media (orientation: landscape), (orientation: portrait) {
+  .settings-button {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .settings-button svg {
+    width: 25px;
+    height: 25px;
+  }
 }
 
 .timer-container {
@@ -303,18 +372,6 @@
   .team-name {
     font-size: clamp(1.8rem, 6vw, 2.5rem);
   }
-  
-  .settings-button {
-    width: 40px; /* Make even smaller to save space */
-    height: 40px;
-    bottom: 10px;
-    right: 10px;
-  }
-  
-  .settings-button svg {
-    width: 20px;
-    height: 20px;
-  }
 }
 
 /* Further optimize for small screens by reducing team name size */
@@ -325,36 +382,30 @@
   }
 }
 
-/* Further adjustments for various device sizes in portrait mode */
+/* Position set circles for portrait mode */
 @media (orientation: portrait) {
   .home-sets-circles {
-    bottom: auto;
-    top: 42%;
+    bottom: 15px; /* Position at the bottom of the home button */
+    top: auto;
+    position: absolute;
   }
   
   .away-sets-circles {
-    bottom: auto;
-    top: 92%;
+    bottom: 15px; /* Position at the bottom of the away button */
+    top: auto;
+    position: absolute;
   }
 }
 
 @media (orientation: portrait) and (max-height: 700px) {
-  .home-sets-circles {
-    top: 38%;
-  }
-  
-  .away-sets-circles {
-    top: 88%;
+  .home-sets-circles, .away-sets-circles {
+    bottom: 10px; /* Slightly closer to bottom on smaller screens */
   }
 }
 
 @media (orientation: portrait) and (min-height: 900px) {
-  .home-sets-circles {
-    top: 45%;
-  }
-  
-  .away-sets-circles {
-    top: 95%;
+  .home-sets-circles, .away-sets-circles {
+    bottom: 20px; /* More space on larger screens */
   }
 }
 
@@ -409,40 +460,43 @@
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.sets-circles-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 5;
-}
+/* Styles for the set circles */
 
 .team-sets-circles {
-  position: absolute;
   display: flex;
-  flex-direction: row; /* Changed to row for horizontal layout */
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  pointer-events: all;
+  position: absolute; /* Always absolute positioned */
+  bottom: 15px; /* Default bottom position - this is key for both portrait and landscape */
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 10;
+  margin: 0 auto; /* Center horizontally */
 }
 
-.home-sets-circles {
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%);
-  top: 42%; /* Position below home score (upper half) */
-}
-
-.away-sets-circles {
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%);
-  top: 92%; /* Position below away score (lower half) */
+.home-sets-circles, .away-sets-circles {
+  margin: 0 auto;
+  width: auto; /* Allow natural width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Make sure position is inherited from team-sets-circles */
+  position: absolute;
+  bottom: 15px; /* Default to bottom positioning */
+  left: 0;
+  right: 0;
 }
 
 .sets-circles {
   display: flex;
   flex-direction: row; /* Changed to row for horizontal layout */
   gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  min-height: 30px; /* Ensure minimum height for circles */
 }
 
 .set-circle {
@@ -455,6 +509,7 @@
   background-color: transparent;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4); /* Add shadow for better visibility */
   margin: 0 2px; /* Add horizontal margins for spacing */
+  flex-shrink: 0; /* Prevent circles from shrinking */
 }
 
 .set-circle.active {
@@ -463,24 +518,28 @@
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
 }
 
-/* Remove team-specific active styles since we're using white for all circles */
-
 .sets-button {
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  max-width: 28px;
+  max-height: 28px;
   border-radius: 50%;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.4); /* Default background, will be overridden by theme */
-  color: white; /* Default color, will be overridden by theme */
-  font-size: 1.2rem;
-  font-weight: bold;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  margin: 0 2px;
   padding: 0;
-  margin: 0 5px; /* Changed to horizontal margins */
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
   aspect-ratio: 1 / 1; /* Ensure it's perfectly round */
 }
 
@@ -489,20 +548,14 @@
   transform: scale(0.95);
 }
 
-/* Ensure all sets buttons are perfectly round */
-.sets-button {
-  min-width: 28px;
-  min-height: 28px;
-  max-width: 28px;
-  max-height: 28px;
-}
-
 @media (min-width: 768px) {
   .sets-button {
     min-width: 34px;
     min-height: 34px;
     max-width: 34px;
     max-height: 34px;
+    width: 34px;
+    height: 34px;
   }
 }
 
@@ -517,24 +570,24 @@
 
 /* Landscape orientation adjustments */
 @media (orientation: landscape) {
-  .home-sets-circles {
+  .home-sets-circles, .away-sets-circles {
+    position: absolute;
     top: auto;
-    left: 25%; /* Position at 25% from the left to align with home button */
-    bottom: 20px;
-    transform: translateX(-50%);
-  }
-  
-  .away-sets-circles {
-    top: auto;
-    right: 25%; /* Position at 25% from the right to align with away button */
-    left: 75%;
-    bottom: 20px;
-    transform: translateX(-50%);
+    bottom: 20px; /* Slightly increased for better visibility */
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 100%;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   /* Ensure score has enough bottom padding in landscape */
   .score {
-    padding-bottom: 40px;
+    padding-bottom: 0; /* Removed padding as we're using absolute positioning */
+    margin-bottom: 10px; /* Add some space below the score */
   }
   
   /* Fix round buttons in landscape mode */

@@ -498,124 +498,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           // We've fully processed this warning now
         }}
       />
-       {/* Sets Display - only show if settings.showSets is true */}
-      {settings.showSets && (
-        <div className="sets-circles-container">
-          {/* Home team sets circles (left side) */}
-          <div className="team-sets-circles home-sets-circles">
-            <button 
-              className="sets-button" 
-              onClick={() => {
-                // Fill the next empty circle (if available)
-                if (gameState.homeSets < settings.maxSets) {
-                  setGameState(prev => ({
-                    ...prev,
-                    homeSets: prev.homeSets + 1
-                  }));
-                  vibrate();
-                }
-              }}
-            >+</button>
-            
-            <div className="sets-circles">
-              {[...Array(settings.maxSets)].map((_, index) => (
-                <div 
-                  key={`home-set-${index}`} 
-                  className={`set-circle ${index < gameState.homeSets ? 'active' : ''}`}
-                  onClick={() => {
-                    // Click to toggle the set status
-                    if (index < gameState.homeSets) {
-                      // If this circle is already active, deactivate it and all after
-                      setGameState(prev => ({
-                        ...prev,
-                        homeSets: index
-                      }));
-                    } else {
-                      // If this circle is inactive, activate it and all before
-                      setGameState(prev => ({
-                        ...prev,
-                        homeSets: index + 1
-                      }));
-                    }
-                    vibrate();
-                  }}
-                />
-              ))}
-            </div>
-            
-            <button 
-              className="sets-button" 
-              onClick={() => {
-                // Decrement the set count by 1 (not reset to 0)
-                if (gameState.homeSets > 0) {
-                  setGameState(prev => ({
-                    ...prev,
-                    homeSets: prev.homeSets - 1
-                  }));
-                  vibrate();
-                }
-              }}
-            >-</button>
-          </div>
-          
-          {/* Away team sets circles (right side) */}
-          <div className="team-sets-circles away-sets-circles">
-            <button 
-              className="sets-button" 
-              onClick={() => {
-                // Fill the next empty circle (if available)
-                if (gameState.awaySets < settings.maxSets) {
-                  setGameState(prev => ({
-                    ...prev,
-                    awaySets: prev.awaySets + 1
-                  }));
-                  vibrate();
-                }
-              }}
-            >+</button>
-            
-            <div className="sets-circles">
-              {[...Array(settings.maxSets)].map((_, index) => (
-                <div 
-                  key={`away-set-${index}`} 
-                  className={`set-circle ${index < gameState.awaySets ? 'active' : ''}`}
-                  onClick={() => {
-                    // Click to toggle the set status
-                    if (index < gameState.awaySets) {
-                      // If this circle is already active, deactivate it and all after
-                      setGameState(prev => ({
-                        ...prev,
-                        awaySets: index
-                      }));
-                    } else {
-                      // If this circle is inactive, activate it and all before
-                      setGameState(prev => ({
-                        ...prev,
-                        awaySets: index + 1
-                      }));
-                    }
-                    vibrate();
-                  }}
-                />
-              ))}
-            </div>
-            
-            <button 
-              className="sets-button" 
-              onClick={() => {
-                // Decrement the set count by 1 (not reset to 0)
-                if (gameState.awaySets > 0) {
-                  setGameState(prev => ({
-                    ...prev,
-                    awaySets: prev.awaySets - 1
-                  }));
-                  vibrate();
-                }
-              }}
-            >-</button>
-          </div>
-        </div>
-      )}
       
       <div className="scoreboard-buttons">
         <div 
@@ -627,8 +509,72 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           onTouchEnd={handleHomeMouseUp}
           onTouchCancel={handleHomeMouseLeave}
         >
-          <div className="team-name">{settings.homeTeamName}</div>
-          <div className="score">{gameState.homeScore}</div>
+          <div className="score-content">
+            <div className="team-name">{settings.homeTeamName}</div>
+            <div className="score">{gameState.homeScore}</div>
+          </div>
+          
+          {/* Home team sets circles */}
+          {settings.showSets && (
+            <div className="team-sets-circles home-sets-circles">
+              <button 
+                className="sets-button" 
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  // Fill the next empty circle (if available)
+                  if (gameState.homeSets < settings.maxSets) {
+                    setGameState(prev => ({
+                      ...prev,
+                      homeSets: prev.homeSets + 1
+                    }));
+                    vibrate();
+                  }
+                }}
+              >+</button>
+              
+              <div className="sets-circles">
+                {[...Array(settings.maxSets)].map((_, index) => (
+                  <div 
+                    key={`home-set-${index}`} 
+                    className={`set-circle ${index < gameState.homeSets ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering score button
+                      // Click to toggle the set status
+                      if (index < gameState.homeSets) {
+                        // If this circle is already active, deactivate it and all after
+                        setGameState(prev => ({
+                          ...prev,
+                          homeSets: index
+                        }));
+                      } else {
+                        // If this circle is inactive, activate it and all before
+                        setGameState(prev => ({
+                          ...prev,
+                          homeSets: index + 1
+                        }));
+                      }
+                      vibrate();
+                    }}
+                  />
+                ))}
+              </div>
+              
+              <button 
+                className="sets-button" 
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  // Decrement the set count by 1 (not reset to 0)
+                  if (gameState.homeSets > 0) {
+                    setGameState(prev => ({
+                      ...prev,
+                      homeSets: prev.homeSets - 1
+                    }));
+                    vibrate();
+                  }
+                }}
+              >-</button>
+            </div>
+          )}
         </div>
         
         <div 
@@ -640,8 +586,72 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           onTouchEnd={handleAwayMouseUp}
           onTouchCancel={handleAwayMouseLeave}
         >
-          <div className="team-name">{settings.awayTeamName}</div>
-          <div className="score">{gameState.awayScore}</div>
+          <div className="score-content">
+            <div className="team-name">{settings.awayTeamName}</div>
+            <div className="score">{gameState.awayScore}</div>
+          </div>
+          
+          {/* Away team sets circles */}
+          {settings.showSets && (
+            <div className="team-sets-circles away-sets-circles">
+              <button 
+                className="sets-button" 
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  // Fill the next empty circle (if available)
+                  if (gameState.awaySets < settings.maxSets) {
+                    setGameState(prev => ({
+                      ...prev,
+                      awaySets: prev.awaySets + 1
+                    }));
+                    vibrate();
+                  }
+                }}
+              >+</button>
+              
+              <div className="sets-circles">
+                {[...Array(settings.maxSets)].map((_, index) => (
+                  <div 
+                    key={`away-set-${index}`} 
+                    className={`set-circle ${index < gameState.awaySets ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering score button
+                      // Click to toggle the set status
+                      if (index < gameState.awaySets) {
+                        // If this circle is already active, deactivate it and all after
+                        setGameState(prev => ({
+                          ...prev,
+                          awaySets: index
+                        }));
+                      } else {
+                        // If this circle is inactive, activate it and all before
+                        setGameState(prev => ({
+                          ...prev,
+                          awaySets: index + 1
+                        }));
+                      }
+                      vibrate();
+                    }}
+                  />
+                ))}
+              </div>
+              
+              <button 
+                className="sets-button" 
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  // Decrement the set count by 1 (not reset to 0)
+                  if (gameState.awaySets > 0) {
+                    setGameState(prev => ({
+                      ...prev,
+                      awaySets: prev.awaySets - 1
+                    }));
+                    vibrate();
+                  }
+                }}
+              >-</button>
+            </div>
+          )}
         </div>
       </div>
       
