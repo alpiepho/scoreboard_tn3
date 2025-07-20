@@ -17,6 +17,15 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  touch-action: manipulation;
+}
+
+html {
+  height: 100%;
+  /* Also use the CSS variable for more accurate mobile heights */
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -25,14 +34,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background-color);
   color: var(--text-color);
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100%;
+  /* Also use the CSS variable for more accurate mobile heights */
+  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
 }
 
 button {

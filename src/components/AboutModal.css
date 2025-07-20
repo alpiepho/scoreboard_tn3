@@ -1,0 +1,133 @@
+.about-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.about-modal-content {
+  background-color: #e3f2fd; /* Light blue background */
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+  color: #1a1a1a; /* Dark text color for contrast */
+}
+
+.about-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #bbdefb;
+  padding-bottom: 10px;
+}
+
+.about-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #1976d2;
+}
+
+.about-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #1976d2;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.about-modal-close:hover {
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+.about-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.qr-code-container {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: white;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.qr-code {
+  width: 150px;
+  height: 150px;
+  display: block;
+}
+
+.about-links {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.about-links p {
+  margin: 10px 0;
+  word-break: break-word;
+}
+
+.about-links a {
+  color: #1976d2;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.about-links a:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .about-modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .about-modal-header h2 {
+    font-size: 1.2rem;
+  }
+  
+  .qr-code {
+    width: 120px;
+    height: 120px;
+  }
+}

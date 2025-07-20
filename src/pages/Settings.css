@@ -2,11 +2,16 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  min-height: 100vh;
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  height: 100%;
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .settings-header {
@@ -105,6 +110,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  flex: 1;
+  padding-bottom: 30px;
 }
 
 .settings-section {
@@ -173,6 +180,9 @@
   flex-direction: column;
   gap: 16px;
   margin-top: 32px;
+  padding-bottom: 20px;
+  position: relative;
+  z-index: 2;
 }
 
 .settings-actions button {
@@ -190,6 +200,11 @@
 
 .reset-button {
   background-color: var(--danger-color);
+}
+
+.about-button {
+  background-color: var(--info-color, #2196f3);
+  color: white;
 }
 
 .cancel-button {

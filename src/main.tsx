@@ -4,6 +4,10 @@ import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App'
 import './index.css'
+import { setupMobileViewportFix } from './utils/viewport'
+
+// Set up mobile viewport fix for better handling of 100vh on mobile
+setupMobileViewportFix();
 
 // Register service worker for PWA
 const updateSW = registerSW({

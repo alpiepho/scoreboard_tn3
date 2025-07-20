@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
 import './Settings.css';
+import AboutModal from '../components/AboutModal';
 
 const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores, resetScoresAndSets }) => {
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
+  const [showAboutModal, setShowAboutModal] = useState(false);
   
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -73,8 +75,14 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
     navigate('/');
   };
   
+  // Handle scroll events explicitly to help Chrome
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    // This just ensures scroll events are processed
+    e.stopPropagation();
+  };
+  
   return (
-    <div className="settings-container">
+    <div className="settings-container" onScroll={handleScroll}>
       <div className="settings-header">
         <div className="back-button" onClick={handleCancel}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -229,10 +237,19 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
         }}>
           Reset Scores & Sets
         </button>
+        <button className="about-button" onClick={() => setShowAboutModal(true)}>
+          About
+        </button>
         <button className="cancel-button" onClick={handleCancel}>
           Cancel
         </button>
       </div>
+      
+      {/* About Modal */}
+      <AboutModal
+        visible={showAboutModal}
+        onClose={() => setShowAboutModal(false)}
+      />
     </div>
   );
 };
