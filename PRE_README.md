@@ -17,3 +17,4 @@ You are a game developer and are requested to convert the scoreboard_tn2, aka Sc
 
 ## REFERENCES
 - https://github.com/alpiepho/scoreboard_tn2
+- https://alpiepho.github.io/scoreboard_tn2/#/

@@ -139,6 +139,26 @@
     width: 25px;
     height: 25px;
   }
+  
+  /* Media queries for responsive sets display */
+  .sets-container {
+    top: 0;
+    height: auto;
+    flex-direction: row;
+  }
+  
+  .team-sets {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .sets-label {
+    margin-right: 1rem;
+  }
+  
+  .sets-controls {
+    margin-top: 0;
+  }
 }
 
 /* Portrait orientation with various screen sizes */
@@ -168,6 +188,24 @@
     font-size: 1.8rem; /* Increased from 1.2rem */
     /* Small space between team name and score */
     margin-bottom: 0.1rem;
+  }
+}
+
+/* Media queries for responsive sets display */
+@media (max-width: 400px) {
+  .sets-label {
+    font-size: 0.7rem;
+  }
+  
+  .sets-value {
+    font-size: 1rem;
+    margin: 0 0.3rem;
+  }
+  
+  .sets-button {
+    width: 1.3rem;
+    height: 1.3rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -284,5 +322,230 @@
   .team-name {
     font-size: 1rem;
     margin: 0;
+  }
+}
+
+/* Further adjustments for various device sizes in portrait mode */
+@media (orientation: portrait) and (max-height: 700px) {
+  .home-sets-circles {
+    top: 22%;
+  }
+  
+  .away-sets-circles {
+    top: 78%;
+  }
+}
+
+@media (orientation: portrait) and (min-height: 900px) {
+  .home-sets-circles {
+    top: 28%;
+  }
+  
+  .away-sets-circles {
+    top: 72%;
+  }
+}
+
+.sets-container {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 5;
+  box-sizing: border-box;
+}
+
+.team-sets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sets-label {
+  font-size: 0.8rem;
+  color: white;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.sets-controls {
+  display: flex;
+  align-items: center;
+  margin-top: 0.2rem;
+}
+
+.sets-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  margin: 0 0.5rem;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.sets-button {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.sets-button:active {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(0.95);
+}
+
+/* Add a border to the top of settings button container to better separate it visually */
+.settings-button-container {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sets-circles-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.team-sets-circles {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  pointer-events: all;
+}
+
+.home-sets-circles {
+  left: 15px;
+  top: 25%; /* Position at 25% from the top to align with home button */
+  transform: translateY(-50%);
+}
+
+.away-sets-circles {
+  right: 15px;
+  top: 75%; /* Position at 75% from the top to align with away button */
+  transform: translateY(-50%);
+}
+
+.sets-circles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.set-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: transparent;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4); /* Add shadow for better visibility */
+}
+
+.set-circle.active {
+  background-color: white;
+  border-color: white;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+/* Remove team-specific active styles since we're using white for all circles */
+
+.sets-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0;
+  margin: 5px 0;
+}
+
+.sets-button:active {
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: scale(0.95);
+}
+
+/* Make circles larger and adjust positioning on larger screens */
+@media (min-width: 768px) {
+  .set-circle {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .sets-button {
+    width: 34px;
+    height: 34px;
+    font-size: 1.3rem;
+  }
+  
+  .home-sets-circles {
+    left: 20px;
+  }
+  
+  .away-sets-circles {
+    right: 20px;
+  }
+}
+
+/* Larger tablets and desktops */
+@media (min-width: 1024px) {
+  .set-circle {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+  
+  .sets-button {
+    width: 38px;
+    height: 38px;
+    font-size: 1.5rem;
+    margin: 8px 0;
+  }
+  
+  .home-sets-circles {
+    left: 25px;
+  }
+  
+  .away-sets-circles {
+    right: 25px;
+  }
+}
+
+/* Adjust for landscape */
+@media (orientation: landscape) {
+  .home-sets-circles {
+    left: 15px;
+    top: 50%; /* Center vertically in landscape */
+    transform: translateY(-50%);
+  }
+  
+  .away-sets-circles {
+    right: 15px;
+    top: 50%; /* Center vertically in landscape */
+    transform: translateY(-50%);
   }
 }

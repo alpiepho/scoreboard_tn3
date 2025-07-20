@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
 import './Settings.css';
 
-const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores }) => {
+const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores, resetScoresAndSets }) => {
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
   
@@ -22,6 +22,12 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
       setLocalSettings({
         ...localSettings,
         [name]: checked
+      });
+    } else if (name === 'maxSets') {
+      // Handle maxSets specifically to ensure it's either 3 or 5
+      setLocalSettings({
+        ...localSettings,
+        maxSets: parseInt(value, 10) === 3 ? 3 : 5
       });
     } else {
       setLocalSettings({
@@ -46,13 +52,18 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
       enableScoreWarning: true,
       vibrateOnButtonPress: true,
       theme: 'light' as 'light' | 'dark',
+      maxSets: 5 as 3 | 5,
+      showSets: true,
     };
     
     // Update local settings and apply them
     setLocalSettings(defaultSettings);
     setSettings(defaultSettings);
     
-    // Navigate back to the scoreboard
+    // Also reset scores and sets
+    resetScoresAndSets();
+    
+    // Navigate back to the scoreboard to show the reset state
     navigate('/');
   };
 
@@ -82,6 +93,10 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
         <div className="instruction-item">
           <div className="instruction-title">Decrement Score</div>
           <div className="instruction-description">Press and hold on a team's score panel to continuously decrease the score</div>
+        </div>
+        <div className="instruction-item">
+          <div className="instruction-title">Manage Sets</div>
+          <div className="instruction-description">Tap a circle to toggle sets, press + to add a set, or press - to clear all sets</div>
         </div>
         <div className="instruction-item">
           <div className="instruction-title">Access Settings</div>
@@ -159,6 +174,36 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
             />
           </div>
         </div>
+        
+        <div className="settings-section">
+          <h2>Sets</h2>
+          
+          <div className="form-group">
+            <label htmlFor="maxSets">Maximum Sets</label>
+            <select
+              id="maxSets"
+              name="maxSets"
+              value={localSettings.maxSets}
+              onChange={handleChange}
+            >
+              <option value={3}>3 Sets</option>
+              <option value={5}>5 Sets</option>
+            </select>
+            <div className="setting-hint">Number of set indicators to display</div>
+          </div>
+          
+          <div className="form-group checkbox">
+            <label htmlFor="showSets">Show Sets</label>
+            <input
+              type="checkbox"
+              id="showSets"
+              name="showSets"
+              checked={localSettings.showSets}
+              onChange={handleChange}
+            />
+            <div className="setting-hint">Toggle visibility of set indicators</div>
+          </div>
+        </div>
       </div>
       
       <div className="settings-actions">
@@ -166,15 +211,23 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores 
           Save Settings
         </button>
         <button className="reset-button" onClick={resetToDefaults}>
-          Reset Settings
+          Reset All
         </button>
         <button className="reset-button" onClick={() => {
-          // Immediately reset the actual game scores
+          // Immediately reset the actual game scores only
           resetScores();
           // Navigate back to the scoreboard to show the reset scores
           navigate('/');
         }}>
-          Reset Scores
+          Reset Scores Only
+        </button>
+        <button className="reset-button" onClick={() => {
+          // Immediately reset both scores and sets
+          resetScoresAndSets();
+          // Navigate back to the scoreboard
+          navigate('/');
+        }}>
+          Reset Scores & Sets
         </button>
         <button className="cancel-button" onClick={handleCancel}>
           Cancel

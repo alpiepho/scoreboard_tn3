@@ -4,11 +4,15 @@ export interface AppSettings {
   enableScoreWarning: boolean; // Setting to enable warning at multiples of 7
   vibrateOnButtonPress: boolean;
   theme: 'light' | 'dark';
+  maxSets: 3 | 5; // Maximum number of sets to play (3 or 5)
+  showSets: boolean; // Toggle visibility of sets display
 }
 
 export interface GameState {
   homeScore: number;
   awayScore: number;
+  homeSets: number;
+  awaySets: number;
 }
 
 export interface ScoreboardProps {
@@ -21,6 +25,7 @@ export interface SettingsProps {
   settings: AppSettings;
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
   resetScores: () => void;
+  resetScoresAndSets: () => void;
 }
 
 export interface TimerProps {

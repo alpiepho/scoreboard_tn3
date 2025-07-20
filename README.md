@@ -6,8 +6,9 @@ This is a TypeScript PWA version of ScoresTN2, a Flutter-based scoreboard applic
 
 - Progressive Web App (PWA) that can be installed on any device
 - Scoreboard functionality for sports events
-- Score incrementation controls with long-press support
-- Timer functionality (count up or down)
+- Score incrementation with tap and long-press auto-decrement
+- Sets tracking with customizable number of sets (3 or 5)
+- Score warning at multiples of 7 (optional)
 - Settings page with customizable options
 - Responsive design for various screen sizes
 - Built with TypeScript and React
@@ -40,18 +41,25 @@ npm run preview
 
 ### Scoreboard
 
-- Use the "+" and "-" buttons to adjust scores
-- Long-press the buttons for continuous score incrementation/decrementation
-- Use the timer controls to start, pause, and reset the timer
-- Navigate to Settings to customize the application
+- Tap score buttons to increment scores
+- Long-press score buttons to auto-decrement scores
+- Use set indicators on the sides to track sets:
+  - Tap "+" to add a set
+  - Tap "-" to clear sets
+  - Tap individual circles to toggle sets up to that point
+- Access Settings via the gear icon
 
 ### Settings
 
 - Customize team names
-- Set initial scores
-- Configure timer duration and direction
-- Choose between light and dark themes
-- Enable/disable vibration on button press
+- Enable/disable score warning at multiples of 7
+- Choose between 3 or 5 maximum sets
+- Toggle sets visibility
+- Toggle vibration on button press
+- Switch between light and dark themes
+- Reset scores only (preserves sets)
+- Reset both scores and sets
+- Reset all settings to defaults
 
 ## PWA Features
 

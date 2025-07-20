@@ -13,6 +13,8 @@ function App() {
     enableScoreWarning: true, // Default to enable warnings at multiples of 7
     vibrateOnButtonPress: true,
     theme: 'light',
+    maxSets: 5, // Default to 5 sets
+    showSets: true, // Default to showing sets
   };
 
   // Initialize settings from localStorage or use defaults
@@ -28,7 +30,9 @@ function App() {
     // Return saved state or default to zeros
     return savedGameState ? JSON.parse(savedGameState) : {
       homeScore: 0,
-      awayScore: 0
+      awayScore: 0,
+      homeSets: 0,
+      awaySets: 0
     };
   });
 
@@ -51,12 +55,23 @@ function App() {
     localStorage.setItem('scoresTN3GameState', JSON.stringify(gameState));
   }, [gameState]);
 
-  // Reset scores to zero
-  const resetScores = () => {
+  // Reset both scores and sets to zero
+  const resetScoresAndSets = () => {
     setGameState({
       homeScore: 0,
-      awayScore: 0
+      awayScore: 0,
+      homeSets: 0,
+      awaySets: 0
     });
+  };
+
+  // Reset only scores, preserving sets
+  const resetScores = () => {
+    setGameState(prevState => ({
+      ...prevState,
+      homeScore: 0,
+      awayScore: 0
+    }));
   };
 
   return (
@@ -74,6 +89,7 @@ function App() {
             settings={settings} 
             setSettings={setSettings} 
             resetScores={resetScores}
+            resetScoresAndSets={resetScoresAndSets}
           />
         } />
       </Routes>
