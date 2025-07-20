@@ -49,6 +49,7 @@
   font-size: 2.2rem;
   font-weight: 600;
   text-transform: uppercase;
+  margin-top: 1rem; /* Add top margin to move team name down a bit */
   margin-bottom: 0.2rem;
   z-index: 1;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -66,7 +67,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
+  padding: 0 0 10px 0; /* Added bottom padding to make room for set circles */
   margin: 0;
   overflow: visible;
   min-width: max-content;
@@ -322,23 +323,35 @@
 }
 
 /* Further adjustments for various device sizes in portrait mode */
-@media (orientation: portrait) and (max-height: 700px) {
+@media (orientation: portrait) {
   .home-sets-circles {
-    top: 22%;
+    bottom: auto;
+    top: 42%;
   }
   
   .away-sets-circles {
-    top: 78%;
+    bottom: auto;
+    top: 92%;
+  }
+}
+
+@media (orientation: portrait) and (max-height: 700px) {
+  .home-sets-circles {
+    top: 38%;
+  }
+  
+  .away-sets-circles {
+    top: 88%;
   }
 }
 
 @media (orientation: portrait) and (min-height: 900px) {
   .home-sets-circles {
-    top: 28%;
+    top: 45%;
   }
   
   .away-sets-circles {
-    top: 72%;
+    top: 95%;
   }
 }
 
@@ -381,21 +394,7 @@
   text-align: center;
 }
 
-.sets-button {
-  background-color: rgba(255, 255, 255, 0.3);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 0;
-}
+/* Remove the first sets-button definition to avoid duplication */
 
 .sets-button:active {
   background-color: rgba(255, 255, 255, 0.5);
@@ -418,7 +417,7 @@
 .team-sets-circles {
   position: absolute;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changed to row for horizontal layout */
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -426,20 +425,20 @@
 }
 
 .home-sets-circles {
-  left: 15px;
-  top: 25%; /* Position at 25% from the top to align with home button */
-  transform: translateY(-50%);
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  top: 42%; /* Position below home score (upper half) */
 }
 
 .away-sets-circles {
-  right: 15px;
-  top: 75%; /* Position at 75% from the top to align with away button */
-  transform: translateY(-50%);
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  top: 92%; /* Position below away score (lower half) */
 }
 
 .sets-circles {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changed to row for horizontal layout */
   gap: 0.5rem;
 }
 
@@ -452,6 +451,7 @@
   cursor: pointer;
   background-color: transparent;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4); /* Add shadow for better visibility */
+  margin: 0 2px; /* Add horizontal margins for spacing */
 }
 
 .set-circle.active {
@@ -477,7 +477,8 @@
   cursor: pointer;
   transition: background-color 0.2s;
   padding: 0;
-  margin: 5px 0;
+  margin: 0 5px; /* Changed to horizontal margins */
+  aspect-ratio: 1 / 1; /* Ensure it's perfectly round */
 }
 
 .sets-button:active {
@@ -485,64 +486,60 @@
   transform: scale(0.95);
 }
 
-/* Make circles larger and adjust positioning on larger screens */
+/* Ensure all sets buttons are perfectly round */
+.sets-button {
+  min-width: 28px;
+  min-height: 28px;
+  max-width: 28px;
+  max-height: 28px;
+}
+
 @media (min-width: 768px) {
-  .set-circle {
-    width: 28px;
-    height: 28px;
-  }
-  
   .sets-button {
-    width: 34px;
-    height: 34px;
-    font-size: 1.3rem;
-  }
-  
-  .home-sets-circles {
-    left: 20px;
-  }
-  
-  .away-sets-circles {
-    right: 20px;
+    min-width: 34px;
+    min-height: 34px;
+    max-width: 34px;
+    max-height: 34px;
   }
 }
 
-/* Larger tablets and desktops */
 @media (min-width: 1024px) {
-  .set-circle {
-    width: 32px;
-    height: 32px;
-    border-width: 3px;
-  }
-  
   .sets-button {
-    width: 38px;
-    height: 38px;
-    font-size: 1.5rem;
-    margin: 8px 0;
-  }
-  
-  .home-sets-circles {
-    left: 25px;
-  }
-  
-  .away-sets-circles {
-    right: 25px;
+    min-width: 38px;
+    min-height: 38px;
+    max-width: 38px;
+    max-height: 38px;
   }
 }
 
-/* Adjust for landscape */
+/* Landscape orientation adjustments */
 @media (orientation: landscape) {
   .home-sets-circles {
-    left: 15px;
-    top: 50%; /* Center vertically in landscape */
-    transform: translateY(-50%);
+    top: auto;
+    left: 25%; /* Position at 25% from the left to align with home button */
+    bottom: 20px;
+    transform: translateX(-50%);
   }
   
   .away-sets-circles {
-    right: 15px;
-    top: 50%; /* Center vertically in landscape */
-    transform: translateY(-50%);
+    top: auto;
+    right: 25%; /* Position at 25% from the right to align with away button */
+    left: 75%;
+    bottom: 20px;
+    transform: translateX(-50%);
+  }
+  
+  /* Ensure score has enough bottom padding in landscape */
+  .score {
+    padding-bottom: 40px;
+  }
+  
+  /* Fix round buttons in landscape mode */
+  .sets-button {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
   }
 }
 

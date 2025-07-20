@@ -546,11 +546,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
             <button 
               className="sets-button" 
               onClick={() => {
-                // Clear all circles, leaving only outlines
+                // Decrement the set count by 1 (not reset to 0)
                 if (gameState.homeSets > 0) {
                   setGameState(prev => ({
                     ...prev,
-                    homeSets: 0
+                    homeSets: prev.homeSets - 1
                   }));
                   vibrate();
                 }
@@ -603,11 +603,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
             <button 
               className="sets-button" 
               onClick={() => {
-                // Clear all circles, leaving only outlines
+                // Decrement the set count by 1 (not reset to 0)
                 if (gameState.awaySets > 0) {
                   setGameState(prev => ({
                     ...prev,
-                    awaySets: 0
+                    awaySets: prev.awaySets - 1
                   }));
                   vibrate();
                 }
