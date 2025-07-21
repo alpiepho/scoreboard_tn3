@@ -1,7 +1,7 @@
 {
   "name": "scorest-n3",
   "private": true,
-  "version": "0.3.2",
+  "version": "0.3.4",
   "type": "module",
   "homepage": "https://alpiepho.github.io/scoreboard_tn3/",
   "scripts": {
@@ -28,6 +28,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "gh-pages": "^5.0.0",
+    "sharp": "^0.34.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-pwa": "^0.16.4",
