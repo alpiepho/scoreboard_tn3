@@ -11,10 +11,11 @@
   z-index: 1000;
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
+  color: #000000; /* Ensure text color inheritance */
 }
 
 .about-modal-content {
-  background-color: #e3f2fd; /* Light blue background */
+  background-color: #2196f3; /* Match primary-color used for the about button */
   border-radius: 12px;
   padding: 20px;
   width: 90%;
@@ -24,7 +25,7 @@
   overflow-y: auto;
   position: relative;
   animation: modalFadeIn 0.3s ease;
-  color: #1a1a1a; /* Dark text color for contrast */
+  color: #ffffff; /* White text for better contrast on blue background */
 }
 
 .about-modal-header {
@@ -32,14 +33,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  border-bottom: 1px solid #bbdefb;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   padding-bottom: 10px;
 }
 
 .about-modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #1976d2;
+  color: #ffffff;
 }
 
 .about-modal-close {
@@ -47,7 +48,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #1976d2;
+  color: #ffffff;
   padding: 0;
   width: 32px;
   height: 32px;
@@ -56,10 +57,11 @@
   justify-content: center;
   border-radius: 50%;
   transition: background-color 0.2s;
+  font-weight: bold; /* Make the X more visible */
 }
 
 .about-modal-close:hover {
-  background-color: rgba(25, 118, 210, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .about-modal-body {
@@ -69,13 +71,19 @@
   text-align: center;
 }
 
+.about-modal-body p {
+  color: #ffffff;
+  margin: 5px 0;
+  font-weight: normal;
+}
+
 .version-info {
   font-size: 0.9rem;
-  color: #1976d2;
+  color: #ffffff;
   font-weight: 500;
   margin-bottom: 12px;
   padding: 4px 12px;
-  background-color: rgba(25, 118, 210, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 16px;
   display: inline-block;
 }
@@ -105,13 +113,13 @@
 }
 
 .about-links a {
-  color: #1976d2;
-  text-decoration: none;
+  color: #ffffff;
+  text-decoration: underline;
   transition: color 0.2s;
 }
 
 .about-links a:hover {
-  color: #0d47a1;
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: underline;
 }
 
