@@ -186,9 +186,9 @@
 /* Portrait orientation with various screen sizes */
 @media (orientation: portrait) {
   .score-button {
-    height: 50vh; /* Each button takes exactly half the viewport height */
+    height: calc(50vh - 1px); /* Exact half viewport height with 1px adjustment for the border */
     min-height: 0; /* Override the min-height from the base style */
-    max-height: 50vh;
+    max-height: calc(50vh - 1px);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -473,8 +473,10 @@
   left: 0;
   right: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 20; /* Increased z-index to ensure it's above other elements */
   margin: 0 auto; /* Center horizontally */
+  pointer-events: auto; /* Ensure pointer events are not blocked */
+  touch-action: auto; /* Allow touch interactions for these elements */
 }
 
 .home-sets-circles, .away-sets-circles {
@@ -510,6 +512,9 @@
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4); /* Add shadow for better visibility */
   margin: 0 2px; /* Add horizontal margins for spacing */
   flex-shrink: 0; /* Prevent circles from shrinking */
+  z-index: 20; /* Higher z-index to ensure it's clickable */
+  pointer-events: auto; /* Explicitly enable pointer events */
+  touch-action: auto; /* Allow normal touch behaviors */
 }
 
 .set-circle.active {
@@ -541,6 +546,9 @@
   transition: all 0.2s ease;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
   aspect-ratio: 1 / 1; /* Ensure it's perfectly round */
+  z-index: 20; /* Higher z-index to ensure it's clickable */
+  pointer-events: auto; /* Explicitly enable pointer events */
+  touch-action: auto; /* Allow normal touch behaviors */
 }
 
 .sets-button:active {
@@ -618,6 +626,20 @@
   .score {
     font-size: 5rem;
   }
+}
+
+.score-button .team-name,
+.score-button .score {
+  color: white !important; /* Always white text on colored team buttons */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Enhanced shadow for better contrast */
+}
+
+/* Further ensure theme buttons have proper color */
+.app.dark .score-button .team-name,
+.app.dark .score-button .score,
+.app.light .score-button .team-name,
+.app.light .score-button .score {
+  color: white !important;
 }
 
 /* Landscape orientation adjustments */

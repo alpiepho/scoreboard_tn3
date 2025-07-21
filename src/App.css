@@ -26,6 +26,7 @@
   --disabled-color: #cccccc;
   /* Colors are now set via JavaScript based on colorsSwapped state */
   --sets-label-color: #ffffff; /* White for set labels in light mode */
+  --button-text-color: #ffffff; /* White text for buttons in light mode */
 }
 
 .app.light input,
@@ -52,6 +53,7 @@
   --disabled-color: #666666;
   /* Colors are now set via JavaScript based on colorsSwapped state */
   --sets-label-color: #000000; /* Black for set labels in dark mode */
+  --button-text-color: #ffffff; /* White text for buttons in dark mode */
 }
 
 .app.dark input,

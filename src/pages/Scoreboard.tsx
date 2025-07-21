@@ -521,6 +521,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                 className="sets-button" 
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                   // Fill the next empty circle (if available)
                   if (gameState.homeSets < settings.maxSets) {
                     setGameState(prev => ({
@@ -529,6 +530,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                     }));
                     vibrate();
                   }
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                 }}
               >+</button>
               
@@ -539,6 +544,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                     className={`set-circle ${index < gameState.homeSets ? 'active' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent triggering score button
+                      e.preventDefault(); // Prevent default browser behavior
                       // Click to toggle the set status
                       if (index < gameState.homeSets) {
                         // If this circle is already active, deactivate it and all after
@@ -555,6 +561,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                       }
                       vibrate();
                     }}
+                    onTouchEnd={(e) => {
+                      e.stopPropagation(); // Prevent triggering score button
+                      e.preventDefault(); // Prevent default browser behavior
+                    }}
                   />
                 ))}
               </div>
@@ -563,6 +573,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                 className="sets-button" 
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                   // Decrement the set count by 1 (not reset to 0)
                   if (gameState.homeSets > 0) {
                     setGameState(prev => ({
@@ -571,6 +582,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                     }));
                     vibrate();
                   }
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                 }}
               >-</button>
             </div>
@@ -598,6 +613,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                 className="sets-button" 
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                   // Fill the next empty circle (if available)
                   if (gameState.awaySets < settings.maxSets) {
                     setGameState(prev => ({
@@ -606,6 +622,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                     }));
                     vibrate();
                   }
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                 }}
               >+</button>
               
@@ -616,6 +636,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                     className={`set-circle ${index < gameState.awaySets ? 'active' : ''}`}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent triggering score button
+                      e.preventDefault(); // Prevent default browser behavior
                       // Click to toggle the set status
                       if (index < gameState.awaySets) {
                         // If this circle is already active, deactivate it and all after
@@ -632,6 +653,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                       }
                       vibrate();
                     }}
+                    onTouchEnd={(e) => {
+                      e.stopPropagation(); // Prevent triggering score button
+                      e.preventDefault(); // Prevent default browser behavior
+                    }}
                   />
                 ))}
               </div>
@@ -640,6 +665,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                 className="sets-button" 
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                   // Decrement the set count by 1 (not reset to 0)
                   if (gameState.awaySets > 0) {
                     setGameState(prev => ({
@@ -648,6 +674,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                     }));
                     vibrate();
                   }
+                }}
+                onTouchEnd={(e) => {
+                  e.stopPropagation(); // Prevent triggering score button
+                  e.preventDefault(); // Prevent default browser behavior
                 }}
               >-</button>
             </div>
