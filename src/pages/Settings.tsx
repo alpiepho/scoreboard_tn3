@@ -20,36 +20,52 @@ const Settings: React.FC<SettingsProps> = ({
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    const isTeamNameField = name === 'homeTeamName' || name === 'awayTeamName';
+    let updatedSettings = { ...localSettings };
     
     // Handle different input types
     if (type === 'number') {
-      setLocalSettings({
-        ...localSettings,
+      updatedSettings = {
+        ...updatedSettings,
         [name]: parseInt(value, 10) || 0
-      });
+      };
     } else if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
-      setLocalSettings({
-        ...localSettings,
+      updatedSettings = {
+        ...updatedSettings,
         [name]: checked
-      });
+      };
     } else if (name === 'maxSets') {
       // Handle maxSets specifically to ensure it's either 3 or 5
-      setLocalSettings({
-        ...localSettings,
+      updatedSettings = {
+        ...updatedSettings,
         maxSets: parseInt(value, 10) === 3 ? 3 : 5
-      });
+      };
     } else {
-      setLocalSettings({
-        ...localSettings,
+      updatedSettings = {
+        ...updatedSettings,
         [name]: value
-      });
+      };
+    }
+    
+    // Update local state
+    setLocalSettings(updatedSettings);
+    
+    // For all settings except team names, immediately apply and navigate back
+    if (!isTeamNameField) {
+      setSettings(updatedSettings);
+      navigate('/');
     }
   };
   
-  // Save settings
+  // Save team names
   const saveSettings = () => {
-    setSettings(localSettings);
+    // Only update the team names
+    setSettings({
+      ...settings,
+      homeTeamName: localSettings.homeTeamName,
+      awayTeamName: localSettings.awayTeamName
+    });
     navigate('/');
   };
   
@@ -226,32 +242,6 @@ const Settings: React.FC<SettingsProps> = ({
       
       <div className="settings-form">
         <div className="settings-section">
-          <h2>Teams</h2>
-          
-          <div className="form-group">
-            <label htmlFor="homeTeamName">Home Team Name</label>
-            <input
-              type="text"
-              id="homeTeamName"
-              name="homeTeamName"
-              value={localSettings.homeTeamName}
-              onChange={handleChange}
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="awayTeamName">Away Team Name</label>
-            <input
-              type="text"
-              id="awayTeamName"
-              name="awayTeamName"
-              value={localSettings.awayTeamName}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        
-        <div className="settings-section">
           <h2>Scores</h2>
           
           <div className="form-group checkbox">
@@ -323,11 +313,37 @@ const Settings: React.FC<SettingsProps> = ({
             <div className="setting-hint">Toggle visibility of set indicators</div>
           </div>
         </div>
+        
+        <div className="settings-section">
+          <h2>Teams</h2>
+          
+          <div className="form-group">
+            <label htmlFor="homeTeamName">Home Team Name</label>
+            <input
+              type="text"
+              id="homeTeamName"
+              name="homeTeamName"
+              value={localSettings.homeTeamName}
+              onChange={handleChange}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="awayTeamName">Away Team Name</label>
+            <input
+              type="text"
+              id="awayTeamName"
+              name="awayTeamName"
+              value={localSettings.awayTeamName}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
       </div>
       
       <div className="settings-actions">
         <button className="save-button" onClick={saveSettings}>
-          Save Settings
+          Save Team Names
         </button>
         <button className="about-button" onClick={() => setShowAboutModal(true)}>
           About

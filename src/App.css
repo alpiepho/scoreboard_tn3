@@ -68,20 +68,17 @@
 
 /* Override theme text colors for non-scoreboard UI elements */
 .settings-container, 
-.about-modal-content,
 .score-alert-container {
   color: initial; /* Reset to browser default */
 }
 
 .app.light .settings-container, 
-.app.light .about-modal-content,
 .app.light .score-alert-container {
   color: #212121; /* Dark text for light mode settings */
   background-color: #f5f5f5; /* Light background for light mode settings */
 }
 
 .app.dark .settings-container,
-.app.dark .about-modal-content,
 .app.dark .score-alert-container {
   color: #ffffff; /* White text for dark mode settings */
   background-color: #121212; /* Dark background for dark mode settings */
