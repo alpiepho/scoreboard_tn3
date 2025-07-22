@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
 import './Settings.css';
+import './FontPreview.css';
 import AboutModal from '../components/AboutModal';
+import { fontFamilies } from '../utils/fonts';
 
 const Settings: React.FC<SettingsProps> = ({ 
   settings, 
@@ -31,10 +33,19 @@ const Settings: React.FC<SettingsProps> = ({
       };
     } else if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
-      updatedSettings = {
-        ...updatedSettings,
-        [name]: checked
-      };
+      
+      if (name === 'theme') {
+        // For theme checkbox, set to 'dark' when checked, 'light' when unchecked
+        updatedSettings = {
+          ...updatedSettings,
+          [name]: checked ? 'dark' : 'light'
+        };
+      } else {
+        updatedSettings = {
+          ...updatedSettings,
+          [name]: checked
+        };
+      }
     } else if (name === 'maxSets') {
       // Handle maxSets specifically to ensure it's either 3 or 5
       updatedSettings = {
@@ -49,12 +60,14 @@ const Settings: React.FC<SettingsProps> = ({
     }
     
     // Update local state
-    setLocalSettings(updatedSettings);
-    
-    // For all settings except team names, immediately apply and navigate back
+    setLocalSettings(updatedSettings);      // For all settings except team names, immediately apply
     if (!isTeamNameField) {
       setSettings(updatedSettings);
-      navigate('/');
+      
+      // Only navigate back to scoreboard for settings other than theme, vibrate, and fontFamily
+      if (name !== 'theme' && name !== 'vibrateOnButtonPress' && name !== 'fontFamily') {
+        navigate('/');
+      }
     }
   };
   
@@ -81,6 +94,7 @@ const Settings: React.FC<SettingsProps> = ({
       maxSets: 5 as 3 | 5,
       showSets: true,
       colorsSwapped: false,
+      fontFamily: 'Default' as 'Default' | 'Lato' | 'Merriweather' | 'Montserrat' | 'OpenSans' | 'RobotoMono' | 'RockSalt' | 'SpaceMono' | 'LeagueSpartan',
     };
     
     // Update local settings and apply them
@@ -260,17 +274,39 @@ const Settings: React.FC<SettingsProps> = ({
         <div className="settings-section">
           <h2>Appearance</h2>
           
-          <div className="form-group">
-            <label htmlFor="theme">Theme</label>
-            <select
+          <div className="form-group checkbox">
+            <label htmlFor="theme">Dark Mode</label>
+            <input
+              type="checkbox"
               id="theme"
               name="theme"
-              value={localSettings.theme}
+              checked={localSettings.theme === 'dark'}
               onChange={handleChange}
-            >
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="fontFamily">Font Style</label>
+            <div className="font-preview-container">
+              {fontFamilies.map((font) => (
+                <div 
+                  key={font.value}
+                  className={`font-preview-item ${font.className} ${localSettings.fontFamily === font.value ? 'selected' : ''}`}
+                  onClick={() => {
+                    const updatedSettings = {
+                      ...localSettings,
+                      fontFamily: font.value as "Default" | "Lato" | "Merriweather" | "Montserrat" | "OpenSans" | "RobotoMono" | "RockSalt" | "SpaceMono" | "LeagueSpartan"
+                    };
+                    setLocalSettings(updatedSettings);
+                    setSettings(updatedSettings);
+                    // Navigate back to scoreboard immediately after selecting font
+                    navigate('/');
+                  }}
+                >
+                  {font.label}
+                </div>
+              ))}
+            </div>
           </div>
           
           <div className="form-group checkbox">

@@ -16,6 +16,7 @@ function App() {
     maxSets: 5, // Default to 5 sets
     showSets: true, // Default to showing sets
     colorsSwapped: false, // Default to unswapped colors
+    fontFamily: 'Default', // Default font
   };
 
   // Initialize settings from localStorage or use defaults

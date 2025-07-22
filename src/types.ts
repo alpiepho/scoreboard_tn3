@@ -7,6 +7,7 @@ export interface AppSettings {
   maxSets: 3 | 5; // Maximum number of sets to play (3 or 5)
   showSets: boolean; // Toggle visibility of sets display
   colorsSwapped: boolean; // Track if team colors have been swapped
+  fontFamily: 'Default' | 'Lato' | 'Merriweather' | 'Montserrat' | 'OpenSans' | 'RobotoMono' | 'RockSalt' | 'SpaceMono' | 'LeagueSpartan'; // Font for scores and team names
 }
 
 export interface GameState {

@@ -663,3 +663,30 @@ input[type="range"]::-moz-range-thumb {
 .app.dark .set-controls-row {
   background-color: rgba(255, 255, 255, 0.05);
 }
+
+/* Font selector styling */
+.font-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 1.1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-top: 5px;
+}
+
+.font-select option {
+  padding: 10px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+/* Increase the height of the font select dropdown to accommodate font display */
+.font-select {
+  height: 42px;
+}

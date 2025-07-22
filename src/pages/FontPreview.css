@@ -1,0 +1,65 @@
+.font-preview-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.font-preview-item {
+  padding: 12px;
+  margin: 4px 0;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-weight: bold;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.font-preview-item:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.font-preview-item.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+/* Font-specific classes */
+.font-lato {
+  font-family: 'Lato', sans-serif;
+}
+
+.font-merriweather {
+  font-family: 'Merriweather', serif;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.font-opensans {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.font-robotomono {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.font-rocksalt {
+  font-family: 'Rock Salt', cursive;
+}
+
+.font-spacemono {
+  font-family: 'Space Mono', monospace;
+}
+
+.font-spartan {
+  font-family: 'Spartan', sans-serif;
+}
+
+.font-league-spartan {
+  font-family: 'League Spartan', sans-serif;
+}

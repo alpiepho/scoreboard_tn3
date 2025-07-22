@@ -4,6 +4,7 @@ import { ScoreboardProps } from '../types';
 import ScoreAlert from '../components/ScoreAlert';
 import './Scoreboard.css';
 import './ScoreboardTheme.css'; // Import theme-specific styles
+import { getFontFamilyString } from '../utils/fonts';
 
 const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState }) => {
   const navigate = useNavigate();
@@ -65,6 +66,13 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       window.removeEventListener('orientationchange', handleResize);
     };
   }, []);
+  
+  // Effect to apply the selected font family
+  useEffect(() => {
+    // Apply the font-family to the root element for use in CSS
+    const fontFamilyValue = getFontFamilyString(settings.fontFamily);
+    document.documentElement.style.setProperty('--scoreboard-font-family', fontFamilyValue);
+  }, [settings.fontFamily]);
   
   // Disable browser's pull-to-refresh and other gestures
   useEffect(() => {
