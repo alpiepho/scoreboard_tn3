@@ -89,8 +89,8 @@
 
 /* Ensure scoreboard always uses light mode regardless of app theme */
 .scoreboard-container {
-  background-color: #f5f5f5 !important;
-  color: #212121 !important;
+  background-color: #f5f5f5 ;
+  color: #212121 ;
 }
 
 /* Make sure all buttons in dark mode have white text for contrast */

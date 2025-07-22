@@ -149,6 +149,8 @@ function App() {
             resetScores={resetScores}
             resetScoresAndSets={resetScoresAndSets}
             swapHomeAndAway={swapHomeAndAway}
+            gameState={gameState}
+            setGameState={setGameState}
           />
         } />
       </Routes>

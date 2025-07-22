@@ -401,6 +401,28 @@
   .settings-actions button {
     padding: 10px;
   }
+  
+  /* Set controls for small screens */
+  .sets-controls {
+    padding: 12px;
+    margin: 12px 0;
+  }
+  
+  .set-controls-row {
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .team-label {
+    font-size: 0.95rem;
+  }
+  
+  .set-control-button {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    margin: 0 6px;
+  }
 }
 
 @media (max-height: 500px) {
@@ -448,6 +470,28 @@
     margin-top: 16px;
     padding: 8px;
   }
+  
+  /* Set controls for landscape mode */
+  .sets-controls {
+    margin: 8px 0;
+    padding: 8px;
+  }
+  
+  .set-controls-row {
+    margin-bottom: 8px;
+    padding: 6px;
+  }
+  
+  .team-label {
+    font-size: 0.9rem;
+  }
+  
+  .set-control-button {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    margin: 0 4px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -464,6 +508,22 @@
   .home-color-dot, .away-color-dot {
     width: 8px;
     height: 8px;
+  }
+  
+  /* Smallest screens set controls */
+  .team-label {
+    font-size: 0.85rem;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .set-control-button {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+    margin: 0 4px;
   }
 }
 
@@ -534,4 +594,72 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   cursor: pointer;
   border: none;
+}
+
+/* Set controls in Quick Actions */
+.sets-controls {
+  margin: 16px 0;
+  padding: 16px;
+  background-color: var(--bg-alt-color);
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.set-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 10px;
+  background-color: rgba(var(--primary-color-rgb), 0.05);
+  border-radius: 8px;
+}
+
+.set-controls-row:last-child {
+  margin-bottom: 0;
+}
+
+.team-label {
+  flex: 1;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text-color);
+  margin-right: 8px;
+  font-size: 1.05rem;
+}
+
+.set-control-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  margin: 0 8px;
+}
+
+.set-control-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode specific styles for set controls */
+.app.dark .sets-controls {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+.app.dark .set-controls-row {
+  background-color: rgba(255, 255, 255, 0.05);
 }

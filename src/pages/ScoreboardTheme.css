@@ -31,26 +31,17 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Add shadow for readability */
 }
 
-/* Set circle colors based on theme */
-.app.light .set-circle {
-  border: 2px solid white;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-}
-
-.app.light .set-circle.active {
-  background-color: white;
-  border-color: white;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-}
-
+/* Set circle colors always black, regardless of theme */
+.app.light .set-circle,
 .app.dark .set-circle {
-  border: 2px solid black;
+  border: 2px solid black ;
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
+.app.light .set-circle.active,
 .app.dark .set-circle.active {
-  background-color: black;
-  border-color: black;
+  background-color: black ;
+  border-color: black ;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
 }
 

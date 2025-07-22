@@ -4,7 +4,15 @@ import { SettingsProps } from '../types';
 import './Settings.css';
 import AboutModal from '../components/AboutModal';
 
-const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores, resetScoresAndSets, swapHomeAndAway }) => {
+const Settings: React.FC<SettingsProps> = ({ 
+  settings, 
+  setSettings, 
+  resetScores, 
+  resetScoresAndSets, 
+  swapHomeAndAway,
+  gameState,
+  setGameState
+}) => {
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
   const [showAboutModal, setShowAboutModal] = useState(false);
@@ -109,6 +117,62 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
             Swap Teams
             <span className="away-color-dot"></span>
           </button>
+        </div>
+        
+        <div className="form-group sets-controls">
+          <div className="set-controls-row">
+            <span className="team-label">
+              <span className={settings.colorsSwapped ? "away-color-dot" : "home-color-dot"} style={{ marginRight: '8px' }}></span>
+              Home Sets
+            </span>
+            <button className="set-control-button" onClick={() => {
+              // Decrement home sets if greater than 0
+              if (gameState.homeSets > 0) {
+                setGameState(prev => ({
+                  ...prev,
+                  homeSets: prev.homeSets - 1
+                }));
+              }
+              navigate('/');
+            }}>-</button>
+            <button className="set-control-button" onClick={() => {
+              // Increment home sets if less than maxSets
+              if (gameState.homeSets < settings.maxSets) {
+                setGameState(prev => ({
+                  ...prev,
+                  homeSets: prev.homeSets + 1
+                }));
+              }
+              navigate('/');
+            }}>+</button>
+          </div>
+          
+          <div className="set-controls-row">
+            <span className="team-label">
+              <span className={settings.colorsSwapped ? "home-color-dot" : "away-color-dot"} style={{ marginRight: '8px' }}></span>
+              Away Sets
+            </span>
+            <button className="set-control-button" onClick={() => {
+              // Decrement away sets if greater than 0
+              if (gameState.awaySets > 0) {
+                setGameState(prev => ({
+                  ...prev,
+                  awaySets: prev.awaySets - 1
+                }));
+              }
+              navigate('/');
+            }}>-</button>
+            <button className="set-control-button" onClick={() => {
+              // Increment away sets if less than maxSets
+              if (gameState.awaySets < settings.maxSets) {
+                setGameState(prev => ({
+                  ...prev,
+                  awaySets: prev.awaySets + 1
+                }));
+              }
+              navigate('/');
+            }}>+</button>
+          </div>
         </div>
         
         <div className="form-group">

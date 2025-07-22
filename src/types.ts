@@ -28,6 +28,8 @@ export interface SettingsProps {
   resetScores: () => void;
   resetScoresAndSets: () => void;
   swapHomeAndAway: () => void;
+  gameState: GameState;
+  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
 }
 
 export interface TimerProps {

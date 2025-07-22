@@ -517,26 +517,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           {/* Home team sets circles */}
           {settings.showSets && (
             <div className="team-sets-circles home-sets-circles">
-              <button 
-                className="sets-button" 
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                  // Fill the next empty circle (if available)
-                  if (gameState.homeSets < settings.maxSets) {
-                    setGameState(prev => ({
-                      ...prev,
-                      homeSets: prev.homeSets + 1
-                    }));
-                    vibrate();
-                  }
-                }}
-                onTouchEnd={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                }}
-              >+</button>
-              
               <div className="sets-circles">
                 {[...Array(settings.maxSets)].map((_, index) => (
                   <div 
@@ -568,26 +548,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                   />
                 ))}
               </div>
-              
-              <button 
-                className="sets-button" 
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                  // Decrement the set count by 1 (not reset to 0)
-                  if (gameState.homeSets > 0) {
-                    setGameState(prev => ({
-                      ...prev,
-                      homeSets: prev.homeSets - 1
-                    }));
-                    vibrate();
-                  }
-                }}
-                onTouchEnd={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                }}
-              >-</button>
             </div>
           )}
         </div>
@@ -609,26 +569,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           {/* Away team sets circles */}
           {settings.showSets && (
             <div className="team-sets-circles away-sets-circles">
-              <button 
-                className="sets-button" 
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                  // Fill the next empty circle (if available)
-                  if (gameState.awaySets < settings.maxSets) {
-                    setGameState(prev => ({
-                      ...prev,
-                      awaySets: prev.awaySets + 1
-                    }));
-                    vibrate();
-                  }
-                }}
-                onTouchEnd={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                }}
-              >+</button>
-              
               <div className="sets-circles">
                 {[...Array(settings.maxSets)].map((_, index) => (
                   <div 
@@ -660,26 +600,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                   />
                 ))}
               </div>
-              
-              <button 
-                className="sets-button" 
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                  // Decrement the set count by 1 (not reset to 0)
-                  if (gameState.awaySets > 0) {
-                    setGameState(prev => ({
-                      ...prev,
-                      awaySets: prev.awaySets - 1
-                    }));
-                    vibrate();
-                  }
-                }}
-                onTouchEnd={(e) => {
-                  e.stopPropagation(); // Prevent triggering score button
-                  e.preventDefault(); // Prevent default browser behavior
-                }}
-              >-</button>
             </div>
           )}
         </div>
