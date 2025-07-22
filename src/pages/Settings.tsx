@@ -93,6 +93,53 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
         <h1>Settings</h1>
       </div>
       
+      <div className="settings-section quick-actions">
+        <h2>Quick Actions</h2>
+        <div className="form-group">
+          <button 
+            className="swap-teams-button" 
+            title="Swap team names, scores, sets, and colors"
+            onClick={() => {
+              swapHomeAndAway();
+              navigate('/');
+            }}
+          >
+            <span className="swap-icon">⇄</span>
+            <span className="home-color-dot"></span>
+            Swap Teams
+            <span className="away-color-dot"></span>
+          </button>
+        </div>
+        
+        <div className="form-group">
+          <button className="reset-button" onClick={() => {
+            // Immediately reset the actual game scores only
+            resetScores();
+            // Navigate back to the scoreboard to show the reset scores
+            navigate('/');
+          }}>
+            Reset Scores Only
+          </button>
+        </div>
+        
+        <div className="form-group">
+          <button className="reset-button" onClick={() => {
+            // Immediately reset both scores and sets
+            resetScoresAndSets();
+            // Navigate back to the scoreboard
+            navigate('/');
+          }}>
+            Reset Scores & Sets
+          </button>
+        </div>
+        
+        <div className="form-group">
+          <button className="reset-button" onClick={resetToDefaults}>
+            Reset All Settings
+          </button>
+        </div>
+      </div>
+      
       <div className="settings-section usage-instructions">
         <h2>How to Use</h2>
         <div className="instruction-item">
@@ -137,22 +184,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
               value={localSettings.awayTeamName}
               onChange={handleChange}
             />
-          </div>
-          
-          <div className="form-group">
-            <button 
-              className="swap-teams-button" 
-              title="Swap team names, scores, sets, and colors"
-              onClick={() => {
-                swapHomeAndAway();
-                navigate('/');
-              }}
-            >
-              <span className="swap-icon">⇄</span>
-              <span className="home-color-dot"></span>
-              Swap Teams
-              <span className="away-color-dot"></span>
-            </button>
           </div>
         </div>
         
@@ -233,25 +264,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
       <div className="settings-actions">
         <button className="save-button" onClick={saveSettings}>
           Save Settings
-        </button>
-        <button className="reset-button" onClick={resetToDefaults}>
-          Reset All
-        </button>
-        <button className="reset-button" onClick={() => {
-          // Immediately reset the actual game scores only
-          resetScores();
-          // Navigate back to the scoreboard to show the reset scores
-          navigate('/');
-        }}>
-          Reset Scores Only
-        </button>
-        <button className="reset-button" onClick={() => {
-          // Immediately reset both scores and sets
-          resetScoresAndSets();
-          // Navigate back to the scoreboard
-          navigate('/');
-        }}>
-          Reset Scores & Sets
         </button>
         <button className="about-button" onClick={() => setShowAboutModal(true)}>
           About
