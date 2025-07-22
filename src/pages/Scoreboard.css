@@ -1,14 +1,22 @@
 .scoreboard-container {
   display: flex;
   flex-direction: column;
-  position: relative;
+  position: fixed; /* Force fixed to ensure full coverage */
   min-height: 100vh;
-  height: calc(var(--vh, 1vh) * 100); /* Use CSS variable for more accurate mobile height */
-  width: 100%;
+  height: 100vh; /* Force full height */
+  width: 100vw; /* Force full width */
   background-color: var(--bg-color);
   color: var(--text-color);
   overflow: hidden;
-  max-height: 100vh; /* Ensure it doesn't exceed viewport height */
+  max-height: 100vh;
+  box-sizing: border-box;
+  margin: 0; /* Force no margins */
+  padding: 0; /* Force no padding */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: none; /* Ensure no borders */
 }
 
 .scoreboard-buttons {
@@ -17,6 +25,14 @@
   height: 100%;
   width: 100%;
   overflow: hidden; /* Prevent scrolling */
+}
+
+/* Additional spacing for portrait layout to create a visual gap between buttons */
+@media (orientation: portrait) {
+  .scoreboard-buttons {
+    padding: 0; /* Remove padding to eliminate space */
+    gap: 0; /* Remove gap between buttons */
+  }
 }
 
 .score-button {
@@ -109,9 +125,20 @@
 @media (orientation: landscape) {
   /* Adjust scoreboard container */
   .scoreboard-container {
-    height: 100vh;
-    width: 100vw;
+    height: 100vh; /* Force full height */
+    width: 100vw; /* Force full width */
     overflow: hidden;
+    /* Ensure it covers the entire viewport */
+    margin: 0;
+    padding: 0;
+    position: fixed; /* Force fixed position */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* No padding for landscape to avoid white space */
+    border: none; /* Ensure no borders */
+    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
   }
   
   .score-content {
@@ -133,37 +160,50 @@
   .scoreboard-buttons {
     flex-direction: row; /* Display teams side by side */
     overflow: hidden; /* Prevent scrolling */
-    width: 100vw;
-    height: 100vh;
+    width: 100vw; /* Force full width */
+    height: 100vh; /* Force full height */
+    margin: 0;
+    padding: 0;
+    position: absolute; /* Ensure it fills the container */
+    top: 0;
+    left: 0;
+    right: 0; /* Ensure it extends to the right edge */
   }
   
   .score-button {
     width: 50%; /* Each takes half the width */
     height: 100%; /* Full height of the container */
-    max-height: 100vh;
-    padding: 0 0 80px 0; /* Increased space for set circles */
+    max-height: 100%;
+    padding: 0; /* Reset padding */
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); /* Add only bottom padding for set circles */
     display: flex;
     flex-direction: column;
     justify-content: center; /* Center content vertically */
     align-items: center;
     overflow: visible;
     position: relative; /* Ensure absolute positioning works */
+    border: 1px solid var(--scoreboard-border); /* Ensure border */
+    margin: 0;
+    box-sizing: border-box; /* Include borders in width calculation */
   }
   
   /* Reposition settings button */
   .settings-button {
-    bottom: 15px;
-    right: 15px;
+    bottom: calc(15px + var(--safe-area-inset-bottom, 0px)); /* Account for safe area */
+    bottom: calc(15px + env(safe-area-inset-bottom, 0px)); /* Direct env() support */
+    right: calc(30px + var(--safe-area-inset-right, 0px)); /* Move further to the right */
+    right: calc(30px + env(safe-area-inset-right, 0px)); /* Direct env() support */
   }
   
   /* Additional styling for set circles in landscape */
   .team-sets-circles {
-    bottom: 5px; /* Position at the bottom */
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px)); /* Position closer to bottom */
     position: absolute;
     width: 100%;
     left: 0;
     right: 0;
     margin: 0 auto; /* Ensure centered */
+    z-index: 100; /* Increase z-index to ensure visibility */
   }
   
   /* Make circles and buttons slightly smaller in landscape */
@@ -185,24 +225,41 @@
 
 /* Portrait orientation with various screen sizes */
 @media (orientation: portrait) {
+  /* Both buttons take 50% height with no space in between */
+  .scoreboard-buttons {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: flex-start; /* Align buttons to the top */
+    gap: 0; /* No gap between buttons */
+  }
+  
   .score-button {
-    height: calc(50vh - 1px); /* Exact half viewport height with 1px adjustment for the border */
     min-height: 0; /* Override the min-height from the base style */
-    max-height: calc(50vh - 1px);
+    max-height: 50%; /* Limit to 50% */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center; /* Center the content vertically */
     align-items: center;
-    padding-top: 20px; /* Add padding at the top */
-    padding-bottom: 80px; /* Increased space at the bottom for set circles */
+    padding-top: 0; /* Remove top padding */
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); /* More space for set circles */
     overflow: visible;
     position: relative; /* Ensure position context for absolute children */
+  }
+  
+  /* Both buttons take 50% height */
+  .score-button:first-child,
+  .score-button:last-child {
+    height: 50%;
+    flex: 0.50;
   }
   
   /* Score content container in portrait mode */
   .score-content {
     margin-top: -40px; /* Adjust this value to help with vertical centering */
+    transform: translateY(-15px); /* Move content up slightly to make room for set circles */
   }
   
   /* Create a wrapper for team name and score to center them together */
@@ -221,11 +278,67 @@
   /* Ensure sets are fixed at the very bottom of each button in portrait */
   .team-sets-circles {
     position: absolute;
-    bottom: 15px; /* Position closer to the bottom */
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px)); /* Closer to bottom */
     left: 0;
     right: 0;
     width: 100%;
     margin: 0 auto;
+    z-index: 100; /* Even higher z-index for visibility */
+  }
+  
+  /* Ensure home and away sets are correctly positioned */
+  .home-sets-circles, .away-sets-circles {
+    position: absolute;
+    bottom: calc(25px + var(--safe-area-inset-bottom, 0px)); /* Position with safe area inset */
+    bottom: calc(25px + env(safe-area-inset-bottom, 0px)); /* Direct env() support */
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 50; /* Higher z-index to ensure visibility */
+  }
+}
+
+/* Extra fixes for portrait mode to set buttons with space at bottom */
+@media (orientation: portrait) {
+  .scoreboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 0; /* Ensure no padding */
+    /* margin-top: -40px; */
+    background-color: black;
+  }
+  
+  .scoreboard-buttons {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 100% total height */
+    flex: 0.96;
+    justify-content: flex-start; /* Align buttons to top */
+    padding: 0; /* No padding */
+    margin: 0; /* No margin */
+    gap: 0; /* No gap */
+  }
+  
+  /* Top button flush with top */
+  .score-button:first-child {
+    flex: 0.48; /* 48% of the available space */
+    height: 48%;
+    min-height: 0;
+    max-height: 48%;
+    margin: 0; /* No margin */
+    padding-top: 0; /* No padding top */
+  }
+  
+  /* Bottom button flush with top button, with no space */
+  .score-button:last-child {
+    flex: 0.48; /* 48% of the available space */
+    height: 48%;
+    min-height: 0;
+    max-height: 48%;
+    margin: 0; /* No margin */
   }
 }
 
@@ -243,6 +356,33 @@
   /* Ensure set circles are positioned properly on small screens */
   .team-sets-circles {
     bottom: 10px; /* Adjusted for smaller screens */
+  }
+}
+
+/* Special adjustments for tall phones in portrait orientation */
+@media (orientation: portrait) and (min-height: 800px) {
+  .scoreboard-buttons {
+    height: 100%;
+    justify-content: flex-start;
+    gap: 0;
+  }
+  
+  /* Both buttons take 50% height on taller phones */
+  .score-button:first-child,
+  .score-button:last-child {
+    height: 50%;
+    flex: 0.50;
+    max-height: 50%;
+    margin: 0;
+  }
+  
+  /* Adjust padding for safe areas */
+  .score-button:first-child {
+    padding-top: 0; /* Remove top padding */
+  }
+  
+  .score-button:last-child {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -266,10 +406,11 @@
 
 .settings-button {
   position: fixed; /* Change to fixed to ensure it stays in position */
-  bottom: 20px;
+  bottom: calc(20px + var(--safe-area-inset-bottom, 0px)); /* Account for safe area */
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px)); /* Direct env() support */
   right: 20px;
-  width: 45px; /* Consistent size */
-  height: 45px; /* Consistent size */
+  width: 50px; /* Consistent size */
+  height: 50px; /* Consistent size */
   border-radius: 50%;
   background-color: var(--primary-color); /* Use theme color */
   color: white; /* Always white text for contrast */
@@ -296,8 +437,8 @@
 /* Ensure consistent settings button size in both orientations */
 @media (orientation: landscape), (orientation: portrait) {
   .settings-button {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
   }
   
   .settings-button svg {
@@ -385,27 +526,31 @@
 /* Position set circles for portrait mode */
 @media (orientation: portrait) {
   .home-sets-circles {
-    bottom: 15px; /* Position at the bottom of the home button */
+    bottom: calc(30px + env(safe-area-inset-bottom, 0px)); /* Increase bottom distance for better visibility */
     top: auto;
     position: absolute;
+    z-index: 100; /* Higher z-index */
   }
   
   .away-sets-circles {
-    bottom: 15px; /* Position at the bottom of the away button */
+    bottom: calc(30px + env(safe-area-inset-bottom, 0px)); /* Increase bottom distance for better visibility */
     top: auto;
     position: absolute;
+    z-index: 100; /* Higher z-index */
   }
 }
 
 @media (orientation: portrait) and (max-height: 700px) {
   .home-sets-circles, .away-sets-circles {
-    bottom: 10px; /* Slightly closer to bottom on smaller screens */
+    bottom: calc(20px + var(--safe-area-inset-bottom, 0px)); /* Position with safe area inset */
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px)); /* Direct env() support */
   }
 }
 
 @media (orientation: portrait) and (min-height: 900px) {
   .home-sets-circles, .away-sets-circles {
-    bottom: 20px; /* More space on larger screens */
+    bottom: calc(30px + var(--safe-area-inset-bottom, 0px)); /* More space on larger screens with safe area inset */
+    bottom: calc(30px + env(safe-area-inset-bottom, 0px)); /* Direct env() support */
   }
 }
 
@@ -469,11 +614,11 @@
   justify-content: center;
   gap: 0.5rem;
   position: absolute; /* Always absolute positioned */
-  bottom: 15px; /* Default bottom position - this is key for both portrait and landscape */
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px)); /* Closer to bottom */
   left: 0;
   right: 0;
   width: 100%;
-  z-index: 20; /* Increased z-index to ensure it's above other elements */
+  z-index: 100; /* Increased z-index to ensure it's above other elements */
   margin: 0 auto; /* Center horizontally */
   pointer-events: auto; /* Ensure pointer events are not blocked */
   touch-action: auto; /* Allow touch interactions for these elements */
@@ -487,9 +632,10 @@
   justify-content: center;
   /* Make sure position is inherited from team-sets-circles */
   position: absolute;
-  bottom: 15px; /* Default to bottom positioning */
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px)); /* Closer to bottom */
   left: 0;
   right: 0;
+  z-index: 100; /* Higher z-index to ensure visibility */
 }
 
 .sets-circles {
@@ -581,7 +727,8 @@
   .home-sets-circles, .away-sets-circles {
     position: absolute;
     top: auto;
-    bottom: 20px; /* Slightly increased for better visibility */
+    bottom: calc(20px + var(--safe-area-inset-bottom, 0px)); /* Account for safe area */
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px)); /* Direct env() support */
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -600,10 +747,10 @@
   
   /* Fix round buttons in landscape mode */
   .sets-button {
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 50% !important;
-    aspect-ratio: 1 / 1 !important;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
   }
 }
 
@@ -630,7 +777,7 @@
 
 .score-button .team-name,
 .score-button .score {
-  color: white !important; /* Always white text on colored team buttons */
+  color: white; /* Always white text on colored team buttons */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Enhanced shadow for better contrast */
 }
 
@@ -639,7 +786,7 @@
 .app.dark .score-button .score,
 .app.light .score-button .team-name,
 .app.light .score-button .score {
-  color: white !important;
+  color: white;
 }
 
 /* Landscape orientation adjustments */
@@ -651,5 +798,25 @@
   
   .score {
     font-size: 4rem;
+  }
+}
+
+/* Additional adjustments for notched devices in landscape */
+@media (orientation: landscape) and (max-device-width: 896px) {
+  .scoreboard-container {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100vw;
+    left: 0;
+    right: 0;
+  }
+  
+  .settings-button {
+    right: calc(max(env(safe-area-inset-right), 15px) + 15px);
+    bottom: calc(max(env(safe-area-inset-bottom), 15px) + 5px);
+  }
+  
+  .home-sets-circles, .away-sets-circles {
+    bottom: calc(max(env(safe-area-inset-bottom), 15px) + 5px);
   }
 }

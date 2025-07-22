@@ -27,7 +27,7 @@
 .score-button.home .score,
 .score-button.away .team-name,
 .score-button.away .score {
-  color: white !important; /* Force white text for all themes */
+  color: white ; /* Force white text for all themes */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Add shadow for readability */
 }
 
