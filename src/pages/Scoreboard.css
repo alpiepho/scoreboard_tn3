@@ -82,17 +82,18 @@
 
 .score {
   color: var(--score-color); /* Use theme score color */
-  font-size: clamp(30rem, 105vw, 75rem); /* Responsive sizing - DOBULED */
-  font-weight: bold;
+  font-size: var(--score-size, clamp(30rem, 105vw, 75rem)); /* Use font-specific size with fallback */
+  font-weight: var(--score-font-weight, bold); /* Use font-specific weight with fallback */
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 1;
-  line-height: 0.8;
+  line-height: var(--score-line-height, 0.8); /* Use font-specific line height with fallback */
+  letter-spacing: var(--score-letter-spacing, normal); /* Use font-specific letter spacing with fallback */
   width: 100%;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0; /* Removed padding to help with centering */
+  padding: var(--score-padding, 0); /* Use font-specific padding with fallback */
   margin: 0;
   overflow: visible;
   min-width: max-content;

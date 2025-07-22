@@ -5,6 +5,7 @@ import ScoreAlert from '../components/ScoreAlert';
 import './Scoreboard.css';
 import './ScoreboardTheme.css'; // Import theme-specific styles
 import { getFontFamilyString } from '../utils/fonts';
+import { getFontConfig } from '../utils/fontConfig';
 
 const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState }) => {
   const navigate = useNavigate();
@@ -50,8 +51,23 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   useEffect(() => {
     const handleResize = () => {
       // This will trigger CSS media queries to adjust score size
-      // We don't need to do anything else here as CSS handles the responsiveness
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      
+      // Update font config for current orientation
+      const fontConfig = getFontConfig(settings.fontFamily);
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const orientation = isLandscape ? 'landscape' : 'portrait';
+      
+      // Update orientation-specific properties
+      document.documentElement.style.setProperty(
+        '--score-size', 
+        fontConfig.scoreSize[orientation]
+      );
+      
+      document.documentElement.style.setProperty(
+        '--score-padding', 
+        fontConfig.scorePadding[orientation]
+      );
     };
     
     // Set initial value
@@ -65,13 +81,38 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
     };
-  }, []);
+  }, [settings.fontFamily]);
   
-  // Effect to apply the selected font family
+  // Effect to apply the selected font family and its configuration
   useEffect(() => {
     // Apply the font-family to the root element for use in CSS
     const fontFamilyValue = getFontFamilyString(settings.fontFamily);
+    const fontConfig = getFontConfig(settings.fontFamily);
+    
+    // Set all font-specific properties as CSS variables
     document.documentElement.style.setProperty('--scoreboard-font-family', fontFamilyValue);
+    
+    // Set orientation-specific properties
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const orientation = isLandscape ? 'landscape' : 'portrait';
+    
+    // Set score size based on orientation and font
+    document.documentElement.style.setProperty(
+      '--score-size', 
+      fontConfig.scoreSize[orientation]
+    );
+    
+    // Set score padding based on orientation and font
+    document.documentElement.style.setProperty(
+      '--score-padding', 
+      fontConfig.scorePadding[orientation]
+    );
+    
+    // Set font weight, line height, and letter spacing
+    document.documentElement.style.setProperty('--score-font-weight', String(fontConfig.fontWeight));
+    document.documentElement.style.setProperty('--score-line-height', String(fontConfig.lineHeight));
+    document.documentElement.style.setProperty('--score-letter-spacing', fontConfig.letterSpacing);
+    
   }, [settings.fontFamily]);
   
   // Disable browser's pull-to-refresh and other gestures
