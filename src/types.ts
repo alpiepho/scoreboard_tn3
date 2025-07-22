@@ -14,6 +14,7 @@ export interface GameState {
   awayScore: number;
   homeSets: number;
   awaySets: number;
+  lastScoringTeam: 'home' | 'away' | null; // Tracks which team scored last for serving indicator
 }
 
 export interface ScoreboardProps {

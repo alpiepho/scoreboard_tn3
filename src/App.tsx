@@ -48,7 +48,8 @@ function App() {
       homeScore: 0,
       awayScore: 0,
       homeSets: 0,
-      awaySets: 0
+      awaySets: 0,
+      lastScoringTeam: null
     };
   });
 
@@ -89,7 +90,8 @@ function App() {
       homeScore: 0,
       awayScore: 0,
       homeSets: 0,
-      awaySets: 0
+      awaySets: 0,
+      lastScoringTeam: null
     });
   };
 
@@ -128,7 +130,9 @@ function App() {
       homeScore: prevState.awayScore,
       awayScore: prevState.homeScore,
       homeSets: prevState.awaySets,
-      awaySets: prevState.homeSets
+      awaySets: prevState.homeSets,
+      lastScoringTeam: prevState.lastScoringTeam === 'home' ? 'away' : 
+                       prevState.lastScoringTeam === 'away' ? 'home' : null
     }));
   };
 

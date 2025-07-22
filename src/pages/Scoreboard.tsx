@@ -174,7 +174,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     setGameState(prevState => {
       const updatedState = {
         ...prevState,
-        homeScore: newHomeScore
+        homeScore: newHomeScore,
+        lastScoringTeam: 'home' as const
       };
       // Update ref immediately
       gameStateRef.current = updatedState;
@@ -232,7 +233,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     setGameState(prevState => {
       const updatedState = {
         ...prevState,
-        awayScore: newAwayScore
+        awayScore: newAwayScore,
+        lastScoringTeam: 'away' as const
       };
       // Update ref immediately
       gameStateRef.current = updatedState;
@@ -510,7 +512,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           onTouchCancel={handleHomeMouseLeave}
         >
           <div className="score-content">
-            <div className="team-name">{settings.homeTeamName}</div>
+            <div className="team-name">
+              {gameState.lastScoringTeam === 'home' 
+                ? `${settings.homeTeamName} >` 
+                : settings.homeTeamName}
+            </div>
             <div className="score">{gameState.homeScore}</div>
           </div>
           
@@ -562,7 +568,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           onTouchCancel={handleAwayMouseLeave}
         >
           <div className="score-content">
-            <div className="team-name">{settings.awayTeamName}</div>
+            <div className="team-name">
+              {gameState.lastScoringTeam === 'away' 
+                ? `< ${settings.awayTeamName}` 
+                : settings.awayTeamName}
+            </div>
             <div className="score">{gameState.awayScore}</div>
           </div>
           
