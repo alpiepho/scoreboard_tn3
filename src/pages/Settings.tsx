@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
 import './Settings.css';
-import './FontPreview.css';
 import AboutModal from '../components/AboutModal';
 import { fontFamilies } from '../utils/fonts';
 
@@ -17,6 +16,7 @@ const Settings: React.FC<SettingsProps> = ({
 }) => {
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
+  const [showFontDropdown, setShowFontDropdown] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   
   // Handle input changes
@@ -64,8 +64,8 @@ const Settings: React.FC<SettingsProps> = ({
     if (!isTeamNameField) {
       setSettings(updatedSettings);
       
-      // Only navigate back to scoreboard for settings other than theme, vibrate, and fontFamily
-      if (name !== 'theme' && name !== 'vibrateOnButtonPress' && name !== 'fontFamily') {
+      // Only navigate back to scoreboard for settings other than theme and vibrate
+      if (name !== 'theme' && name !== 'vibrateOnButtonPress') {
         navigate('/');
       }
     }
@@ -120,6 +120,21 @@ const Settings: React.FC<SettingsProps> = ({
     e.stopPropagation();
   };
   
+  // Effect to close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const dropdown = document.querySelector('.custom-dropdown');
+      if (dropdown && !dropdown.contains(event.target as Node) && showFontDropdown) {
+        setShowFontDropdown(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFontDropdown]);
+
   return (
     <div className="settings-container" onScroll={handleScroll}>
       <div className="settings-header">
@@ -287,25 +302,42 @@ const Settings: React.FC<SettingsProps> = ({
           
           <div className="form-group">
             <label htmlFor="fontFamily">Font Style</label>
-            <div className="font-preview-container">
-              {fontFamilies.map((font) => (
-                <div 
-                  key={font.value}
-                  className={`font-preview-item ${font.className} ${localSettings.fontFamily === font.value ? 'selected' : ''}`}
-                  onClick={() => {
-                    const updatedSettings = {
-                      ...localSettings,
-                      fontFamily: font.value as "Default" | "Lato" | "Merriweather" | "Montserrat" | "OpenSans" | "RobotoMono" | "RockSalt" | "SpaceMono" | "LeagueSpartan"
-                    };
-                    setLocalSettings(updatedSettings);
-                    setSettings(updatedSettings);
-                    // Navigate back to scoreboard immediately after selecting font
-                    navigate('/');
-                  }}
-                >
-                  {font.label}
+            <div className="custom-dropdown">
+              <div 
+                className="dropdown-selected"
+                onClick={() => setShowFontDropdown(!showFontDropdown)}
+              >
+                <span className={fontFamilies.find(f => f.value === localSettings.fontFamily)?.className || ''}>
+                  {fontFamilies.find(f => f.value === localSettings.fontFamily)?.label || 'Default: ex. 0123456789'}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="dropdown-arrow">
+                  <path d="M7 10l5 5 5-5z" fill="currentColor" />
+                </svg>
+              </div>
+              
+              {showFontDropdown && (
+                <div className="dropdown-options">
+                  {fontFamilies.map((font) => (
+                    <div 
+                      key={font.value}
+                      className={`dropdown-option ${font.className} ${localSettings.fontFamily === font.value ? 'selected' : ''}`}
+                      onClick={() => {
+                        const updatedSettings = {
+                          ...localSettings,
+                          fontFamily: font.value as "Default" | "Lato" | "Merriweather" | "Montserrat" | "OpenSans" | "RobotoMono" | "RockSalt" | "SpaceMono" | "LeagueSpartan"
+                        };
+                        setLocalSettings(updatedSettings);
+                        setSettings(updatedSettings);
+                        setShowFontDropdown(false);
+                        // Navigate back to scoreboard immediately after selecting font
+                        navigate('/');
+                      }}
+                    >
+                      {font.label}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           </div>
           
