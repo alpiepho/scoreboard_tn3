@@ -1,7 +1,7 @@
 {
   "name": "scorest-n3",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.5.1",
   "type": "module",
   "homepage": "https://alpiepho.github.io/scoreboard_tn3/",
   "scripts": {
