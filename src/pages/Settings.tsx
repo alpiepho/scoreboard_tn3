@@ -57,8 +57,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
       maxSets: 5 as 3 | 5,
       showSets: true,
       colorsSwapped: false,
-      scoreSize: 1.0,
-      nameSize: 1.0,
     };
     
     // Update local settings and apply them
@@ -188,76 +186,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, setSettings, resetScores,
               <option value="light">Light</option>
               <option value="dark">Dark</option>
             </select>
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="scoreSize">Score Size</label>
-            <div className="slider-container">
-              <button 
-                className="size-button" 
-                onClick={() => setLocalSettings({
-                  ...localSettings,
-                  scoreSize: Math.max(0.8, localSettings.scoreSize - 0.1)
-                })}
-                disabled={localSettings.scoreSize <= 0.8}
-              >-</button>
-              <input
-                type="range"
-                id="scoreSize"
-                name="scoreSize"
-                min="0.8"
-                max="1.2"
-                step="0.1"
-                value={localSettings.scoreSize}
-                onChange={(e) => setLocalSettings({
-                  ...localSettings,
-                  scoreSize: parseFloat(e.target.value)
-                })}
-              />
-              <button 
-                className="size-button" 
-                onClick={() => setLocalSettings({
-                  ...localSettings,
-                  scoreSize: Math.min(1.2, localSettings.scoreSize + 0.1)
-                })}
-                disabled={localSettings.scoreSize >= 1.2}
-              >+</button>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="nameSize">Team Name Size</label>
-            <div className="slider-container">
-              <button 
-                className="size-button" 
-                onClick={() => setLocalSettings({
-                  ...localSettings,
-                  nameSize: Math.max(0.8, localSettings.nameSize - 0.1)
-                })}
-                disabled={localSettings.nameSize <= 0.8}
-              >-</button>
-              <input
-                type="range"
-                id="nameSize"
-                name="nameSize"
-                min="0.8"
-                max="1.2"
-                step="0.1"
-                value={localSettings.nameSize}
-                onChange={(e) => setLocalSettings({
-                  ...localSettings,
-                  nameSize: parseFloat(e.target.value)
-                })}
-              />
-              <button 
-                className="size-button" 
-                onClick={() => setLocalSettings({
-                  ...localSettings,
-                  nameSize: Math.min(1.2, localSettings.nameSize + 0.1)
-                })}
-                disabled={localSettings.nameSize >= 1.2}
-              >+</button>
-            </div>
           </div>
           
           <div className="form-group checkbox">

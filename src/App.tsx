@@ -16,8 +16,6 @@ function App() {
     maxSets: 5, // Default to 5 sets
     showSets: true, // Default to showing sets
     colorsSwapped: false, // Default to unswapped colors
-    scoreSize: 1.0, // Default score size multiplier
-    nameSize: 1.0, // Default team name size multiplier
   };
 
   // Initialize settings from localStorage or use defaults
@@ -28,14 +26,6 @@ function App() {
     if (savedSettings) {
       // Parse saved settings
       loadedSettings = JSON.parse(savedSettings);
-      
-      // Ensure new properties exist even in old stored settings
-      if (loadedSettings.scoreSize === undefined) {
-        loadedSettings.scoreSize = 1.0;
-      }
-      if (loadedSettings.nameSize === undefined) {
-        loadedSettings.nameSize = 1.0;
-      }
     } else {
       loadedSettings = defaultSettings;
     }
@@ -67,7 +57,7 @@ function App() {
     localStorage.setItem('scoresTN3Settings', JSON.stringify(settings));
   }, [settings]);
 
-  // Apply team colors and font sizes based on settings
+  // Apply team colors based on settings
   useEffect(() => {
     console.log('Applying colors, swapped:', settings.colorsSwapped);
     const homeColor = settings.colorsSwapped ? '#f44336' : '#2196f3'; // Red : Blue if swapped
@@ -77,20 +67,7 @@ function App() {
     // These will override any values set in CSS
     document.documentElement.style.setProperty('--home-team-color', homeColor);
     document.documentElement.style.setProperty('--away-team-color', awayColor);
-    
-    // Apply font size multipliers - ensure values exist before using toString()
-    if (settings.scoreSize !== undefined) {
-      document.documentElement.style.setProperty('--score-size-multiplier', settings.scoreSize.toString());
-    } else {
-      document.documentElement.style.setProperty('--score-size-multiplier', '1.0');
-    }
-    
-    if (settings.nameSize !== undefined) {
-      document.documentElement.style.setProperty('--name-size-multiplier', settings.nameSize.toString());
-    } else {
-      document.documentElement.style.setProperty('--name-size-multiplier', '1.0');
-    }
-  }, [settings.colorsSwapped, settings.scoreSize, settings.nameSize]); // Update on any related changes
+  }, [settings.colorsSwapped]); // Update only when colorsSwapped changes
 
   // Initialize game state when the app first loads
   useEffect(() => {

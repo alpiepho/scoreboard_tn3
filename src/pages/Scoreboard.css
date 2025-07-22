@@ -68,7 +68,7 @@
 /* Add specific styling for team name and score */
 .team-name {
   color: var(--text-color); /* Use theme text color */
-  font-size: calc(clamp(3rem, 9vw, 5rem) * var(--name-size-multiplier, 1)); /* Responsive with multiplier */
+  font-size: clamp(3rem, 9vw, 5rem); /* Responsive sizing */
   font-weight: 700; /* Increased from 600 for better visibility */
   text-transform: uppercase;
   margin-top: 0; /* Removed top margin to help with centering */
@@ -82,7 +82,7 @@
 
 .score {
   color: var(--score-color); /* Use theme score color */
-  font-size: calc(clamp(15rem, 52.5vw, 37.5rem) * var(--score-size-multiplier, 1)); /* Responsive with multiplier */
+  font-size: clamp(15rem, 52.5vw, 37.5rem); /* Responsive sizing */
   font-weight: bold;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 1;
@@ -146,12 +146,12 @@
   }
   
   .score {
-    font-size: calc(clamp(8rem, 18vh, 16rem) * var(--score-size-multiplier, 1)); /* Multiplier applied */
+    font-size: clamp(8rem, 18vh, 16rem); /* Responsive sizing for landscape */
     padding-bottom: 0; /* Remove padding as we're using margin on score-content */
   }
   
   .team-name {
-    font-size: calc(clamp(1.8rem, 4vh, 3rem) * var(--name-size-multiplier, 1)); /* Multiplier applied */
+    font-size: clamp(1.8rem, 4vh, 3rem); /* Responsive sizing for landscape */
     margin-bottom: 0.1rem;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
@@ -270,7 +270,7 @@
   
   /* Adjust score size for portrait */
   .score {
-    font-size: calc(clamp(15rem, 52.5vw, 30rem) * var(--score-size-multiplier, 1)); /* Use multiplier */
+    font-size: clamp(15rem, 52.5vw, 30rem); /* Responsive sizing */
     padding-bottom: 0; /* Remove padding as we'll position set circles absolutely */
     line-height: 0.9;
   }
@@ -344,11 +344,11 @@
 
 @media (orientation: portrait) and (max-width: 480px) {
   .score {
-    font-size: calc(clamp(12rem, 52.5vw, 27rem) * var(--score-size-multiplier, 1)); /* Increased with multiplier */
+    font-size: clamp(12rem, 52.5vw, 27rem); /* Responsive sizing */
   }
   
   .team-name {
-    font-size: calc(clamp(2.2rem, 8vw, 3.5rem) * var(--name-size-multiplier, 1)); /* Adjusted with multiplier */
+    font-size: clamp(2.2rem, 8vw, 3.5rem); /* Responsive sizing */
     /* Small space between team name and score */
     margin-bottom: 0.1rem;
   }
