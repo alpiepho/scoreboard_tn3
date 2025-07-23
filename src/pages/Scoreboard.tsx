@@ -5,7 +5,7 @@ import ScoreAlert from '../components/ScoreAlert';
 import './Scoreboard.css';
 import './ScoreboardTheme.css'; // Import theme-specific styles
 import { getFontFamilyString } from '../utils/fonts';
-import { getFontConfig } from '../utils/fontConfig';
+import { getFontConfig, CONFIG_VERSION } from '../utils/fontConfig';
 
 const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState }) => {
   const navigate = useNavigate();
@@ -53,15 +53,21 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       // This will trigger CSS media queries to adjust score size
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
       
+      // Use a multiplier of 1.0 as the base size (changed from 2.0 for testing)
+      const sizeMultiplier = 1.0;
+      
       // Update font config for current orientation
-      const fontConfig = getFontConfig(settings.fontFamily);
       const isLandscape = window.innerWidth > window.innerHeight;
       const orientation = isLandscape ? 'landscape' : 'portrait';
+      
+      // Get font config with orientation-specific multiplier
+      const fontConfig = getFontConfig(settings.fontFamily, sizeMultiplier);
+      console.log(`RESIZE EVENT - Applied in resize: ${orientation}, score size: ${fontConfig.scoreSize?.[orientation]}, version: ${CONFIG_VERSION}`);
       
       // Update orientation-specific properties
       document.documentElement.style.setProperty(
         '--score-size', 
-        fontConfig.scoreSize[orientation]
+        fontConfig.scoreSize?.[orientation] || ''
       );
       
       document.documentElement.style.setProperty(
@@ -77,29 +83,39 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
     
+    // Force a resize event when component mounts to ensure latest config is applied
+    const timer = setTimeout(handleResize, 100);
+    
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
+      clearTimeout(timer);
     };
-  }, [settings.fontFamily]);
+  }, [settings.fontFamily, CONFIG_VERSION]);
   
   // Effect to apply the selected font family and its configuration
   useEffect(() => {
     // Apply the font-family to the root element for use in CSS
     const fontFamilyValue = getFontFamilyString(settings.fontFamily);
-    const fontConfig = getFontConfig(settings.fontFamily);
     
-    // Set all font-specific properties as CSS variables
-    document.documentElement.style.setProperty('--scoreboard-font-family', fontFamilyValue);
+    // Use a multiplier of 1.0 as the base size (changed from 2.0 for testing)
+    const sizeMultiplier = 1.0;
     
     // Set orientation-specific properties
     const isLandscape = window.innerWidth > window.innerHeight;
     const orientation = isLandscape ? 'landscape' : 'portrait';
     
+    // Get font config with orientation-specific multiplier
+    const fontConfig = getFontConfig(settings.fontFamily, sizeMultiplier);
+    console.log(`FONT EFFECT - Applied in font effect: ${orientation}, score size: ${fontConfig.scoreSize?.[orientation]}, version: ${CONFIG_VERSION}`);
+    
+    // Set all font-specific properties as CSS variables
+    document.documentElement.style.setProperty('--scoreboard-font-family', fontFamilyValue);
+    
     // Set score size based on orientation and font
     document.documentElement.style.setProperty(
       '--score-size', 
-      fontConfig.scoreSize[orientation]
+      fontConfig.scoreSize?.[orientation] || ''
     );
     
     // Set score padding based on orientation and font
@@ -113,7 +129,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     document.documentElement.style.setProperty('--score-line-height', String(fontConfig.lineHeight));
     document.documentElement.style.setProperty('--score-letter-spacing', fontConfig.letterSpacing);
     
-  }, [settings.fontFamily]);
+  }, [settings.fontFamily, CONFIG_VERSION]);
   
   // Disable browser's pull-to-refresh and other gestures
   useEffect(() => {

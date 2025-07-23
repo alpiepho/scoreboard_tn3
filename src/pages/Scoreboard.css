@@ -147,7 +147,8 @@
   }
   
   .score {
-    font-size: clamp(32rem, 72vh, 64rem); /* Responsive sizing for landscape - QUADRUPLED */
+    /* Use CSS variable instead of hardcoded font size */
+    /* font-size: clamp(32rem, 72vh, 64rem); */
     padding-bottom: 0; /* Remove padding as we're using margin on score-content */
   }
   
@@ -272,7 +273,8 @@
   
   /* Adjust score size for portrait */
   .score {
-    font-size: clamp(30rem, 105vw, 60rem); /* Responsive sizing - DOUBLED */
+    /* Use CSS variable instead of hardcoded font size */
+    /* font-size: clamp(30rem, 105vw, 60rem); */
     padding-bottom: 0; /* Remove padding as we'll position set circles absolutely */
     line-height: 0.9;
   }
@@ -345,9 +347,10 @@
 }
 
 @media (orientation: portrait) and (max-width: 480px) {
-  .score {
-    font-size: clamp(30rem, 105vw, 60rem); /* Responsive sizing - DOUBLED */
-  }
+  /* Score size is now controlled by CSS variables */
+  /* .score {
+    font-size: clamp(30rem, 105vw, 60rem);
+  } */
   
   .team-name {
     font-size: clamp(1.8rem, 6vw, 2.8rem); /* Reduced sizing for better positioning */
@@ -763,9 +766,10 @@
     font-size: clamp(2.5rem, 7vw, 4rem);
   }
   
-  .score {
-    font-size: 12rem; /* DOUBLED (reverted from QUADRUPLED) */
-  }
+  /* Score size is now controlled by CSS variables */
+  /* .score {
+    font-size: 12rem;
+  } */
 }
 
 @media (max-width: 480px) {
@@ -773,9 +777,11 @@
     font-size: clamp(2rem, 6vw, 3.5rem);
   }
   
+  /* Commented out to allow fontConfig.ts to control score size
   .score {
-    font-size: 10rem; /* DOUBLED (reverted from QUADRUPLED) */
+    font-size: 10rem; 
   }
+  */
 }
 
 .score-button .team-name,
@@ -799,9 +805,10 @@
     margin-bottom: 0.2rem;
   }
   
-  .score {
-    font-size: 8rem; /* DOUBLED (reverted from QUADRUPLED) */
-  }
+  /* Use the CSS variable instead of hardcoded font size */
+  /* .score {
+    font-size: 8rem;
+  } */
 }
 
 /* Additional adjustments for notched devices in landscape */
