@@ -1,17 +1,17 @@
 /* Theme-specific styles for scoreboard */
 .team-name {
-  color: var(--text-color); /* Uses theme text color */
+  /* color: var(--text-color); */ /* Uses theme text color */
   font-family: var(--scoreboard-font-family, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif);
 }
 
 .score {
-  color: var(--score-color); /* Uses theme score color */
+  /* color: var(--score-color); */ /* Uses theme score color */
   font-family: var(--scoreboard-font-family, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif);
 }
 
 .score-button {
   background-color: var(--scoreboard-bg);
-  color: var(--text-color);
+  /* color: var(--text-color); */
   border-color: var(--scoreboard-border);
 }
 
@@ -37,17 +37,32 @@
   text-shadow: var(--away-team-text-shadow, 0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
-/* Set circle colors always black, regardless of theme */
-.app.light .set-circle,
-.app.dark .set-circle {
-  border: 2px solid black ;
+/* Set circle colors from team colors */
+.app.light .home-set-circles .set-circle,
+.app.dark .home-set-circles .set-circle {
+  border: 2px solid var(--home-team-text-color, #fff);
+  background-color: transparent;
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-.app.light .set-circle.active,
-.app.dark .set-circle.active {
-  background-color: black ;
-  border-color: black ;
+.app.light .home-set-circles .set-circle.active,
+.app.dark .home-set-circles .set-circle.active {
+  background-color: var(--home-team-text-color, #fff);
+  border-color: var(--home-team-text-color, #fff);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+}
+
+.app.light .away-set-circles .set-circle,
+.app.dark .away-set-circles .set-circle {
+  border: 2px solid var(--away-team-text-color, #fff);
+  background-color: transparent;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+.app.light .away-set-circles .set-circle.active,
+.app.dark .away-set-circles .set-circle.active {
+  background-color: var(--away-team-text-color, #fff);
+  border-color: var(--away-team-text-color, #fff);
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
 }
 
@@ -59,7 +74,7 @@
 
 .app.dark .sets-button {
   background-color: rgba(0, 0, 0, 0.4);
-  color: black;
+  /* color: black; */
 }
 
 /* Set label colors based on theme */
@@ -72,11 +87,11 @@
 }
 
 .app.dark .sets-label {
-  color: black;
+  /* color: black; */
 }
 
 .app.dark .sets-value {
-  color: black;
+  /* color: black; */
 }
 
 /* Sets container theming */

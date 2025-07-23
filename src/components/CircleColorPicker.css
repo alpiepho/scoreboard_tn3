@@ -1,0 +1,70 @@
+/* Styles for the circle color picker component */
+.circle-color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.selected-circle-color {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  padding: 0 10px;
+  border: 1px solid var(--settings-border);
+  background-color: var(--settings-item-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.selected-circle-preview {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+  margin-right: 8px;
+}
+
+.selected-circle-preview.inactive {
+  margin-right: 16px;
+}
+
+.circle-color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.circle-color-option {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background-color: var(--settings-item-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.circle-color-option:hover {
+  transform: scale(1.1);
+}
+
+.circle-color-option.selected {
+  border-color: var(--text-color);
+  box-shadow: 0 0 0 2px var(--settings-border), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.circle-preview {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+}

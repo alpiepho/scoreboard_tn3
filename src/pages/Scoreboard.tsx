@@ -587,7 +587,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           
           {/* Home team sets circles */}
           {settings.showSets && (
-            <div className="team-sets-circles home-sets-circles">
+            <div className="team-sets-circles home-set-circles">
               <div className="sets-circles">
                 {[...Array(settings.maxSets)].map((_, index) => (
                   <div 
@@ -643,7 +643,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           
           {/* Away team sets circles */}
           {settings.showSets && (
-            <div className="team-sets-circles away-sets-circles">
+            <div className="team-sets-circles away-set-circles">
               <div className="sets-circles">
                 {[...Array(settings.maxSets)].map((_, index) => (
                   <div 

@@ -134,3 +134,14 @@ export function applyTeamColors(config: TeamColorConfig): void {
   
   console.log(`TEAM COLORS APPLIED - Home: ${config.home.name}, Away: ${config.away.name}, Swapped: ${config.swapTeamColors}, version: ${COLORS_CONFIG_VERSION}`);
 }
+
+/**
+ * Applies the team text colors from settings to CSS variables for home and away teams
+ * @param homeTextColor The text color for the home team
+ * @param awayTextColor The text color for the away team
+ */
+export function applyTeamTextColors(homeTextColor: string, awayTextColor: string): void {
+  console.log('Applying team text colors:', { homeTextColor, awayTextColor });
+  document.documentElement.style.setProperty('--home-team-text-color', homeTextColor);
+  document.documentElement.style.setProperty('--away-team-text-color', awayTextColor);
+}

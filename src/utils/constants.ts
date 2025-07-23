@@ -13,5 +13,8 @@ export const DEFAULT_SETTINGS = {
   colorsSwapped: false,
   fontFamily: 'Default',
   homeTeamColorId: 'blue',
-  awayTeamColorId: 'red'
+  awayTeamColorId: 'red',
+  homeTeamTextColorId: 'white',
+  awayTeamTextColorId: 'white',
+  setCircleColorId: 'black'
 };

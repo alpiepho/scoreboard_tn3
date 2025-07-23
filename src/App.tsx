@@ -4,8 +4,8 @@ import './App.css'
 import Scoreboard from './pages/Scoreboard'
 import Settings from './pages/Settings'
 import { AppSettings, GameState } from './types'
-import { getTeamColors, applyTeamColors } from './utils/teamColors'
-import { DEFAULT_SETTINGS } from './utils/constants'
+import { getTeamColors, applyTeamColors, applyTeamTextColors } from './utils/teamColors'
+import { textColorPresets } from './utils/textColors'
 
 function App() {
   // Default settings
@@ -21,6 +21,9 @@ function App() {
     fontFamily: 'Default', // Default font
     homeTeamColorId: 'blue', // Default home team color
     awayTeamColorId: 'red', // Default away team color
+    setCircleColorId: 'black', // Default set circle color
+    homeTeamTextColorId: 'white', // Default home team text color
+    awayTeamTextColorId: 'black', // Default away team text color
   };
 
   // Initialize settings from localStorage or use defaults
@@ -38,7 +41,10 @@ function App() {
         ...parsedSettings,
         // Make sure color IDs exist
         homeTeamColorId: parsedSettings.homeTeamColorId || 'blue',
-        awayTeamColorId: parsedSettings.awayTeamColorId || 'red'
+        awayTeamColorId: parsedSettings.awayTeamColorId || 'red',
+        setCircleColorId: parsedSettings.setCircleColorId || 'black',
+        homeTeamTextColorId: parsedSettings.homeTeamTextColorId || 'white',
+        awayTeamTextColorId: parsedSettings.awayTeamTextColorId || 'black',
       };
     } else {
       loadedSettings = defaultSettings;
@@ -51,6 +57,11 @@ function App() {
       loadedSettings.colorsSwapped
     );
     applyTeamColors(teamColors);
+    
+    // Apply text colors
+    const homeTextColor = (textColorPresets.find(c => c.id === loadedSettings.homeTeamTextColorId) || textColorPresets[0]).color;
+    const awayTextColor = (textColorPresets.find(c => c.id === loadedSettings.awayTeamTextColorId) || textColorPresets[0]).color;
+    applyTeamTextColors(homeTextColor, awayTextColor);
     
     return loadedSettings;
   });
@@ -88,7 +99,12 @@ function App() {
     // Apply the team colors to CSS variables
     applyTeamColors(teamColors);
     
-  }, [settings.colorsSwapped, settings.homeTeamColorId, settings.awayTeamColorId]); // Update when color settings change
+    // Apply team text colors
+    const homeTextColor = (textColorPresets.find(c => c.id === settings.homeTeamTextColorId) || textColorPresets[0]).color;
+    const awayTextColor = (textColorPresets.find(c => c.id === settings.awayTeamTextColorId) || textColorPresets[0]).color;
+    applyTeamTextColors(homeTextColor, awayTextColor);
+    
+  }, [settings.colorsSwapped, settings.homeTeamColorId, settings.awayTeamColorId, settings.homeTeamTextColorId, settings.awayTeamTextColorId]); // Update when color settings change
 
   // Initialize game state when the app first loads
   useEffect(() => {
@@ -143,6 +159,11 @@ function App() {
         newSettings.colorsSwapped
       );
       applyTeamColors(teamColors);
+      
+      // Apply text colors
+      const homeTextColor = (textColorPresets.find(c => c.id === newSettings.homeTeamTextColorId) || textColorPresets[0]).color;
+      const awayTextColor = (textColorPresets.find(c => c.id === newSettings.awayTeamTextColorId) || textColorPresets[0]).color;
+      applyTeamTextColors(homeTextColor, awayTextColor);
       
       return newSettings;
     });

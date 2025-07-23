@@ -405,7 +405,7 @@
   .sets-value {
     font-size: 1rem;
     margin: 0 0.3rem;
-    color: black;
+    color: var(--home-team-text-color, black);
   }
   
   .sets-button {
@@ -424,7 +424,7 @@
   height: 50px; /* Consistent size */
   border-radius: 50%;
   background-color: var(--primary-color); /* Use theme color */
-  color: white; /* Always white text for contrast */
+  color: var(--primary-text-color, white); /* Use theme variable for contrast, fallback to white */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -796,12 +796,12 @@
 }
 
 /* Further ensure theme buttons have proper color - always black regardless of theme */
-.app.dark .score-button .team-name,
+/* .app.dark .score-button .team-name,
 .app.dark .score-button .score,
 .app.light .score-button .team-name,
 .app.light .score-button .score {
   color: black;
-}
+} */
 
 /* Landscape orientation adjustments */
 @media (orientation: landscape) and (max-height: 500px) {

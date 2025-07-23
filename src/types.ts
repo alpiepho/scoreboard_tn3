@@ -10,6 +10,9 @@ export interface AppSettings {
   fontFamily: 'Default' | 'Lato' | 'Merriweather' | 'Montserrat' | 'OpenSans' | 'RobotoMono' | 'RockSalt' | 'SpaceMono' | 'LeagueSpartan'; // Font for scores and team names
   homeTeamColorId: string; // Color ID for home team from teamColors.ts
   awayTeamColorId: string; // Color ID for away team from teamColors.ts
+  homeTeamTextColorId: string; // Text color ID for home team
+  awayTeamTextColorId: string; // Text color ID for away team
+  setCircleColorId: string; // Color ID for set circles from circleColors.ts
 }
 
 export interface GameState {
