@@ -24,13 +24,17 @@
   background-color: var(--away-team-color); /* Red color from CSS variables */
 }
 
-/* Always use white text on colored team buttons, regardless of theme */
+/* Separate text color variables for home and away */
 .score-button.home .team-name,
-.score-button.home .score,
+.score-button.home .score {
+  color: var(--home-team-text-color, white);
+  text-shadow: var(--home-team-text-shadow, 0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
 .score-button.away .team-name,
 .score-button.away .score {
-  color: white ; /* Force white text for all themes */
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Add shadow for readability */
+  color: var(--away-team-text-color, white);
+  text-shadow: var(--away-team-text-shadow, 0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 /* Set circle colors always black, regardless of theme */

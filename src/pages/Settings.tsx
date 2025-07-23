@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
 import './Settings.css';
+import './TeamColorStyles.css';
 import AboutModal from '../components/AboutModal';
 import { fontFamilies } from '../utils/fonts';
+import TeamColorPicker from '../components/TeamColorPicker';
+import { getTeamColors, applyTeamColors } from '../utils/teamColors';
 
 const Settings: React.FC<SettingsProps> = ({ 
   settings, 
@@ -95,11 +98,21 @@ const Settings: React.FC<SettingsProps> = ({
       showSets: true,
       colorsSwapped: false,
       fontFamily: 'Default' as 'Default' | 'Lato' | 'Merriweather' | 'Montserrat' | 'OpenSans' | 'RobotoMono' | 'RockSalt' | 'SpaceMono' | 'LeagueSpartan',
+      homeTeamColorId: 'blue',
+      awayTeamColorId: 'red'
     };
     
     // Update local settings and apply them
     setLocalSettings(defaultSettings);
     setSettings(defaultSettings);
+    
+    // Apply the team colors immediately
+    const teamColors = getTeamColors(
+      defaultSettings.homeTeamColorId,
+      defaultSettings.awayTeamColorId,
+      defaultSettings.colorsSwapped
+    );
+    applyTeamColors(teamColors);
     
     // Also reset scores and sets
     resetScoresAndSets();
@@ -134,6 +147,41 @@ const Settings: React.FC<SettingsProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showFontDropdown]);
+
+  // Handle team color changes
+  const handleHomeColorChange = (colorId: string) => {
+    const updatedSettings = {
+      ...localSettings,
+      homeTeamColorId: colorId
+    };
+    setLocalSettings(updatedSettings);
+    setSettings(updatedSettings);
+    
+    // Apply the team colors immediately
+    const teamColors = getTeamColors(
+      colorId,
+      updatedSettings.awayTeamColorId,
+      updatedSettings.colorsSwapped
+    );
+    applyTeamColors(teamColors);
+  };
+  
+  const handleAwayColorChange = (colorId: string) => {
+    const updatedSettings = {
+      ...localSettings,
+      awayTeamColorId: colorId
+    };
+    setLocalSettings(updatedSettings);
+    setSettings(updatedSettings);
+    
+    // Apply the team colors immediately
+    const teamColors = getTeamColors(
+      updatedSettings.homeTeamColorId,
+      colorId,
+      updatedSettings.colorsSwapped
+    );
+    applyTeamColors(teamColors);
+  };
 
   return (
     <div className="settings-container" onScroll={handleScroll}>
@@ -405,6 +453,29 @@ const Settings: React.FC<SettingsProps> = ({
               value={localSettings.awayTeamName}
               onChange={handleChange}
             />
+          </div>
+        </div>
+        
+        <div className="form-group">
+          <label>Team Colors</label>
+          <div className="team-colors-container">
+            <div className="team-color-section">
+              <h3>Home Team</h3>
+              <TeamColorPicker 
+                teamType="home"
+                selectedColorId={localSettings.homeTeamColorId}
+                onChange={handleHomeColorChange}
+              />
+            </div>
+            
+            <div className="team-color-section">
+              <h3>Away Team</h3>
+              <TeamColorPicker 
+                teamType="away"
+                selectedColorId={localSettings.awayTeamColorId}
+                onChange={handleAwayColorChange}
+              />
+            </div>
           </div>
         </div>
       </div>

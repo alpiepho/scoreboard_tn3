@@ -8,6 +8,8 @@ export interface AppSettings {
   showSets: boolean; // Toggle visibility of sets display
   colorsSwapped: boolean; // Track if team colors have been swapped
   fontFamily: 'Default' | 'Lato' | 'Merriweather' | 'Montserrat' | 'OpenSans' | 'RobotoMono' | 'RockSalt' | 'SpaceMono' | 'LeagueSpartan'; // Font for scores and team names
+  homeTeamColorId: string; // Color ID for home team from teamColors.ts
+  awayTeamColorId: string; // Color ID for away team from teamColors.ts
 }
 
 export interface GameState {

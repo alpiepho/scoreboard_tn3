@@ -4,6 +4,8 @@ import './App.css'
 import Scoreboard from './pages/Scoreboard'
 import Settings from './pages/Settings'
 import { AppSettings, GameState } from './types'
+import { getTeamColors, applyTeamColors } from './utils/teamColors'
+import { DEFAULT_SETTINGS } from './utils/constants'
 
 function App() {
   // Default settings
@@ -17,6 +19,8 @@ function App() {
     showSets: true, // Default to showing sets
     colorsSwapped: false, // Default to unswapped colors
     fontFamily: 'Default', // Default font
+    homeTeamColorId: 'blue', // Default home team color
+    awayTeamColorId: 'red', // Default away team color
   };
 
   // Initialize settings from localStorage or use defaults
@@ -26,16 +30,27 @@ function App() {
     
     if (savedSettings) {
       // Parse saved settings
-      loadedSettings = JSON.parse(savedSettings);
+      const parsedSettings = JSON.parse(savedSettings);
+      
+      // Ensure all required properties exist (in case we're loading older saved settings)
+      loadedSettings = {
+        ...defaultSettings,
+        ...parsedSettings,
+        // Make sure color IDs exist
+        homeTeamColorId: parsedSettings.homeTeamColorId || 'blue',
+        awayTeamColorId: parsedSettings.awayTeamColorId || 'red'
+      };
     } else {
       loadedSettings = defaultSettings;
     }
     
     // Apply colors immediately based on loaded settings
-    const homeColor = loadedSettings.colorsSwapped ? '#f44336' : '#2196f3'; // Red : Blue if swapped
-    const awayColor = loadedSettings.colorsSwapped ? '#2196f3' : '#f44336'; // Blue : Red if swapped
-    document.documentElement.style.setProperty('--home-team-color', homeColor);
-    document.documentElement.style.setProperty('--away-team-color', awayColor);
+    const teamColors = getTeamColors(
+      loadedSettings.homeTeamColorId,
+      loadedSettings.awayTeamColorId,
+      loadedSettings.colorsSwapped
+    );
+    applyTeamColors(teamColors);
     
     return loadedSettings;
   });
@@ -62,14 +77,18 @@ function App() {
   // Apply team colors based on settings
   useEffect(() => {
     console.log('Applying colors, swapped:', settings.colorsSwapped);
-    const homeColor = settings.colorsSwapped ? '#f44336' : '#2196f3'; // Red : Blue if swapped
-    const awayColor = settings.colorsSwapped ? '#2196f3' : '#f44336'; // Blue : Red if swapped
     
-    // Apply the colors immediately and ensure they take effect
-    // These will override any values set in CSS
-    document.documentElement.style.setProperty('--home-team-color', homeColor);
-    document.documentElement.style.setProperty('--away-team-color', awayColor);
-  }, [settings.colorsSwapped]); // Update only when colorsSwapped changes
+    // Get and apply the team colors using the utility function
+    const teamColors = getTeamColors(
+      settings.homeTeamColorId,
+      settings.awayTeamColorId,
+      settings.colorsSwapped
+    );
+    
+    // Apply the team colors to CSS variables
+    applyTeamColors(teamColors);
+    
+  }, [settings.colorsSwapped, settings.homeTeamColorId, settings.awayTeamColorId]); // Update when color settings change
 
   // Initialize game state when the app first loads
   useEffect(() => {
@@ -109,21 +128,23 @@ function App() {
   const swapHomeAndAway = () => {
     // Swap team names, scores, sets, and toggle the colorsSwapped flag
     setSettings(prevSettings => {
-      // Update colors based on the new swapped state
-      const newSwappedState = !prevSettings.colorsSwapped;
-      const homeColor = newSwappedState ? '#f44336' : '#2196f3'; // Red : Blue
-      const awayColor = newSwappedState ? '#2196f3' : '#f44336'; // Blue : Red
-      
-      // Set the CSS variables immediately
-      document.documentElement.style.setProperty('--home-team-color', homeColor);
-      document.documentElement.style.setProperty('--away-team-color', awayColor);
-      
-      return {
+      // Create new settings with swapped values
+      const newSettings = {
         ...prevSettings,
         homeTeamName: prevSettings.awayTeamName,
         awayTeamName: prevSettings.homeTeamName,
-        colorsSwapped: newSwappedState
+        colorsSwapped: !prevSettings.colorsSwapped
       };
+      
+      // Apply the updated colors immediately
+      const teamColors = getTeamColors(
+        newSettings.homeTeamColorId,
+        newSettings.awayTeamColorId,
+        newSettings.colorsSwapped
+      );
+      applyTeamColors(teamColors);
+      
+      return newSettings;
     });
     
     // Swap scores and sets in game state
