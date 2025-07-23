@@ -143,7 +143,11 @@
   }
   
   .score-content {
+    margin-top: 20px; /* Add space above the content in landscape */
     margin-bottom: 40px; /* Add space below the content for set circles */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .score {
@@ -153,8 +157,9 @@
   }
   
   .team-name {
-    font-size: clamp(1.8rem, 4vh, 3rem); /* Responsive sizing for landscape */
-    margin-bottom: 0.1rem;
+    font-size: clamp(1.8rem, 4vh, 3.2rem); /* Adjusted to be more balanced with portrait size */
+    margin-top: 1rem; /* Add padding above team name in landscape */
+    margin-bottom: 1rem; /* Increase space between team name and score */
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
   
@@ -801,8 +806,9 @@
 /* Landscape orientation adjustments */
 @media (orientation: landscape) and (max-height: 500px) {
   .team-name {
-    font-size: clamp(2rem, 7vw, 3.5rem);
-    margin-bottom: 0.2rem;
+    font-size: clamp(1.8rem, 4vh, 3rem); /* Adjusted to be more balanced with portrait size */
+    margin-top: 0.8rem; /* Add padding above team name (slightly less for small screens) */
+    margin-bottom: 0.8rem; /* Increase space between team name and score */
   }
   
   /* Use the CSS variable instead of hardcoded font size */
