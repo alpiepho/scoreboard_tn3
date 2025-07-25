@@ -575,11 +575,9 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
 
   // Helper to resolve color (preset or custom)
   function resolveColor(colorId: string, customArr: string[], presetArr: any[], presetKey: string) {
-    // If colorId is a hex code and exists in customArr, use it directly
     if (colorId.startsWith('#') && customArr.includes(colorId)) {
       return colorId;
     }
-    // Otherwise, try to find in presetArr
     const preset = presetArr.find((p: any) => p.id === colorId);
     return preset ? preset[presetKey] : colorId;
   }
@@ -591,6 +589,17 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   // Get text colors (preset or custom)
   const homeTextColor = resolveColor(settings.homeTeamTextColorId, customColors.homeText, textColorPresets, 'color');
   const awayTextColor = resolveColor(settings.awayTeamTextColorId, customColors.awayText, textColorPresets, 'color');
+
+  // Patch: set CSS variables for text color so all children (name, score, circles) inherit it
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--scoreboard-home-text-color', homeTextColor);
+    root.style.setProperty('--scoreboard-away-text-color', awayTextColor);
+    return () => {
+      root.style.removeProperty('--scoreboard-home-text-color');
+      root.style.removeProperty('--scoreboard-away-text-color');
+    };
+  }, [homeTextColor, awayTextColor]);
 
   return (
     <div className="scoreboard-container">
@@ -609,7 +618,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           className={`score-button home ${homePressed ? 'pressed' : ''} ${homeAutoDecrementing ? 'auto-decrementing' : ''}`}
           style={{
             backgroundColor: homeBgColor,
-            color: homeTextColor,
+            color: 'var(--scoreboard-home-text-color)', // Inherit text color for all children
             fontFamily: getFontFamilyString(settings.fontFamily),
           }}
           onMouseDown={handleHomeMouseDown}
@@ -620,22 +629,18 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           onTouchCancel={handleHomeMouseLeave}
         >
           <div className="score-content">
-            <div className="team-name">
-              {gameState.lastScoringTeam === 'home' 
-                ? `${settings.homeTeamName} >` 
-                : settings.homeTeamName}
-            </div>
-            <div className="score">{gameState.homeScore}</div>
+            <div className="team-name" style={{ color: 'var(--scoreboard-home-text-color)' }}>{gameState.lastScoringTeam === 'home' ? `${settings.homeTeamName} >` : settings.homeTeamName}</div>
+            <div className="score" style={{ color: 'var(--scoreboard-home-text-color)' }}>{gameState.homeScore}</div>
           </div>
-          
           {/* Home team sets circles */}
           {settings.showSets && (
             <div className="team-sets-circles home-set-circles">
               <div className="sets-circles">
                 {[...Array(settings.maxSets)].map((_, index) => (
                   <div 
-                    key={`home-set-${index}`} 
+                    key={`home-set-${index}`}
                     className={`set-circle ${index < gameState.homeSets ? 'active' : ''}`}
+                    style={{ borderColor: 'var(--scoreboard-home-text-color)', backgroundColor: index < gameState.homeSets ? 'var(--scoreboard-home-text-color)' : 'transparent' }}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent triggering score button
                       e.preventDefault(); // Prevent default browser behavior
@@ -665,12 +670,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
             </div>
           )}
         </div>
-        
         <div 
           className={`score-button away ${awayPressed ? 'pressed' : ''} ${awayAutoDecrementing ? 'auto-decrementing' : ''}`}
           style={{
             backgroundColor: awayBgColor,
-            color: awayTextColor,
+            color: 'var(--scoreboard-away-text-color)',
             fontFamily: getFontFamilyString(settings.fontFamily),
           }}
           onMouseDown={handleAwayMouseDown}
@@ -681,22 +685,18 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           onTouchCancel={handleAwayMouseLeave}
         >
           <div className="score-content">
-            <div className="team-name">
-              {gameState.lastScoringTeam === 'away' 
-                ? `< ${settings.awayTeamName}` 
-                : settings.awayTeamName}
-            </div>
-            <div className="score">{gameState.awayScore}</div>
+            <div className="team-name" style={{ color: 'var(--scoreboard-away-text-color)' }}>{gameState.lastScoringTeam === 'away' ? `< ${settings.awayTeamName}` : settings.awayTeamName}</div>
+            <div className="score" style={{ color: 'var(--scoreboard-away-text-color)' }}>{gameState.awayScore}</div>
           </div>
-          
           {/* Away team sets circles */}
           {settings.showSets && (
             <div className="team-sets-circles away-set-circles">
               <div className="sets-circles">
                 {[...Array(settings.maxSets)].map((_, index) => (
                   <div 
-                    key={`away-set-${index}`} 
+                    key={`away-set-${index}`}
                     className={`set-circle ${index < gameState.awaySets ? 'active' : ''}`}
+                    style={{ borderColor: 'var(--scoreboard-away-text-color)', backgroundColor: index < gameState.awaySets ? 'var(--scoreboard-away-text-color)' : 'transparent' }}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent triggering score button
                       e.preventDefault(); // Prevent default browser behavior
