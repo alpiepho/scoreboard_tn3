@@ -48,6 +48,9 @@ const Settings: React.FC<SettingsProps> = ({
     color: string
   }>(null);
   
+  // Factory defaults dialog state
+  const [showFactoryDefaultsDialog, setShowFactoryDefaultsDialog] = useState(false);
+  
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -88,7 +91,7 @@ const Settings: React.FC<SettingsProps> = ({
       };
     }
     
-    // Update local state
+    // Update local settings
     setLocalSettings(updatedSettings);      // For all settings except team names, immediately apply
     if (!isTeamNameField) {
       setSettings(updatedSettings);
@@ -128,7 +131,7 @@ const Settings: React.FC<SettingsProps> = ({
       awayTeamColorId: 'red',
       setCircleColorId: 'black',
       homeTeamTextColorId: 'black', // Force home text color to black
-      awayTeamTextColorId: 'black'  // Force away text color to black
+      awayTeamTextColorId: 'black',  // Force away text color to black
     };
     
     // Update local settings and apply them
@@ -177,6 +180,17 @@ const Settings: React.FC<SettingsProps> = ({
     };
   }, [showFontDropdown]);
 
+
+  // Factory defaults handler
+  const handleFactoryDefaults = () => {
+    setShowFactoryDefaultsDialog(true);
+  };
+
+  const confirmFactoryDefaults = () => {
+    // Clear all localStorage and reload app
+    localStorage.clear();
+    window.location.reload();
+  };
 
   return (
     <div className="settings-container" onScroll={handleScroll}>
@@ -286,7 +300,7 @@ const Settings: React.FC<SettingsProps> = ({
         </div>
         
         <div className="form-group">
-          <button className="reset-button" onClick={resetToDefaults}>
+          <button className="reset-button" type="button" onClick={resetToDefaults}>
             Reset All Settings
           </button>
         </div>
@@ -572,14 +586,17 @@ const Settings: React.FC<SettingsProps> = ({
       </div>
       
       <div className="settings-actions">
-        <button className="save-button" onClick={saveSettings}>
+        <button className="save-button" type="button" onClick={saveSettings}>
           Save Team Details
         </button>
-        <button className="about-button" onClick={() => setShowAboutModal(true)}>
+        <button className="about-button" type="button" onClick={() => setShowAboutModal(true)}>
           About
         </button>
-        <button className="cancel-button" onClick={handleCancel}>
+        <button className="cancel-button" type="button" onClick={handleCancel}>
           Cancel
+        </button>
+        <button className="reset-button" type="button" onClick={handleFactoryDefaults}>
+          Factory Defaults
         </button>
       </div>
       
@@ -588,6 +605,20 @@ const Settings: React.FC<SettingsProps> = ({
         visible={showAboutModal}
         onClose={() => setShowAboutModal(false)}
       />
+      
+      {/* Factory Defaults Dialog */}
+      {showFactoryDefaultsDialog && (
+        <div className="modal-backdrop" style={{ zIndex: 10000, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-dialog" style={{ background: '#fff', borderRadius: '12px', maxWidth: 340, width: '90%', padding: '2rem 1.5rem', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', textAlign: 'center' }}>
+            <h2 style={{ marginTop: 0 }}>Restore Factory Defaults?</h2>
+            <p style={{ margin: '1.2em 0 2em 0' }}>This will clear all locally saved settings and custom colors. Are you sure you want to restore factory defaults?</p>
+            <div className="dialog-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button type="button" className="reset-button" style={{ minWidth: 100 }} onClick={confirmFactoryDefaults}>Yes, Reset</button>
+              <button type="button" className="cancel-button" style={{ minWidth: 100 }} onClick={() => setShowFactoryDefaultsDialog(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
