@@ -6,6 +6,22 @@ import './Scoreboard.css';
 import './ScoreboardTheme.css'; // Import theme-specific styles
 import { getFontFamilyString } from '../utils/fonts';
 import { getFontConfig, CONFIG_VERSION } from '../utils/fontConfig';
+import { getTeamColors } from '../utils/teamColors';
+import { textColorPresets } from '../utils/textColors';
+
+// Helper to get custom colors from localStorage
+function getCustomColors() {
+  try {
+    const stored = localStorage.getItem('customColors');
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return {
+    homeBg: [],
+    awayBg: [],
+    homeText: [],
+    awayText: [],
+  };
+}
 
 const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState }) => {
   const navigate = useNavigate();
@@ -554,6 +570,28 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     };
   }, []);
 
+  // Get custom colors from localStorage
+  const customColors = getCustomColors();
+
+  // Helper to resolve color (preset or custom)
+  function resolveColor(colorId: string, customArr: string[], presetArr: any[], presetKey: string) {
+    // If colorId is a hex code and exists in customArr, use it directly
+    if (colorId.startsWith('#') && customArr.includes(colorId)) {
+      return colorId;
+    }
+    // Otherwise, try to find in presetArr
+    const preset = presetArr.find((p: any) => p.id === colorId);
+    return preset ? preset[presetKey] : colorId;
+  }
+
+  // Get team background colors (preset or custom)
+  const homeBgColor = resolveColor(settings.homeTeamColorId, customColors.homeBg, getTeamColors().home ? [getTeamColors().home, getTeamColors().away] : [], 'backgroundColor');
+  const awayBgColor = resolveColor(settings.awayTeamColorId, customColors.awayBg, getTeamColors().home ? [getTeamColors().home, getTeamColors().away] : [], 'backgroundColor');
+
+  // Get text colors (preset or custom)
+  const homeTextColor = resolveColor(settings.homeTeamTextColorId, customColors.homeText, textColorPresets, 'color');
+  const awayTextColor = resolveColor(settings.awayTeamTextColorId, customColors.awayText, textColorPresets, 'color');
+
   return (
     <div className="scoreboard-container">
       {/* Score Alert Popup */}
@@ -569,6 +607,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       <div className="scoreboard-buttons">
         <div 
           className={`score-button home ${homePressed ? 'pressed' : ''} ${homeAutoDecrementing ? 'auto-decrementing' : ''}`}
+          style={{
+            backgroundColor: homeBgColor,
+            color: homeTextColor,
+            fontFamily: getFontFamilyString(settings.fontFamily),
+          }}
           onMouseDown={handleHomeMouseDown}
           onMouseUp={handleHomeMouseUp}
           onMouseLeave={handleHomeMouseLeave}
@@ -625,6 +668,11 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
         
         <div 
           className={`score-button away ${awayPressed ? 'pressed' : ''} ${awayAutoDecrementing ? 'auto-decrementing' : ''}`}
+          style={{
+            backgroundColor: awayBgColor,
+            color: awayTextColor,
+            fontFamily: getFontFamilyString(settings.fontFamily),
+          }}
           onMouseDown={handleAwayMouseDown}
           onMouseUp={handleAwayMouseUp}
           onMouseLeave={handleAwayMouseLeave}

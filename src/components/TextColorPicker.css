@@ -21,9 +21,9 @@
   gap: 6px;
 }
 .text-color-option {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50% !important;
   border: 2px solid #ccc;
   background: #fff;
   cursor: pointer;
@@ -32,6 +32,24 @@
   justify-content: center;
   font-size: 1.1em;
   transition: border-color 0.2s;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.text-color-option.add-custom-color,
+.text-color-option.remove-custom-color {
+  border-radius: 50% !important;
+  min-width: 36px;
+  min-height: 36px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3em;
+  font-weight: bold;
+  box-sizing: border-box;
+  padding: 0;
 }
 .text-color-option.selected {
   border-color: currentColor;

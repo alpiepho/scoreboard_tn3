@@ -22,6 +22,31 @@ const Settings: React.FC<SettingsProps> = ({
   const [localSettings, setLocalSettings] = useState({ ...settings });
   const [showFontDropdown, setShowFontDropdown] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
+
+  // Custom color state for each picker (persist in localStorage)
+  const [customColors, setCustomColors] = useState(() => {
+    try {
+      const stored = localStorage.getItem('customColors');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return {
+      homeBg: [] as string[],
+      awayBg: [] as string[],
+      homeText: [] as string[],
+      awayText: [] as string[],
+    };
+  });
+
+  // Persist customColors to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('customColors', JSON.stringify(customColors));
+  }, [customColors]);
+
+  // Dialog state for custom color limit
+  const [showCustomColorDialog, setShowCustomColorDialog] = useState<null | {
+    type: 'homeBg' | 'awayBg' | 'homeText' | 'awayText',
+    color: string
+  }>(null);
   
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -433,6 +458,17 @@ const Settings: React.FC<SettingsProps> = ({
                 <TeamColorPicker 
                   teamType="home"
                   selectedColorId={localSettings.homeTeamColorId}
+                  customColors={customColors.homeBg}
+                  onAddCustomColor={(color: string) => {
+                    if (customColors.homeBg.length >= 9) {
+                      setShowCustomColorDialog({ type: 'homeBg', color });
+                    } else {
+                      setCustomColors((prev: typeof customColors) => ({ ...prev, homeBg: [...prev.homeBg, color] }));
+                    }
+                  }}
+                  onRemoveCustomColor={(index: number) => {
+                    setCustomColors((prev: typeof customColors) => ({ ...prev, homeBg: prev.homeBg.filter((_: string, i: number) => i !== index) }));
+                  }}
                   onChange={colorId => {
                     const updatedSettings = { ...localSettings, homeTeamColorId: colorId };
                     setLocalSettings(updatedSettings);
@@ -442,6 +478,17 @@ const Settings: React.FC<SettingsProps> = ({
                 <TextColorPicker
                   teamType="home"
                   selectedColorId={localSettings.homeTeamTextColorId}
+                  customColors={customColors.homeText}
+                  onAddCustomColor={(color: string) => {
+                    if (customColors.homeText.length >= 9) {
+                      setShowCustomColorDialog({ type: 'homeText', color });
+                    } else {
+                      setCustomColors((prev: typeof customColors) => ({ ...prev, homeText: [...prev.homeText, color] }));
+                    }
+                  }}
+                  onRemoveCustomColor={(index: number) => {
+                    setCustomColors((prev: typeof customColors) => ({ ...prev, homeText: prev.homeText.filter((_: string, i: number) => i !== index) }));
+                  }}
                   onChange={colorId => {
                     const updatedSettings = { ...localSettings, homeTeamTextColorId: colorId };
                     setLocalSettings(updatedSettings);
@@ -455,6 +502,17 @@ const Settings: React.FC<SettingsProps> = ({
                 <TeamColorPicker 
                   teamType="away"
                   selectedColorId={localSettings.awayTeamColorId}
+                  customColors={customColors.awayBg}
+                  onAddCustomColor={(color: string) => {
+                    if (customColors.awayBg.length >= 9) {
+                      setShowCustomColorDialog({ type: 'awayBg', color });
+                    } else {
+                      setCustomColors((prev: typeof customColors) => ({ ...prev, awayBg: [...prev.awayBg, color] }));
+                    }
+                  }}
+                  onRemoveCustomColor={(index: number) => {
+                    setCustomColors((prev: typeof customColors) => ({ ...prev, awayBg: prev.awayBg.filter((_: string, i: number) => i !== index) }));
+                  }}
                   onChange={colorId => {
                     const updatedSettings = { ...localSettings, awayTeamColorId: colorId };
                     setLocalSettings(updatedSettings);
@@ -464,12 +522,49 @@ const Settings: React.FC<SettingsProps> = ({
                 <TextColorPicker
                   teamType="away"
                   selectedColorId={localSettings.awayTeamTextColorId}
+                  customColors={customColors.awayText}
+                  onAddCustomColor={(color: string) => {
+                    if (customColors.awayText.length >= 9) {
+                      setShowCustomColorDialog({ type: 'awayText', color });
+                    } else {
+                      setCustomColors((prev: typeof customColors) => ({ ...prev, awayText: [...prev.awayText, color] }));
+                    }
+                  }}
+                  onRemoveCustomColor={(index: number) => {
+                    setCustomColors((prev: typeof customColors) => ({ ...prev, awayText: prev.awayText.filter((_: string, i: number) => i !== index) }));
+                  }}
                   onChange={colorId => {
                     const updatedSettings = { ...localSettings, awayTeamTextColorId: colorId };
                     setLocalSettings(updatedSettings);
                     setSettings(updatedSettings);
                   }}
                 />
+      {/* Custom Color Limit Dialog */}
+      {showCustomColorDialog && (
+        <div className="custom-color-dialog-backdrop">
+          <div className="custom-color-dialog">
+            <p>You can only have 9 custom colors. Remove the oldest color to add a new one?</p>
+            <div className="dialog-actions">
+              <button
+                onClick={() => {
+                  // Remove oldest and add new color
+                  setCustomColors((prev: typeof customColors) => {
+                    const type = showCustomColorDialog!.type;
+                    const arr = [...prev[type]];
+                    arr.shift();
+                    arr.push(showCustomColorDialog!.color);
+                    return { ...prev, [type]: arr };
+                  });
+                  setShowCustomColorDialog(null);
+                }}
+              >
+                Remove Oldest
+              </button>
+              <button onClick={() => setShowCustomColorDialog(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
               </div>
             </div>
           </div>
