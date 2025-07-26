@@ -424,47 +424,8 @@ const Settings: React.FC<SettingsProps> = ({
             <div className="setting-hint">Shows notification when total score is a multiple of 7</div>
           </div>
         </div>
-        {/* Team Presets Section - moved below Teams section */}
-        {/* Team Presets Section */}
-        <div className="settings-section">
-          <h2>Team Presets</h2>
-          <div className="form-group">
-            <button className="save-button" type="button" onClick={storeCurrentTeamDetails}>
-              Store Team Details
-            </button>
-          </div>
-          <div className="form-group">
-            <label>Load Team Preset</label>
-            <div style={{ position: 'relative' }}>
-              <button type="button" className="reset-button" onClick={() => setShowPresetsDropdown(v => !v)}>
-                Select Team Preset
-              </button>
-              {showPresetsDropdown && (
-                <div style={{ position: 'absolute', top: '2.5em', left: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 8, zIndex: 1000, minWidth: 180 }}>
-                  {teamPresets.length === 0 ? (
-                    <div style={{ padding: 12, color: '#888' }}>No saved teams</div>
-                  ) : (
-                    teamPresets.map((preset, idx) => (
-                      <div key={idx} style={{ padding: 10, cursor: 'pointer', borderBottom: idx < teamPresets.length - 1 ? '1px solid #eee' : undefined }}
-                        onClick={() => {
-                          setPendingPresetIdx(idx);
-                          setShowApplyPresetDialog(true);
-                          setShowPresetsDropdown(false);
-                        }}
-                      >
-                        <div style={{ fontWeight: 600, fontSize: 15 }}>{preset.name || '(No Name)'}</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-                          <span style={{ background: preset.bgColor, color: preset.textColor, borderRadius: 4, padding: '0 6px', fontSize: 12, minWidth: 40, display: 'inline-block', textAlign: 'center' }}>{preset.bgColor}</span>
-                          <span style={{ color: '#888', fontSize: 12 }}>Set: {preset.circleColor}</span>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        {/* Team Presets Section - moved below Sets section */}
+        {/* Team Presets Section will be inserted below Sets section */}
         {/* Apply Team Preset Dialog */}
       {showApplyPresetDialog && pendingPresetIdx !== null && (
         <div className="modal-backdrop" style={{ zIndex: 10001, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -472,9 +433,9 @@ const Settings: React.FC<SettingsProps> = ({
             <h2 style={{ marginTop: 0 }}>Apply Team Preset</h2>
             <p style={{ margin: '1.2em 0 2em 0' }}>Apply this preset to Home or Away?</p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              <button type="button" className="save-button" style={{ minWidth: 100 }} onClick={() => { applyTeamPreset(pendingPresetIdx!, 'home'); setShowApplyPresetDialog(false); }}>Home</button>
-              <button type="button" className="save-button" style={{ minWidth: 100 }} onClick={() => { applyTeamPreset(pendingPresetIdx!, 'away'); setShowApplyPresetDialog(false); }}>Away</button>
-              <button type="button" className="cancel-button" style={{ minWidth: 100 }} onClick={() => { setShowApplyPresetDialog(false); setPendingPresetIdx(null); }}>Cancel</button>
+              <button type="button" className="save-button" style={{ minWidth: 100, height: 40, fontSize: 16 }} onClick={() => { applyTeamPreset(pendingPresetIdx!, 'home'); setShowApplyPresetDialog(false); }}>Home</button>
+              <button type="button" className="save-button" style={{ minWidth: 100, height: 40, fontSize: 16 }} onClick={() => { applyTeamPreset(pendingPresetIdx!, 'away'); setShowApplyPresetDialog(false); }}>Away</button>
+              <button type="button" className="cancel-button" style={{ minWidth: 100, height: 40, fontSize: 16 }} onClick={() => { setShowApplyPresetDialog(false); setPendingPresetIdx(null); }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -573,6 +534,54 @@ const Settings: React.FC<SettingsProps> = ({
               onChange={handleChange}
             />
             <div className="setting-hint">Toggle visibility of set indicators</div>
+          </div>
+        </div>
+
+        {/* Team Presets Section */}
+        <div className="settings-section">
+          <h2>Team Presets</h2>
+          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <button
+              className="save-button"
+              type="button"
+              style={{ width: '90%', height: 40, fontSize: 16, padding: '0 16px', boxSizing: 'border-box', borderRadius: 8, marginBottom: 8, display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+              onClick={storeCurrentTeamDetails}
+            >
+              Store Team Details
+            </button>
+            <div style={{ position: 'relative', width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
+              <button
+                type="button"
+                className="reset-button"
+                style={{ width: '100%', height: 40, fontSize: 16, padding: '0 16px', boxSizing: 'border-box', borderRadius: 8, display: 'block' }}
+                onClick={() => setShowPresetsDropdown(v => !v)}
+              >
+                Select Team Preset
+              </button>
+              {showPresetsDropdown && (
+                <div style={{ position: 'absolute', top: '2.5em', left: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 8, zIndex: 1000, width: '100%' }}>
+                  {teamPresets.length === 0 ? (
+                    <div style={{ padding: 12, color: '#888' }}>No saved teams</div>
+                  ) : (
+                    teamPresets.map((preset, idx) => (
+                      <div key={idx} style={{ padding: 10, cursor: 'pointer', borderBottom: idx < teamPresets.length - 1 ? '1px solid #eee' : undefined }}
+                        onClick={() => {
+                          setPendingPresetIdx(idx);
+                          setShowApplyPresetDialog(true);
+                          setShowPresetsDropdown(false);
+                        }}
+                      >
+                        <div style={{ fontWeight: 600, fontSize: 15 }}>{preset.name || '(No Name)'}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
+                          <span style={{ background: preset.bgColor, color: preset.textColor, borderRadius: 4, padding: '0 6px', fontSize: 12, minWidth: 40, display: 'inline-block', textAlign: 'center' }}>{preset.bgColor}</span>
+                          <span style={{ color: '#888', fontSize: 12 }}>Set: {preset.circleColor}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
