@@ -47,25 +47,37 @@ const TextColorPicker: React.FC<TextColorPickerProps> = ({
           </button>
         ))}
         {/* + button for custom color */}
-        <button
-          className="text-color-option add-custom-color"
-          type="button"
-          title="Add custom color"
-          style={{ background: '#1976d2', color: '#fff', borderColor: '#1976d2', borderRadius: '50%' }}
-          onClick={() => {
-            colorInputRef.current?.click();
-          }}
-        >
-          +
-        </button>
-        <input
-          ref={colorInputRef}
-          type="color"
-          style={{ display: 'none' }}
-          onChange={e => {
-            onAddCustomColor(e.target.value);
-          }}
-        />
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <button
+            className="text-color-option add-custom-color"
+            type="button"
+            title="Add custom color"
+            style={{ background: '#1976d2', color: '#fff', borderColor: '#1976d2', borderRadius: '50%' }}
+          >
+            +
+            <input
+              ref={colorInputRef}
+              type="color"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                opacity: 0,
+                cursor: 'pointer',
+                border: 'none',
+                padding: 0,
+                margin: 0
+              }}
+              tabIndex={-1}
+              aria-label="Pick custom color"
+              onChange={e => {
+                onAddCustomColor(e.target.value);
+              }}
+            />
+          </button>
+        </div>
         {/* - button for removing oldest custom color (handled in parent) */}
         <button
           className="text-color-option remove-custom-color"
