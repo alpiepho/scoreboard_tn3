@@ -1,3 +1,17 @@
+
+// --- Team Presets Type (module scope) ---
+export interface TeamPreset {
+  name: string;
+  bgColor: string;
+  textColor: string;
+  circleColor: string;
+}
+
+// Single list of presets
+export type TeamPresets = TeamPreset[];
+
+// (moved Team Presets state and logic inside the Settings component)
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsProps } from '../types';
@@ -9,7 +23,8 @@ import TeamColorPicker from '../components/TeamColorPicker';
 import TextColorPicker from '../components/TextColorPicker';
 import { getTeamColors, applyTeamColors } from '../utils/teamColors';
 
-const Settings: React.FC<SettingsProps> = ({ 
+
+const Settings: React.FC<SettingsProps> = ({
   settings, 
   setSettings, 
   resetScores, 
@@ -18,6 +33,73 @@ const Settings: React.FC<SettingsProps> = ({
   gameState,
   setGameState
 }) => {
+  // --- Team Presets State and Logic ---
+  const [teamPresets, setTeamPresets] = useState<TeamPresets>(() => {
+    try {
+      const stored = localStorage.getItem('scoresTN3TeamPresets');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+    } catch {}
+    return [];
+  });
+  const [showPresetsDropdown, setShowPresetsDropdown] = useState<boolean>(false);
+  // Dialog state: boolean for showing the home/away/cancel dialog
+  const [showApplyPresetDialog, setShowApplyPresetDialog] = useState<boolean>(false);
+  const [pendingPresetIdx, setPendingPresetIdx] = useState<number | null>(null);
+
+  // Persist teamPresets to localStorage
+  useEffect(() => {
+    localStorage.setItem('scoresTN3TeamPresets', JSON.stringify(teamPresets));
+  }, [teamPresets]);
+
+  // Store current home and away team as two presets in the single list
+  const storeCurrentTeamDetails = () => {
+    const homePreset: TeamPreset = {
+      name: localSettings.homeTeamName,
+      bgColor: localSettings.homeTeamColorId,
+      textColor: localSettings.homeTeamTextColorId,
+      circleColor: localSettings.setCircleColorId,
+    };
+    const awayPreset: TeamPreset = {
+      name: localSettings.awayTeamName,
+      bgColor: localSettings.awayTeamColorId,
+      textColor: localSettings.awayTeamTextColorId,
+      circleColor: localSettings.setCircleColorId,
+    };
+    setTeamPresets(prev => [...prev, homePreset, awayPreset]);
+  };
+
+  // Apply a preset to home or away
+  const applyTeamPreset = (idx: number, team: 'home' | 'away') => {
+    const preset = teamPresets[idx];
+    if (!preset) return;
+    if (team === 'home') {
+      const updated = {
+        ...localSettings,
+        homeTeamName: preset.name,
+        homeTeamColorId: preset.bgColor,
+        homeTeamTextColorId: preset.textColor,
+        setCircleColorId: preset.circleColor,
+      };
+      setLocalSettings(updated);
+      setSettings(updated);
+    } else {
+      const updated = {
+        ...localSettings,
+        awayTeamName: preset.name,
+        awayTeamColorId: preset.bgColor,
+        awayTeamTextColorId: preset.textColor,
+        setCircleColorId: preset.circleColor,
+      };
+      setLocalSettings(updated);
+      setSettings(updated);
+    }
+    setShowApplyPresetDialog(false);
+    setPendingPresetIdx(null);
+    navigate('/');
+  };
   const navigate = useNavigate();
   const [localSettings, setLocalSettings] = useState({ ...settings });
   const [showFontDropdown, setShowFontDropdown] = useState(false);
@@ -342,6 +424,61 @@ const Settings: React.FC<SettingsProps> = ({
             <div className="setting-hint">Shows notification when total score is a multiple of 7</div>
           </div>
         </div>
+        {/* Team Presets Section - moved below Teams section */}
+        {/* Team Presets Section */}
+        <div className="settings-section">
+          <h2>Team Presets</h2>
+          <div className="form-group">
+            <button className="save-button" type="button" onClick={storeCurrentTeamDetails}>
+              Store Team Details
+            </button>
+          </div>
+          <div className="form-group">
+            <label>Load Team Preset</label>
+            <div style={{ position: 'relative' }}>
+              <button type="button" className="reset-button" onClick={() => setShowPresetsDropdown(v => !v)}>
+                Select Team Preset
+              </button>
+              {showPresetsDropdown && (
+                <div style={{ position: 'absolute', top: '2.5em', left: 0, background: '#fff', border: '1px solid #ccc', borderRadius: 8, zIndex: 1000, minWidth: 180 }}>
+                  {teamPresets.length === 0 ? (
+                    <div style={{ padding: 12, color: '#888' }}>No saved teams</div>
+                  ) : (
+                    teamPresets.map((preset, idx) => (
+                      <div key={idx} style={{ padding: 10, cursor: 'pointer', borderBottom: idx < teamPresets.length - 1 ? '1px solid #eee' : undefined }}
+                        onClick={() => {
+                          setPendingPresetIdx(idx);
+                          setShowApplyPresetDialog(true);
+                          setShowPresetsDropdown(false);
+                        }}
+                      >
+                        <div style={{ fontWeight: 600, fontSize: 15 }}>{preset.name || '(No Name)'}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
+                          <span style={{ background: preset.bgColor, color: preset.textColor, borderRadius: 4, padding: '0 6px', fontSize: 12, minWidth: 40, display: 'inline-block', textAlign: 'center' }}>{preset.bgColor}</span>
+                          <span style={{ color: '#888', fontSize: 12 }}>Set: {preset.circleColor}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Apply Team Preset Dialog */}
+      {showApplyPresetDialog && pendingPresetIdx !== null && (
+        <div className="modal-backdrop" style={{ zIndex: 10001, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-dialog" style={{ background: '#fff', borderRadius: '12px', maxWidth: 340, width: '90%', padding: '2rem 1.5rem', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', textAlign: 'center' }}>
+            <h2 style={{ marginTop: 0 }}>Apply Team Preset</h2>
+            <p style={{ margin: '1.2em 0 2em 0' }}>Apply this preset to Home or Away?</p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button type="button" className="save-button" style={{ minWidth: 100 }} onClick={() => { applyTeamPreset(pendingPresetIdx!, 'home'); setShowApplyPresetDialog(false); }}>Home</button>
+              <button type="button" className="save-button" style={{ minWidth: 100 }} onClick={() => { applyTeamPreset(pendingPresetIdx!, 'away'); setShowApplyPresetDialog(false); }}>Away</button>
+              <button type="button" className="cancel-button" style={{ minWidth: 100 }} onClick={() => { setShowApplyPresetDialog(false); setPendingPresetIdx(null); }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
         
         <div className="settings-section">
           <h2>Appearance</h2>
@@ -581,14 +718,14 @@ const Settings: React.FC<SettingsProps> = ({
       )}
               </div>
             </div>
+          <div className="form-group">
+            <button className="save-button" type="button" onClick={saveSettings}>
+              Save Team Details
+            </button>
           </div>
         </div>
-      </div>
-      
+      </div> {/* close settings-form */}
       <div className="settings-actions">
-        <button className="save-button" type="button" onClick={saveSettings}>
-          Save Team Details
-        </button>
         <button className="about-button" type="button" onClick={() => setShowAboutModal(true)}>
           About
         </button>
@@ -620,6 +757,7 @@ const Settings: React.FC<SettingsProps> = ({
         </div>
       )}
     </div>
+  </div>
   );
 };
 
