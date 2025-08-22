@@ -304,14 +304,12 @@
   margin-top: 3px;
 }
 
+/* General setting hint styling - removed absolute positioning */
 .setting-hint {
   font-size: 0.85rem;
   margin-top: 6px;
   color: var(--text-secondary);
   font-style: italic;
-  position: absolute;
-  top: 100%;
-  left: 0;
 }
 
 .settings-actions {
