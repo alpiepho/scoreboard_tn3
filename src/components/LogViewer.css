@@ -214,19 +214,14 @@
 }
 
 /* Comment Entry Styles */
-.comment-entry {
-  background: var(--comment-bg, rgba(74, 144, 226, 0.05));
-  border-left: 3px solid var(--comment-accent, #4a90e2);
-}
-
 .comment-label {
   font-size: 1rem;
-  color: var(--comment-accent, #4a90e2);
+  color: var(--text-color, #333); /* Use standard text color */
 }
 
 .comment-entry .log-entry-description {
   font-style: italic;
-  color: var(--comment-text, #333);
+  color: var(--text-color, #333); /* Use standard text color */
 }
 
 /* Clear Dialog */
@@ -367,20 +362,6 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-}
-
-/* Dark Mode Comment Styles */
-.app.dark .comment-entry {
-  background: rgba(74, 144, 226, 0.15);
-  border-left: 3px solid #5ba0f2;
-}
-
-.app.dark .comment-label {
-  color: #5ba0f2;
-}
-
-.app.dark .comment-entry .log-entry-description {
-  color: #e0e0e0;
 }
 
 /* Dark theme support */

@@ -52,7 +52,6 @@ const LogSettings: React.FC<LogSettingsProps> = ({ onViewLogs, onClearLogs }) =>
 
   return (
     <div className="log-settings-section">
-      <h2>Activity Log</h2>
       
       {/* Enable/Disable Logging */}
       <div className="form-group checkbox">
