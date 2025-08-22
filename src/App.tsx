@@ -3,10 +3,11 @@ import { Routes, Route } from 'react-router-dom'
 import './App.css'
 import Scoreboard from './pages/Scoreboard'
 import Settings from './pages/Settings'
+import CommentModal from './components/CommentModal'
 import { AppSettings, GameState } from './types'
 import { getTeamColors, applyTeamColors, applyTeamTextColors } from './utils/teamColors'
 import { textColorPresets } from './utils/textColors'
-import { logAction, logSettingChange } from './utils/logger'
+import { logAction, logSettingChange, logComment } from './utils/logger'
 
 function App() {
   // Default settings
@@ -81,6 +82,9 @@ function App() {
     };
   });
 
+  // Comment modal state
+  const [showCommentModal, setShowCommentModal] = useState(false);
+
   // Wrapper for setSettings that includes logging
   const setSettingsWithLogging = (newSettings: AppSettings | ((prev: AppSettings) => AppSettings)) => {
     const oldSettings = settings;
@@ -110,6 +114,12 @@ function App() {
       
       setSettings(newSettings);
     }
+  };
+
+  // Handler for adding comments to the log
+  const handleAddComment = (comment: string) => {
+    logComment(comment);
+    setShowCommentModal(false);
   };
 
   // Save settings to localStorage whenever they change
@@ -248,7 +258,8 @@ function App() {
           <Scoreboard 
             settings={settings} 
             gameState={gameState} 
-            setGameState={setGameState} 
+            setGameState={setGameState}
+            onOpenCommentModal={() => setShowCommentModal(true)}
           />
         } />
         <Route path="/settings" element={
@@ -263,6 +274,14 @@ function App() {
           />
         } />
       </Routes>
+      
+      {showCommentModal && (
+        <CommentModal
+          visible={showCommentModal}
+          onAddComment={handleAddComment}
+          onClose={() => setShowCommentModal(false)}
+        />
+      )}
     </div>
   )
 }

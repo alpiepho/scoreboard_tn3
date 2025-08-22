@@ -1,0 +1,217 @@
+/* Comment Modal Overlay */
+.comment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  padding: 1rem;
+}
+
+/* Comment Modal Content */
+.comment-modal-content {
+  background: var(--bg-color, #ffffff);
+  color: var(--text-color, #000000);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* Header */
+.comment-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  flex-shrink: 0;
+}
+
+.comment-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.comment-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--text-color, #666);
+  line-height: 1;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.comment-modal-close:hover {
+  background: var(--hover-bg, #f0f0f0);
+}
+
+/* Body */
+.comment-modal-body {
+  padding: 1rem 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.comment-modal-description {
+  margin: 0 0 1rem 0;
+  color: var(--secondary-text, #666);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.comment-input-container {
+  position: relative;
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  resize: vertical;
+  background: var(--bg-color, #ffffff);
+  color: var(--text-color, #000000);
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #007bff);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.comment-input::placeholder {
+  color: var(--placeholder-color, #999);
+}
+
+.comment-char-counter {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--secondary-text, #666);
+  background: var(--bg-color, #ffffff);
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+/* Actions */
+.comment-modal-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  flex-shrink: 0;
+}
+
+.comment-cancel-button,
+.comment-add-button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.comment-cancel-button {
+  background: var(--secondary-bg, #f8f9fa);
+  color: var(--text-color, #666);
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.comment-cancel-button:hover {
+  background: var(--hover-bg, #e9ecef);
+}
+
+.comment-add-button {
+  background: var(--primary-color, #007bff);
+  color: white;
+}
+
+.comment-add-button:hover:not(:disabled) {
+  background: var(--primary-hover, #0056b3);
+}
+
+.comment-add-button:disabled {
+  background: var(--disabled-bg, #6c757d);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .comment-modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .comment-modal-content {
+    max-width: 100%;
+    min-height: 300px;
+  }
+
+  .comment-modal-header {
+    padding: 1rem;
+  }
+
+  .comment-modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .comment-modal-body {
+    padding: 1rem;
+  }
+
+  .comment-modal-actions {
+    padding: 1rem;
+  }
+
+  .comment-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 120px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .comment-modal-content {
+    background: var(--bg-color-dark, #2d3748);
+    color: var(--text-color-dark, #ffffff);
+  }
+
+  .comment-input {
+    background: var(--bg-color-dark, #2d3748);
+    color: var(--text-color-dark, #ffffff);
+    border-color: var(--border-color-dark, #4a5568);
+  }
+
+  .comment-char-counter {
+    background: var(--bg-color-dark, #2d3748);
+  }
+}

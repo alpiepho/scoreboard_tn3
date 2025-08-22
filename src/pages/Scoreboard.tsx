@@ -24,7 +24,7 @@ function getCustomColors() {
   };
 }
 
-const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState }) => {
+const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameState, onOpenCommentModal }) => {
   const navigate = useNavigate();
   
   // Alert state
@@ -38,6 +38,10 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const awayTimeoutRef = useRef<number | null>(null);
   const homeIntervalRef = useRef<number | null>(null);
   const awayIntervalRef = useRef<number | null>(null);
+  
+  // Settings button long press state
+  const settingsTimeoutRef = useRef<number | null>(null);
+  const [settingsPressed, setSettingsPressed] = useState(false);
   const [homePressed, setHomePressed] = useState(false);
   const [awayPressed, setAwayPressed] = useState(false);
   const [homeAutoDecrementing, setHomeAutoDecrementing] = useState(false);
@@ -583,6 +587,46 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     setAwayAutoDecrementing(false);
   };
 
+  // Settings button handlers for long press
+  const handleSettingsMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault(); // Prevent default touch behavior
+    
+    setSettingsPressed(true);
+    
+    // Clear any existing timer
+    if (settingsTimeoutRef.current !== null) {
+      clearTimeout(settingsTimeoutRef.current);
+      settingsTimeoutRef.current = null;
+    }
+    
+    // Start the long press timer
+    settingsTimeoutRef.current = window.setTimeout(() => {
+      // Long press detected - open comment modal
+      onOpenCommentModal();
+      settingsTimeoutRef.current = null;
+    }, longPressDelay);
+  };
+  
+  const handleSettingsMouseUp = () => {
+    setSettingsPressed(false);
+    
+    // If timeout still exists, it was a short press (navigate to settings)
+    if (settingsTimeoutRef.current !== null) {
+      clearTimeout(settingsTimeoutRef.current);
+      settingsTimeoutRef.current = null;
+      navigate('/settings');
+    }
+  };
+  
+  const handleSettingsMouseLeave = () => {
+    // Cancel timer when moving out of the button
+    if (settingsTimeoutRef.current !== null) {
+      clearTimeout(settingsTimeoutRef.current);
+      settingsTimeoutRef.current = null;
+    }
+    setSettingsPressed(false);
+  };
+
   // Clean up timeouts when component unmounts
   useEffect(() => {
     return () => {
@@ -597,6 +641,9 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       }
       if (awayIntervalRef.current !== null) {
         window.clearTimeout(awayIntervalRef.current);
+      }
+      if (settingsTimeoutRef.current !== null) {
+        window.clearTimeout(settingsTimeoutRef.current);
       }
     };
   }, []);
@@ -779,7 +826,15 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
         </div>
       </div>
       
-      <button className="settings-button" onClick={() => navigate('/settings')}>
+      <button 
+        className={`settings-button ${settingsPressed ? 'pressed' : ''}`}
+        onMouseDown={handleSettingsMouseDown}
+        onMouseUp={handleSettingsMouseUp}
+        onMouseLeave={handleSettingsMouseLeave}
+        onTouchStart={handleSettingsMouseDown}
+        onTouchEnd={handleSettingsMouseUp}
+        onTouchCancel={handleSettingsMouseLeave}
+      >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
           <path fill="none" d="M0 0h24v24H0z"/>
           <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/>

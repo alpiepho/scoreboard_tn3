@@ -439,6 +439,12 @@
   transform: scale(0.95);
 }
 
+.settings-button.pressed {
+  background-color: var(--primary-hover-color, #357abd);
+  transform: scale(0.95);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+}
+
 .settings-button svg {
   width: 25px;
   height: 25px;

@@ -27,6 +27,7 @@ export interface ScoreboardProps {
   settings: AppSettings;
   gameState: GameState;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  onOpenCommentModal: () => void;
 }
 
 export interface SettingsProps {
@@ -64,13 +65,14 @@ export interface ScorePanelProps {
 export interface LogEntry {
   id: string;
   timestamp: Date;
-  type: 'score' | 'setting' | 'action';
+  type: 'score' | 'setting' | 'action' | 'comment';
   description: string;
   details: {
+    team?: 'home' | 'away';
     before?: any;
     after?: any;
-    team?: 'home' | 'away';
     action?: string;
+    isUserComment?: boolean;
   };
 }
 

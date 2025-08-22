@@ -92,6 +92,7 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
               <option value="score">Scores</option>
               <option value="setting">Settings</option>
               <option value="action">Actions</option>
+              <option value="comment">Comments</option>
             </select>
           </div>
           
@@ -125,9 +126,10 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
             </div>
           ) : (
             filteredEntries.map((entry) => (
-              <div key={entry.id} className="log-entry">
+              <div key={entry.id} className={`log-entry ${entry.type === 'comment' ? 'comment-entry' : ''}`}>
                 <div className="log-entry-header">
                   <span className="log-entry-time">{formatTimestamp(entry.timestamp)}</span>
+                  {entry.type === 'comment' && <span className="comment-label">💭</span>}
                 </div>
                 <div className="log-entry-description">{entry.description}</div>
               </div>

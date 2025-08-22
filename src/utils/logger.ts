@@ -251,3 +251,15 @@ export const logAction = (actionDescription: string, details?: any): void => {
     }
   );
 };
+
+// Log user comment
+export const logComment = (comment: string): void => {
+  addLogEntry(
+    'comment',
+    comment,
+    {
+      action: `Comment: ${comment}`,
+      isUserComment: true,
+    }
+  );
+};
