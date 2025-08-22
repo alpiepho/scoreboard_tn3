@@ -333,7 +333,8 @@ const Settings: React.FC<SettingsProps> = ({
               if (gameState.homeSets > 0) {
                 const oldSets = gameState.homeSets;
                 const newSets = oldSets - 1;
-                logSetChange('home', oldSets, newSets);
+                const updatedGameState = { ...gameState, homeSets: newSets };
+                logSetChange('home', oldSets, newSets, updatedGameState.homeSets, updatedGameState.awaySets, settings.homeTeamName, settings.awayTeamName);
                 setGameState(prev => ({
                   ...prev,
                   homeSets: newSets
@@ -346,7 +347,8 @@ const Settings: React.FC<SettingsProps> = ({
               if (gameState.homeSets < settings.maxSets) {
                 const oldSets = gameState.homeSets;
                 const newSets = oldSets + 1;
-                logSetChange('home', oldSets, newSets);
+                const updatedGameState = { ...gameState, homeSets: newSets };
+                logSetChange('home', oldSets, newSets, updatedGameState.homeSets, updatedGameState.awaySets, settings.homeTeamName, settings.awayTeamName);
                 setGameState(prev => ({
                   ...prev,
                   homeSets: newSets
@@ -366,7 +368,8 @@ const Settings: React.FC<SettingsProps> = ({
               if (gameState.awaySets > 0) {
                 const oldSets = gameState.awaySets;
                 const newSets = oldSets - 1;
-                logSetChange('away', oldSets, newSets);
+                const updatedGameState = { ...gameState, awaySets: newSets };
+                logSetChange('away', oldSets, newSets, updatedGameState.homeSets, updatedGameState.awaySets, settings.homeTeamName, settings.awayTeamName);
                 setGameState(prev => ({
                   ...prev,
                   awaySets: newSets
@@ -379,7 +382,8 @@ const Settings: React.FC<SettingsProps> = ({
               if (gameState.awaySets < settings.maxSets) {
                 const oldSets = gameState.awaySets;
                 const newSets = oldSets + 1;
-                logSetChange('away', oldSets, newSets);
+                const updatedGameState = { ...gameState, awaySets: newSets };
+                logSetChange('away', oldSets, newSets, updatedGameState.homeSets, updatedGameState.awaySets, settings.homeTeamName, settings.awayTeamName);
                 setGameState(prev => ({
                   ...prev,
                   awaySets: newSets

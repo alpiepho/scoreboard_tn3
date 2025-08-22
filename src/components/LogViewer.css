@@ -213,19 +213,6 @@
   color: var(--secondary-text, #777);
 }
 
-/* Entry Type Colors */
-.log-entry-score {
-  border-left: 4px solid #28a745;
-}
-
-.log-entry-setting {
-  border-left: 4px solid #007bff;
-}
-
-.log-entry-action {
-  border-left: 4px solid #ffc107;
-}
-
 /* Clear Dialog */
 .clear-dialog-overlay {
   position: absolute;

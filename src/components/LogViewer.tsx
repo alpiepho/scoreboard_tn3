@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LogEntry } from '../types';
 import { getLogEntries, copyLogsToClipboard, clearLogs } from '../utils/logger';
 import './LogViewer.css';
@@ -9,11 +10,17 @@ interface LogViewerProps {
 }
 
 const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
+  const navigate = useNavigate();
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleClose = () => {
+    onClose();
+    navigate('/');
+  };
 
   // Load entries when modal opens
   useEffect(() => {
@@ -47,19 +54,6 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
     setShowClearDialog(false);
   };
 
-  const getTypeIcon = (type: LogEntry['type']): string => {
-    switch (type) {
-      case 'score':
-        return '🔢';
-      case 'setting':
-        return '⚙️';
-      case 'action':
-        return '🔄';
-      default:
-        return '📝';
-    }
-  };
-
   const formatTimestamp = (timestamp: Date): string => {
     return timestamp.toLocaleString('en-US', {
       month: 'short',
@@ -71,12 +65,12 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
   };
 
   return (
-    <div className="log-viewer-overlay" onClick={onClose}>
+    <div className="log-viewer-overlay" onClick={handleClose}>
       <div className="log-viewer-content" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="log-viewer-header">
           <h2>Activity Log</h2>
-          <button className="log-viewer-close" onClick={onClose}>×</button>
+          <button className="log-viewer-close" onClick={handleClose}>×</button>
         </div>
 
         {/* Controls */}
@@ -107,13 +101,13 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
               onClick={handleCopyToClipboard}
               disabled={copySuccess}
             >
-              {copySuccess ? '✓ Copied!' : '📋 Copy'}
+              {copySuccess ? 'Copied!' : 'Copy'}
             </button>
             <button 
               className="log-action-button clear-button"
               onClick={() => setShowClearDialog(true)}
             >
-              🗑️ Clear
+              Clear
             </button>
           </div>
         </div>
@@ -131,18 +125,11 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
             </div>
           ) : (
             filteredEntries.map((entry) => (
-              <div key={entry.id} className={`log-entry log-entry-${entry.type}`}>
+              <div key={entry.id} className="log-entry">
                 <div className="log-entry-header">
-                  <span className="log-entry-icon">{getTypeIcon(entry.type)}</span>
                   <span className="log-entry-time">{formatTimestamp(entry.timestamp)}</span>
                 </div>
                 <div className="log-entry-description">{entry.description}</div>
-                {entry.details.action && (
-                  <div className="log-entry-action">{entry.details.action}</div>
-                )}
-                {entry.details.team && (
-                  <div className="log-entry-team">Team: {entry.details.team}</div>
-                )}
               </div>
             ))
           )}

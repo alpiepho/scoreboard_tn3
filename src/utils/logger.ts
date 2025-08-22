@@ -146,43 +146,19 @@ export const exportLogs = (): string => {
   output += `Logging Enabled: ${settings.isEnabled}\n`;
   output += `\n${'='.repeat(50)}\n\n`;
   
-  entries.forEach((entry, index) => {
-    const timestamp = entry.timestamp.toLocaleString();
-    const typeIcon = getTypeIcon(entry.type);
+  entries.forEach((entry) => {
+    const timestamp = entry.timestamp.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+    });
     
-    output += `${index + 1}. ${typeIcon} ${timestamp}\n`;
-    output += `   ${entry.description}\n`;
-    
-    if (entry.details.team) {
-      output += `   Team: ${entry.details.team}\n`;
-    }
-    
-    if (entry.details.before !== undefined && entry.details.after !== undefined) {
-      output += `   Change: ${entry.details.before} → ${entry.details.after}\n`;
-    }
-    
-    if (entry.details.action) {
-      output += `   Action: ${entry.details.action}\n`;
-    }
-    
-    output += '\n';
+    output += `${timestamp} - ${entry.description}\n`;
   });
   
   return output;
-};
-
-// Get emoji icon for log entry type
-const getTypeIcon = (type: LogEntry['type']): string => {
-  switch (type) {
-    case 'score':
-      return '🔢';
-    case 'setting':
-      return '⚙️';
-    case 'action':
-      return '🔄';
-    default:
-      return '📝';
-  }
 };
 
 // Copy logs to clipboard
@@ -197,44 +173,52 @@ export const copyLogsToClipboard = async (): Promise<boolean> => {
   }
 };
 
-// Log score change
+// Log score change with complete game state
 export const logScoreChange = (
   team: 'home' | 'away',
   oldScore: number,
-  newScore: number
+  newScore: number,
+  homeScore: number,
+  awayScore: number,
+  homeTeamName: string = 'Home',
+  awayTeamName: string = 'Away'
 ): void => {
-  const change = newScore - oldScore;
-  const changeText = change > 0 ? `+${change}` : `${change}`;
-  const teamName = team.charAt(0).toUpperCase() + team.slice(1);
+  // Create simple score display using actual team names
+  const scoreDisplay = `${homeTeamName} ${homeScore}, ${awayTeamName} ${awayScore}`;
   
   addLogEntry(
     'score',
-    `${teamName} Score Change`,
+    scoreDisplay,
     {
       team,
       before: oldScore,
       after: newScore,
-      action: `${teamName}: ${oldScore} → ${newScore} (${changeText})`,
+      action: scoreDisplay,
     }
   );
 };
 
-// Log set change
+// Log set change with complete game state
 export const logSetChange = (
   team: 'home' | 'away',
   oldSets: number,
-  newSets: number
+  newSets: number,
+  homeSets: number,
+  awaySets: number,
+  homeTeamName: string = 'Home',
+  awayTeamName: string = 'Away'
 ): void => {
-  const teamName = team.charAt(0).toUpperCase() + team.slice(1);
+  // Create simple sets display using actual team names
+  const setsDisplay = `${homeTeamName} ${homeSets} sets, ${awayTeamName} ${awaySets} sets`;
   
   addLogEntry(
     'score',
-    `${teamName} Sets Change`,
+    setsDisplay,
     {
       team,
       before: oldSets,
       after: newSets,
-      action: `${teamName} Sets: ${oldSets} → ${newSets}`,
+      action: setsDisplay,
     }
   );
 };

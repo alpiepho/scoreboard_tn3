@@ -48,6 +48,9 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const awayPressedRef = useRef<boolean>(false);
   const gameStateRef = useRef(gameState);
   
+  // Track previous scores for logging
+  const prevScoresRef = useRef({ homeScore: gameState.homeScore, awayScore: gameState.awayScore, homeSets: gameState.homeSets, awaySets: gameState.awaySets });
+  
   // Update refs when state changes
   useEffect(() => {
     homePressedRef.current = homePressed;
@@ -200,6 +203,39 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     }
   }, [gameState]);
 
+  // Effect to log score and set changes
+  useEffect(() => {
+    const prev = prevScoresRef.current;
+    
+    // Log home score changes
+    if (gameState.homeScore !== prev.homeScore) {
+      logScoreChange('home', prev.homeScore, gameState.homeScore, gameState.homeScore, gameState.awayScore, settings.homeTeamName, settings.awayTeamName);
+    }
+    
+    // Log away score changes  
+    if (gameState.awayScore !== prev.awayScore) {
+      logScoreChange('away', prev.awayScore, gameState.awayScore, gameState.homeScore, gameState.awayScore, settings.homeTeamName, settings.awayTeamName);
+    }
+    
+    // Log home set changes
+    if (gameState.homeSets !== prev.homeSets) {
+      logSetChange('home', prev.homeSets, gameState.homeSets, gameState.homeSets, gameState.awaySets, settings.homeTeamName, settings.awayTeamName);
+    }
+    
+    // Log away set changes
+    if (gameState.awaySets !== prev.awaySets) {
+      logSetChange('away', prev.awaySets, gameState.awaySets, gameState.homeSets, gameState.awaySets, settings.homeTeamName, settings.awayTeamName);
+    }
+    
+    // Update the previous values for next comparison
+    prevScoresRef.current = {
+      homeScore: gameState.homeScore,
+      awayScore: gameState.awayScore,
+      homeSets: gameState.homeSets,
+      awaySets: gameState.awaySets
+    };
+  }, [gameState.homeScore, gameState.awayScore, gameState.homeSets, gameState.awaySets, settings.homeTeamName, settings.awayTeamName]);
+
   // Check if we should show a warning for a multiple of 7
   const checkForWarning = (totalScore: number) => {
     // Don't show a new warning if an alert is already visible
@@ -249,20 +285,14 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     
     // Update both the state and the ref
     setGameState(prevState => {
-      const currentHomeScore = prevState.homeScore;
-      const newHomeScore = currentHomeScore + 1;
-      
       const updatedState = {
         ...prevState,
-        homeScore: newHomeScore,
+        homeScore: prevState.homeScore + 1,
         lastScoringTeam: 'home' as const
       };
       
       // Update ref immediately
       gameStateRef.current = updatedState;
-      
-      // Log the score change using the actual current and new values
-      logScoreChange('home', currentHomeScore, newHomeScore);
       
       return updatedState;
     });
@@ -295,11 +325,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       // Update ref immediately to avoid race conditions
       gameStateRef.current = updatedState;
       
-      // Only log if score actually changes
-      if (newHomeScore !== currentHomeScore) {
-        logScoreChange('home', currentHomeScore, newHomeScore);
-      }
-      
       return updatedState;
     });
     
@@ -316,20 +341,14 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     
     // Update both the state and the ref
     setGameState(prevState => {
-      const currentAwayScore = prevState.awayScore;
-      const newAwayScore = currentAwayScore + 1;
-      
       const updatedState = {
         ...prevState,
-        awayScore: newAwayScore,
+        awayScore: prevState.awayScore + 1,
         lastScoringTeam: 'away' as const
       };
       
       // Update ref immediately
       gameStateRef.current = updatedState;
-      
-      // Log the score change using the actual current and new values
-      logScoreChange('away', currentAwayScore, newAwayScore);
       
       return updatedState;
     });
@@ -361,11 +380,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       
       // Update ref immediately to avoid race conditions
       gameStateRef.current = updatedState;
-      
-      // Only log if score actually changes
-      if (newAwayScore !== currentAwayScore) {
-        logScoreChange('away', currentAwayScore, newAwayScore);
-      }
       
       return updatedState;
     });
@@ -666,31 +680,21 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                       if (index < gameState.homeSets) {
                         // If this circle is already active, deactivate it and all after
                         setGameState(prev => {
-                          const currentHomeSets = prev.homeSets;
-                          const newHomeSets = index;
-                          
                           const updatedState = {
                             ...prev,
-                            homeSets: newHomeSets
+                            homeSets: index
                           };
                           
-                          // Log the set change using actual values from prevState
-                          logSetChange('home', currentHomeSets, newHomeSets);
                           return updatedState;
                         });
                       } else {
                         // If this circle is inactive, activate it and all before
                         setGameState(prev => {
-                          const currentHomeSets = prev.homeSets;
-                          const newHomeSets = index + 1;
-                          
                           const updatedState = {
                             ...prev,
-                            homeSets: newHomeSets
+                            homeSets: index + 1
                           };
                           
-                          // Log the set change using actual values from prevState
-                          logSetChange('home', currentHomeSets, newHomeSets);
                           return updatedState;
                         });
                       }
@@ -742,31 +746,21 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                       if (index < gameState.awaySets) {
                         // If this circle is already active, deactivate it and all after
                         setGameState(prev => {
-                          const currentAwaySets = prev.awaySets;
-                          const newAwaySets = index;
-                          
                           const updatedState = {
                             ...prev,
-                            awaySets: newAwaySets
+                            awaySets: index
                           };
                           
-                          // Log the set change using actual values from prevState
-                          logSetChange('away', currentAwaySets, newAwaySets);
                           return updatedState;
                         });
                       } else {
                         // If this circle is inactive, activate it and all before
                         setGameState(prev => {
-                          const currentAwaySets = prev.awaySets;
-                          const newAwaySets = index + 1;
-                          
                           const updatedState = {
                             ...prev,
-                            awaySets: newAwaySets
+                            awaySets: index + 1
                           };
                           
-                          // Log the set change using actual values from prevState
-                          logSetChange('away', currentAwaySets, newAwaySets);
                           return updatedState;
                         });
                       }
