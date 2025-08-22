@@ -6,6 +6,7 @@ import Settings from './pages/Settings'
 import { AppSettings, GameState } from './types'
 import { getTeamColors, applyTeamColors, applyTeamTextColors } from './utils/teamColors'
 import { textColorPresets } from './utils/textColors'
+import { logAction, logSettingChange } from './utils/logger'
 
 function App() {
   // Default settings
@@ -80,6 +81,37 @@ function App() {
     };
   });
 
+  // Wrapper for setSettings that includes logging
+  const setSettingsWithLogging = (newSettings: AppSettings | ((prev: AppSettings) => AppSettings)) => {
+    const oldSettings = settings;
+    
+    if (typeof newSettings === 'function') {
+      const computedSettings = newSettings(oldSettings);
+      
+      // Log specific setting changes
+      Object.keys(computedSettings).forEach(key => {
+        const oldValue = oldSettings[key as keyof AppSettings];
+        const newValue = computedSettings[key as keyof AppSettings];
+        if (oldValue !== newValue) {
+          logSettingChange(key, oldValue, newValue);
+        }
+      });
+      
+      setSettings(computedSettings);
+    } else {
+      // Log specific setting changes
+      Object.keys(newSettings).forEach(key => {
+        const oldValue = oldSettings[key as keyof AppSettings];
+        const newValue = newSettings[key as keyof AppSettings];
+        if (oldValue !== newValue) {
+          logSettingChange(key, oldValue, newValue);
+        }
+      });
+      
+      setSettings(newSettings);
+    }
+  };
+
   // Save settings to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('scoresTN3Settings', JSON.stringify(settings));
@@ -113,6 +145,9 @@ function App() {
     if (savedGameState) {
       setGameState(JSON.parse(savedGameState));
     }
+    
+    // Log app startup
+    logAction('Application Started', { version: '0.5.6' });
   }, []);
 
   // Save the game state whenever it changes
@@ -122,6 +157,10 @@ function App() {
 
   // Reset both scores and sets to zero
   const resetScoresAndSets = () => {
+    logAction('Reset Scores and Sets', { 
+      before: { homeScore: gameState.homeScore, awayScore: gameState.awayScore, homeSets: gameState.homeSets, awaySets: gameState.awaySets },
+      after: { homeScore: 0, awayScore: 0, homeSets: 0, awaySets: 0 }
+    });
     setGameState({
       homeScore: 0,
       awayScore: 0,
@@ -133,6 +172,10 @@ function App() {
 
   // Reset only scores, preserving sets
   const resetScores = () => {
+    logAction('Reset Scores Only', { 
+      before: { homeScore: gameState.homeScore, awayScore: gameState.awayScore },
+      after: { homeScore: 0, awayScore: 0 }
+    });
     setGameState(prevState => ({
       ...prevState,
       homeScore: 0,
@@ -142,6 +185,25 @@ function App() {
 
   // Swap home and away teams
   const swapHomeAndAway = () => {
+    logAction('Swap Teams', { 
+      before: { 
+        homeTeam: settings.homeTeamName, 
+        awayTeam: settings.awayTeamName,
+        homeScore: gameState.homeScore,
+        awayScore: gameState.awayScore,
+        homeSets: gameState.homeSets,
+        awaySets: gameState.awaySets
+      },
+      after: { 
+        homeTeam: settings.awayTeamName, 
+        awayTeam: settings.homeTeamName,
+        homeScore: gameState.awayScore,
+        awayScore: gameState.homeScore,
+        homeSets: gameState.awaySets,
+        awaySets: gameState.homeSets
+      }
+    });
+    
     // Swap team names, scores, sets, and toggle the colorsSwapped flag
     setSettings(prevSettings => {
       // Create new settings with swapped values
@@ -192,7 +254,7 @@ function App() {
         <Route path="/settings" element={
           <Settings 
             settings={settings} 
-            setSettings={setSettings} 
+            setSettings={setSettingsWithLogging} 
             resetScores={resetScores}
             resetScoresAndSets={resetScoresAndSets}
             swapHomeAndAway={swapHomeAndAway}

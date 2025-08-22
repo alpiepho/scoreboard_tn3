@@ -18,10 +18,13 @@ import { SettingsProps } from '../types';
 import './Settings.css';
 import './TeamColorStyles.css';
 import AboutModal from '../components/AboutModal';
+import LogViewer from '../components/LogViewer';
+import LogSettings from '../components/LogSettings';
 import { fontFamilies } from '../utils/fonts';
 import TeamColorPicker from '../components/TeamColorPicker';
 import TextColorPicker from '../components/TextColorPicker';
 import { getTeamColors, applyTeamColors } from '../utils/teamColors';
+import { clearLogs, logSetChange } from '../utils/logger';
 
 
 const Settings: React.FC<SettingsProps> = ({
@@ -104,6 +107,8 @@ const Settings: React.FC<SettingsProps> = ({
   const [localSettings, setLocalSettings] = useState({ ...settings });
   const [showFontDropdown, setShowFontDropdown] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showLogViewer, setShowLogViewer] = useState(false);
+  const [showClearLogDialog, setShowClearLogDialog] = useState(false);
 
   // Custom color state for each picker (persist in localStorage)
   const [customColors, setCustomColors] = useState(() => {
@@ -274,6 +279,20 @@ const Settings: React.FC<SettingsProps> = ({
     window.location.reload();
   };
 
+  // Log-related handlers
+  const handleViewLogs = () => {
+    setShowLogViewer(true);
+  };
+
+  const handleClearLogs = () => {
+    setShowClearLogDialog(true);
+  };
+
+  const confirmClearLogs = () => {
+    clearLogs();
+    setShowClearLogDialog(false);
+  };
+
   return (
     <div className="settings-container" onScroll={handleScroll}>
       <div className="settings-header">
@@ -312,9 +331,12 @@ const Settings: React.FC<SettingsProps> = ({
             <button className="set-control-button" onClick={() => {
               // Decrement home sets if greater than 0
               if (gameState.homeSets > 0) {
+                const oldSets = gameState.homeSets;
+                const newSets = oldSets - 1;
+                logSetChange('home', oldSets, newSets);
                 setGameState(prev => ({
                   ...prev,
-                  homeSets: prev.homeSets - 1
+                  homeSets: newSets
                 }));
               }
               navigate('/');
@@ -322,9 +344,12 @@ const Settings: React.FC<SettingsProps> = ({
             <button className="set-control-button" onClick={() => {
               // Increment home sets if less than maxSets
               if (gameState.homeSets < settings.maxSets) {
+                const oldSets = gameState.homeSets;
+                const newSets = oldSets + 1;
+                logSetChange('home', oldSets, newSets);
                 setGameState(prev => ({
                   ...prev,
-                  homeSets: prev.homeSets + 1
+                  homeSets: newSets
                 }));
               }
               navigate('/');
@@ -339,9 +364,12 @@ const Settings: React.FC<SettingsProps> = ({
             <button className="set-control-button" onClick={() => {
               // Decrement away sets if greater than 0
               if (gameState.awaySets > 0) {
+                const oldSets = gameState.awaySets;
+                const newSets = oldSets - 1;
+                logSetChange('away', oldSets, newSets);
                 setGameState(prev => ({
                   ...prev,
-                  awaySets: prev.awaySets - 1
+                  awaySets: newSets
                 }));
               }
               navigate('/');
@@ -349,9 +377,12 @@ const Settings: React.FC<SettingsProps> = ({
             <button className="set-control-button" onClick={() => {
               // Increment away sets if less than maxSets
               if (gameState.awaySets < settings.maxSets) {
+                const oldSets = gameState.awaySets;
+                const newSets = oldSets + 1;
+                logSetChange('away', oldSets, newSets);
                 setGameState(prev => ({
                   ...prev,
-                  awaySets: prev.awaySets + 1
+                  awaySets: newSets
                 }));
               }
               navigate('/');
@@ -734,6 +765,14 @@ const Settings: React.FC<SettingsProps> = ({
           </div>
         </div>
       </div> {/* close settings-form */}
+      
+      <div className="settings-section">
+        <LogSettings 
+          onViewLogs={handleViewLogs}
+          onClearLogs={handleClearLogs}
+        />
+      </div>
+      
       <div className="settings-actions">
         <button className="about-button" type="button" onClick={() => setShowAboutModal(true)}>
           About
@@ -761,6 +800,26 @@ const Settings: React.FC<SettingsProps> = ({
             <div className="dialog-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
               <button type="button" className="reset-button" style={{ minWidth: 100 }} onClick={confirmFactoryDefaults}>Yes, Reset</button>
               <button type="button" className="cancel-button" style={{ minWidth: 100 }} onClick={() => setShowFactoryDefaultsDialog(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Log Viewer Modal */}
+      <LogViewer
+        visible={showLogViewer}
+        onClose={() => setShowLogViewer(false)}
+      />
+      
+      {/* Clear Logs Dialog */}
+      {showClearLogDialog && (
+        <div className="modal-backdrop" style={{ zIndex: 10002, position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="modal-dialog" style={{ background: '#fff', borderRadius: '12px', maxWidth: 340, width: '90%', padding: '2rem 1.5rem', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', textAlign: 'center' }}>
+            <h2 style={{ marginTop: 0 }}>Clear Activity Log?</h2>
+            <p style={{ margin: '1.2em 0 2em 0' }}>This will permanently delete all log entries. This action cannot be undone.</p>
+            <div className="dialog-actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button type="button" className="reset-button" style={{ minWidth: 100 }} onClick={confirmClearLogs}>Yes, Clear</button>
+              <button type="button" className="cancel-button" style={{ minWidth: 100 }} onClick={() => setShowClearLogDialog(false)}>Cancel</button>
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { getFontFamilyString } from '../utils/fonts';
 import { getFontConfig, CONFIG_VERSION } from '../utils/fontConfig';
 import { getTeamColors } from '../utils/teamColors';
 import { textColorPresets } from '../utils/textColors';
+import { logScoreChange, logSetChange } from '../utils/logger';
 
 // Helper to get custom colors from localStorage
 function getCustomColors() {
@@ -246,25 +247,28 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const incrementHomeScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    // Get the latest scores directly from gameStateRef
-    const currentHomeScore = gameStateRef.current.homeScore;
-    const currentAwayScore = gameStateRef.current.awayScore;
-    const newHomeScore = currentHomeScore + 1;
-    
     // Update both the state and the ref
     setGameState(prevState => {
+      const currentHomeScore = prevState.homeScore;
+      const newHomeScore = currentHomeScore + 1;
+      
       const updatedState = {
         ...prevState,
         homeScore: newHomeScore,
         lastScoringTeam: 'home' as const
       };
+      
       // Update ref immediately
       gameStateRef.current = updatedState;
+      
+      // Log the score change using the actual current and new values
+      logScoreChange('home', currentHomeScore, newHomeScore);
+      
       return updatedState;
     });
     
-    // Calculate the new total score directly
-    const newTotalScore = newHomeScore + currentAwayScore;
+    // Calculate the new total score for warning check
+    const newTotalScore = (gameState.homeScore + 1) + gameState.awayScore;
     
     // Check if we need to show a warning
     checkForWarning(newTotalScore);
@@ -275,55 +279,63 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const decrementHomeScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    // Get the latest score directly from gameStateRef to avoid stale closures
-    const currentHomeScore = gameStateRef.current.homeScore;
-    const currentAwayScore = gameStateRef.current.awayScore;
-    const newHomeScore = Math.max(0, currentHomeScore - 1);
-    
-    // Calculate old and new total scores to check for warning resets
-    const oldTotalScore = currentHomeScore + currentAwayScore;
-    const newTotalScore = newHomeScore + currentAwayScore;
-    
-    // Reset warnings if we've decremented past a multiple of 7
-    resetWarningsOnDecrement(oldTotalScore, newTotalScore);
+    // Calculate old total score for warning check first
+    const oldTotalScore = gameState.homeScore + gameState.awayScore;
     
     // Update both the state and the ref
     setGameState(prevState => {
+      const currentHomeScore = prevState.homeScore;
+      const newHomeScore = Math.max(0, currentHomeScore - 1);
+      
       const updatedState = {
         ...prevState,
         homeScore: newHomeScore
       };
+      
       // Update ref immediately to avoid race conditions
       gameStateRef.current = updatedState;
+      
+      // Only log if score actually changes
+      if (newHomeScore !== currentHomeScore) {
+        logScoreChange('home', currentHomeScore, newHomeScore);
+      }
+      
       return updatedState;
     });
     
+    // Calculate new total score for warning reset check
+    const newTotalScore = Math.max(0, gameState.homeScore - 1) + gameState.awayScore;
+    
+    // Reset warnings if we've decremented past a multiple of 7
+    resetWarningsOnDecrement(oldTotalScore, newTotalScore);
+
     vibrate();
-  };
-  
-  // Handle away score changes
+  };  // Handle away score changes
   const incrementAwayScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    // Get the latest scores directly from gameStateRef
-    const currentHomeScore = gameStateRef.current.homeScore;
-    const currentAwayScore = gameStateRef.current.awayScore;
-    const newAwayScore = currentAwayScore + 1;
-    
     // Update both the state and the ref
     setGameState(prevState => {
+      const currentAwayScore = prevState.awayScore;
+      const newAwayScore = currentAwayScore + 1;
+      
       const updatedState = {
         ...prevState,
         awayScore: newAwayScore,
         lastScoringTeam: 'away' as const
       };
+      
       // Update ref immediately
       gameStateRef.current = updatedState;
+      
+      // Log the score change using the actual current and new values
+      logScoreChange('away', currentAwayScore, newAwayScore);
+      
       return updatedState;
     });
     
-    // Calculate the new total score directly
-    const newTotalScore = currentHomeScore + newAwayScore;
+    // Calculate the new total score for warning check
+    const newTotalScore = gameState.homeScore + (gameState.awayScore + 1);
     
     // Check if we need to show a warning
     checkForWarning(newTotalScore);
@@ -334,33 +346,38 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const decrementAwayScore = () => {
     if (alertVisible) return; // Don't update scores when alert is visible
     
-    // Get the latest score directly from gameStateRef to avoid stale closures
-    const currentHomeScore = gameStateRef.current.homeScore;
-    const currentAwayScore = gameStateRef.current.awayScore;
-    const newAwayScore = Math.max(0, currentAwayScore - 1);
-    
-    // Calculate old and new total scores to check for warning resets
-    const oldTotalScore = currentHomeScore + currentAwayScore;
-    const newTotalScore = currentHomeScore + newAwayScore;
-    
-    // Reset warnings if we've decremented past a multiple of 7
-    resetWarningsOnDecrement(oldTotalScore, newTotalScore);
+    // Calculate old total score for warning check first
+    const oldTotalScore = gameState.homeScore + gameState.awayScore;
     
     // Update both the state and the ref
     setGameState(prevState => {
+      const currentAwayScore = prevState.awayScore;
+      const newAwayScore = Math.max(0, currentAwayScore - 1);
+      
       const updatedState = {
         ...prevState,
         awayScore: newAwayScore
       };
+      
       // Update ref immediately to avoid race conditions
       gameStateRef.current = updatedState;
+      
+      // Only log if score actually changes
+      if (newAwayScore !== currentAwayScore) {
+        logScoreChange('away', currentAwayScore, newAwayScore);
+      }
+      
       return updatedState;
     });
     
+    // Calculate new total score for warning reset check
+    const newTotalScore = gameState.homeScore + Math.max(0, gameState.awayScore - 1);
+    
+    // Reset warnings if we've decremented past a multiple of 7
+    resetWarningsOnDecrement(oldTotalScore, newTotalScore);
+
     vibrate();
-  };
-  
-  // Home team handlers for long press
+  };  // Home team handlers for long press
   const handleHomeMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     // Don't process when alert is visible
     if (alertVisible) {
@@ -645,19 +662,39 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                       e.stopPropagation(); // Prevent triggering score button
                       e.preventDefault(); // Prevent default browser behavior
                       // Click to toggle the set status
+                      
                       if (index < gameState.homeSets) {
                         // If this circle is already active, deactivate it and all after
-                        setGameState(prev => ({
-                          ...prev,
-                          homeSets: index
-                        }));
+                        setGameState(prev => {
+                          const currentHomeSets = prev.homeSets;
+                          const newHomeSets = index;
+                          
+                          const updatedState = {
+                            ...prev,
+                            homeSets: newHomeSets
+                          };
+                          
+                          // Log the set change using actual values from prevState
+                          logSetChange('home', currentHomeSets, newHomeSets);
+                          return updatedState;
+                        });
                       } else {
                         // If this circle is inactive, activate it and all before
-                        setGameState(prev => ({
-                          ...prev,
-                          homeSets: index + 1
-                        }));
+                        setGameState(prev => {
+                          const currentHomeSets = prev.homeSets;
+                          const newHomeSets = index + 1;
+                          
+                          const updatedState = {
+                            ...prev,
+                            homeSets: newHomeSets
+                          };
+                          
+                          // Log the set change using actual values from prevState
+                          logSetChange('home', currentHomeSets, newHomeSets);
+                          return updatedState;
+                        });
                       }
+                      
                       vibrate();
                     }}
                     onTouchEnd={(e) => {
@@ -701,19 +738,39 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
                       e.stopPropagation(); // Prevent triggering score button
                       e.preventDefault(); // Prevent default browser behavior
                       // Click to toggle the set status
+                      
                       if (index < gameState.awaySets) {
                         // If this circle is already active, deactivate it and all after
-                        setGameState(prev => ({
-                          ...prev,
-                          awaySets: index
-                        }));
+                        setGameState(prev => {
+                          const currentAwaySets = prev.awaySets;
+                          const newAwaySets = index;
+                          
+                          const updatedState = {
+                            ...prev,
+                            awaySets: newAwaySets
+                          };
+                          
+                          // Log the set change using actual values from prevState
+                          logSetChange('away', currentAwaySets, newAwaySets);
+                          return updatedState;
+                        });
                       } else {
                         // If this circle is inactive, activate it and all before
-                        setGameState(prev => ({
-                          ...prev,
-                          awaySets: index + 1
-                        }));
+                        setGameState(prev => {
+                          const currentAwaySets = prev.awaySets;
+                          const newAwaySets = index + 1;
+                          
+                          const updatedState = {
+                            ...prev,
+                            awaySets: newAwaySets
+                          };
+                          
+                          // Log the set change using actual values from prevState
+                          logSetChange('away', currentAwaySets, newAwaySets);
+                          return updatedState;
+                        });
                       }
+                      
                       vibrate();
                     }}
                     onTouchEnd={(e) => {

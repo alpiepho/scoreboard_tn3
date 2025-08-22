@@ -1,0 +1,225 @@
+/* Log Settings Section */
+.log-settings-section {
+  margin-bottom: 2rem;
+}
+
+.log-settings-section h2 {
+  margin-bottom: 1rem;
+  color: var(--text-color, #333);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Log Status Display */
+.log-status {
+  background: var(--secondary-bg, #f8f9fa);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.log-status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.log-status-item:last-child {
+  margin-bottom: 0;
+}
+
+.log-status-label {
+  font-weight: 500;
+  color: var(--text-color, #555);
+}
+
+.log-status-value {
+  font-weight: 600;
+  color: var(--text-color, #333);
+}
+
+.log-status-value.enabled {
+  color: #28a745;
+}
+
+.log-status-value.disabled {
+  color: #dc3545;
+}
+
+/* Log Actions Grid */
+.log-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.log-action-btn {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.log-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.view-logs-btn {
+  background: #007bff;
+  color: white;
+}
+
+.view-logs-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.copy-logs-btn {
+  background: #28a745;
+  color: white;
+}
+
+.copy-logs-btn:hover:not(:disabled) {
+  background: #1e7e34;
+}
+
+.clear-logs-btn {
+  background: #dc3545;
+  color: white;
+  grid-column: 1 / -1; /* Span full width */
+}
+
+.clear-logs-btn:hover:not(:disabled) {
+  background: #c82333;
+}
+
+/* Form Group Overrides for Log Settings */
+.log-settings-section .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.log-settings-section .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-color, #333);
+}
+
+.log-settings-section .form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--input-bg, #ffffff);
+  color: var(--text-color, #333);
+}
+
+.log-settings-section .form-group select:disabled {
+  background: var(--disabled-bg, #f5f5f5);
+  color: var(--disabled-text, #999);
+  cursor: not-allowed;
+}
+
+.log-settings-section .setting-hint {
+  font-size: 0.85rem;
+  color: var(--secondary-text, #666);
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+/* Checkbox styling for log settings */
+.log-settings-section .form-group.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.log-settings-section .form-group.checkbox label {
+  flex: 1;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.log-settings-section .form-group.checkbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.log-settings-section .form-group.checkbox .setting-hint {
+  margin-top: 0.5rem;
+  margin-left: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .log-actions-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .clear-logs-btn {
+    grid-column: 1;
+  }
+  
+  .log-action-btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .log-status {
+    padding: 0.75rem;
+  }
+  
+  .log-status-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .log-settings-section .form-group.checkbox {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .log-settings-section .form-group.checkbox input[type="checkbox"] {
+    align-self: flex-start;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .log-settings-section {
+    --text-color: #ffffff;
+    --secondary-text: #cccccc;
+    --border-color: #444444;
+    --secondary-bg: #2d2d2d;
+    --input-bg: #2d2d2d;
+    --disabled-bg: #1a1a1a;
+    --disabled-text: #666666;
+  }
+}
+
+/* Integration with existing Settings.css */
+.settings-section .log-settings-section {
+  margin-bottom: 0;
+}
+
+.settings-section .log-settings-section h2 {
+  margin-bottom: 1rem;
+}

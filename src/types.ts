@@ -60,3 +60,21 @@ export interface ScorePanelProps {
   onScoreChange: (newScore: number | ((prevScore: number) => number)) => void;
   increment: number;
 }
+
+export interface LogEntry {
+  id: string;
+  timestamp: Date;
+  type: 'score' | 'setting' | 'action';
+  description: string;
+  details: {
+    before?: any;
+    after?: any;
+    team?: 'home' | 'away';
+    action?: string;
+  };
+}
+
+export interface LogSettings {
+  maxEntries: number;
+  isEnabled: boolean;
+}
