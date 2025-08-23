@@ -8,7 +8,7 @@ import { getFontFamilyString } from '../utils/fonts';
 import { getFontConfig, CONFIG_VERSION } from '../utils/fontConfig';
 import { getTeamColors } from '../utils/teamColors';
 import { textColorPresets } from '../utils/textColors';
-import { logScoreChange, logSetChange } from '../utils/logger';
+import { logScoreChange, logSetChange, getLogSettings } from '../utils/logger';
 
 // Helper to get custom colors from localStorage
 function getCustomColors() {
@@ -39,13 +39,13 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const homeIntervalRef = useRef<number | null>(null);
   const awayIntervalRef = useRef<number | null>(null);
   
-  // Settings button double click state
-  const settingsClickTimeoutRef = useRef<number | null>(null);
-  const settingsClickCountRef = useRef(0);
   const [homePressed, setHomePressed] = useState(false);
   const [awayPressed, setAwayPressed] = useState(false);
   const [homeAutoDecrementing, setHomeAutoDecrementing] = useState(false);
   const [awayAutoDecrementing, setAwayAutoDecrementing] = useState(false);
+  
+  // Logging state for comment button visibility
+  const [isLoggingEnabled, setIsLoggingEnabled] = useState(() => getLogSettings().isEnabled);
   
   // Use refs to track the current pressed state for access in timeouts
   const homePressedRef = useRef<boolean>(false);
@@ -67,6 +67,20 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   useEffect(() => {
     gameStateRef.current = gameState;
   }, [gameState]);
+
+  // Update logging state when settings change
+  useEffect(() => {
+    const checkLoggingState = () => {
+      const currentLoggingState = getLogSettings().isEnabled;
+      setIsLoggingEnabled(currentLoggingState);
+    };
+
+    // Check initially and set up interval to check periodically
+    checkLoggingState();
+    const interval = setInterval(checkLoggingState, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   
   // Track which multiples of 7 we've already warned about
   const shownWarningsRef = useRef<Set<number>>(new Set());
@@ -587,34 +601,9 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     setAwayAutoDecrementing(false);
   };
 
-  // Settings button handlers for double click
+  // Settings button handler - simple click to navigate
   const handleSettingsClick = () => {
-    const doubleClickDelay = 300; // ms between clicks for double click detection
-    
-    settingsClickCountRef.current += 1;
-    
-    // Clear any existing timeout
-    if (settingsClickTimeoutRef.current !== null) {
-      clearTimeout(settingsClickTimeoutRef.current);
-      settingsClickTimeoutRef.current = null;
-    }
-    
-    // Set timeout to handle the click(s)
-    settingsClickTimeoutRef.current = window.setTimeout(() => {
-      const clickCount = settingsClickCountRef.current;
-      
-      if (clickCount === 1) {
-        // Single click - navigate to settings
-        navigate('/settings');
-      } else if (clickCount >= 2) {
-        // Double click - open comment modal
-        onOpenCommentModal();
-      }
-      
-      // Reset click count
-      settingsClickCountRef.current = 0;
-      settingsClickTimeoutRef.current = null;
-    }, doubleClickDelay);
+    navigate('/settings');
   };
 
   // Clean up timeouts when component unmounts
@@ -631,9 +620,6 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       }
       if (awayIntervalRef.current !== null) {
         window.clearTimeout(awayIntervalRef.current);
-      }
-      if (settingsClickTimeoutRef.current !== null) {
-        window.clearTimeout(settingsClickTimeoutRef.current);
       }
     };
   }, []);
@@ -815,6 +801,20 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
           )}
         </div>
       </div>
+      
+      {/* Comment Button - only show when logging is enabled */}
+      {isLoggingEnabled && (
+        <button 
+          className="comment-button"
+          onClick={onOpenCommentModal}
+          title="Add comment to log"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="none" d="M0 0h24v24H0z"/>
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="currentColor"/>
+          </svg>
+        </button>
+      )}
       
       <button 
         className="settings-button"

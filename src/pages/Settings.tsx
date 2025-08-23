@@ -773,7 +773,7 @@ const Settings: React.FC<SettingsProps> = ({
       <div className="settings-section">
         <h3>Activity Log</h3>
         <p className="section-description">
-          Track score changes, setting updates, and custom notes. Double-click the Settings button (⚙️) on the scoreboard to quickly add a comment to the log.
+          Track score changes, setting updates, and custom notes. Use the comment button (💬) in the upper left of the scoreboard to quickly add a comment to the log.
         </p>
         <LogSettings 
           onViewLogs={handleViewLogs}
