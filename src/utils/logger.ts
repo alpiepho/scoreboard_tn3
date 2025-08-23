@@ -223,19 +223,73 @@ export const logSetChange = (
   );
 };
 
+// Helper function to get readable color name from color ID
+const getColorName = (colorId: string): string => {
+  // Import colorPresets here to avoid circular dependency issues
+  const colorPresets = [
+    { id: 'blue', name: 'Blue' },
+    { id: 'red', name: 'Red' },
+    { id: 'green', name: 'Green' },
+    { id: 'orange', name: 'Orange' },
+    { id: 'purple', name: 'Purple' },
+    { id: 'yellow', name: 'Yellow' },
+    { id: 'teal', name: 'Teal' },
+    { id: 'pink', name: 'Pink' },
+    { id: 'indigo', name: 'Indigo' },
+    { id: 'lime', name: 'Lime' },
+    { id: 'cyan', name: 'Cyan' },
+    { id: 'amber', name: 'Amber' },
+    { id: 'brown', name: 'Brown' },
+    { id: 'gray', name: 'Gray' },
+    { id: 'black', name: 'Black' },
+    { id: 'white', name: 'White' }
+  ];
+  
+  const preset = colorPresets.find(p => p.id === colorId);
+  return preset ? preset.name : colorId;
+};
+
+// Helper function to get friendly setting names and values
+const getSettingDisplayInfo = (settingName: string, oldValue: any, newValue: any) => {
+  switch (settingName) {
+    case 'homeTeamName':
+      return {
+        description: `Home team name changed to "${newValue}"`
+      };
+    case 'awayTeamName':
+      return {
+        description: `Away team name changed to "${newValue}"`
+      };
+    case 'homeTeamColorId':
+      return {
+        description: `Home team color changed to ${getColorName(newValue)}`
+      };
+    case 'awayTeamColorId':
+      return {
+        description: `Away team color changed to ${getColorName(newValue)}`
+      };
+    default:
+      return {
+        description: `${settingName}: ${oldValue} → ${newValue}`
+      };
+  }
+};
+
 // Log setting change
 export const logSettingChange = (
   settingName: string,
   oldValue: any,
   newValue: any
 ): void => {
+  const { description } = getSettingDisplayInfo(settingName, oldValue, newValue);
+  
   addLogEntry(
     'setting',
-    `Setting Changed: ${settingName}`,
+    description,
     {
       before: oldValue,
       after: newValue,
-      action: `${settingName}: ${oldValue} → ${newValue}`,
+      action: description
     }
   );
 };

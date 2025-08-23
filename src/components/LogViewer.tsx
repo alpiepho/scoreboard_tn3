@@ -129,7 +129,6 @@ const LogViewer: React.FC<LogViewerProps> = ({ visible, onClose }) => {
               <div key={entry.id} className={`log-entry ${entry.type === 'comment' ? 'comment-entry' : ''}`}>
                 <div className="log-entry-header">
                   <span className="log-entry-time">{formatTimestamp(entry.timestamp)}</span>
-                  {entry.type === 'comment' && <span className="comment-label">💭</span>}
                 </div>
                 <div className="log-entry-description">{entry.description}</div>
               </div>

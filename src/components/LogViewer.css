@@ -213,16 +213,7 @@
   color: var(--secondary-text, #777);
 }
 
-/* Comment Entry Styles */
-.comment-label {
-  font-size: 1rem;
-  color: var(--text-color, #333); /* Use standard text color */
-}
-
-.comment-entry .log-entry-description {
-  font-style: italic;
-  color: var(--text-color, #333); /* Use standard text color */
-}
+/* Comment Entry Styles - Removed for uniform appearance */
 
 /* Clear Dialog */
 .clear-dialog-overlay {

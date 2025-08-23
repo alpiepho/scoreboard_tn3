@@ -195,7 +195,9 @@ function App() {
 
   // Swap home and away teams
   const swapHomeAndAway = () => {
-    logAction('Swap Teams', { 
+    const swapDescription = `Swapped teams: ${settings.homeTeamName} ↔ ${settings.awayTeamName}`;
+    
+    logAction(swapDescription, { 
       before: { 
         homeTeam: settings.homeTeamName, 
         awayTeam: settings.awayTeamName,
