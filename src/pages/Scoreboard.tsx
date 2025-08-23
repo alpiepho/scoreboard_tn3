@@ -39,9 +39,9 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
   const homeIntervalRef = useRef<number | null>(null);
   const awayIntervalRef = useRef<number | null>(null);
   
-  // Settings button long press state
-  const settingsTimeoutRef = useRef<number | null>(null);
-  const [settingsPressed, setSettingsPressed] = useState(false);
+  // Settings button double click state
+  const settingsClickTimeoutRef = useRef<number | null>(null);
+  const settingsClickCountRef = useRef(0);
   const [homePressed, setHomePressed] = useState(false);
   const [awayPressed, setAwayPressed] = useState(false);
   const [homeAutoDecrementing, setHomeAutoDecrementing] = useState(false);
@@ -587,44 +587,34 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
     setAwayAutoDecrementing(false);
   };
 
-  // Settings button handlers for long press
-  const handleSettingsMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault(); // Prevent default touch behavior
+  // Settings button handlers for double click
+  const handleSettingsClick = () => {
+    const doubleClickDelay = 300; // ms between clicks for double click detection
     
-    setSettingsPressed(true);
+    settingsClickCountRef.current += 1;
     
-    // Clear any existing timer
-    if (settingsTimeoutRef.current !== null) {
-      clearTimeout(settingsTimeoutRef.current);
-      settingsTimeoutRef.current = null;
+    // Clear any existing timeout
+    if (settingsClickTimeoutRef.current !== null) {
+      clearTimeout(settingsClickTimeoutRef.current);
+      settingsClickTimeoutRef.current = null;
     }
     
-    // Start the long press timer
-    settingsTimeoutRef.current = window.setTimeout(() => {
-      // Long press detected - open comment modal
-      onOpenCommentModal();
-      settingsTimeoutRef.current = null;
-    }, longPressDelay);
-  };
-  
-  const handleSettingsMouseUp = () => {
-    setSettingsPressed(false);
-    
-    // If timeout still exists, it was a short press (navigate to settings)
-    if (settingsTimeoutRef.current !== null) {
-      clearTimeout(settingsTimeoutRef.current);
-      settingsTimeoutRef.current = null;
-      navigate('/settings');
-    }
-  };
-  
-  const handleSettingsMouseLeave = () => {
-    // Cancel timer when moving out of the button
-    if (settingsTimeoutRef.current !== null) {
-      clearTimeout(settingsTimeoutRef.current);
-      settingsTimeoutRef.current = null;
-    }
-    setSettingsPressed(false);
+    // Set timeout to handle the click(s)
+    settingsClickTimeoutRef.current = window.setTimeout(() => {
+      const clickCount = settingsClickCountRef.current;
+      
+      if (clickCount === 1) {
+        // Single click - navigate to settings
+        navigate('/settings');
+      } else if (clickCount >= 2) {
+        // Double click - open comment modal
+        onOpenCommentModal();
+      }
+      
+      // Reset click count
+      settingsClickCountRef.current = 0;
+      settingsClickTimeoutRef.current = null;
+    }, doubleClickDelay);
   };
 
   // Clean up timeouts when component unmounts
@@ -642,8 +632,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       if (awayIntervalRef.current !== null) {
         window.clearTimeout(awayIntervalRef.current);
       }
-      if (settingsTimeoutRef.current !== null) {
-        window.clearTimeout(settingsTimeoutRef.current);
+      if (settingsClickTimeoutRef.current !== null) {
+        window.clearTimeout(settingsClickTimeoutRef.current);
       }
     };
   }, []);
@@ -827,13 +817,8 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ settings, gameState, setGameSta
       </div>
       
       <button 
-        className={`settings-button ${settingsPressed ? 'pressed' : ''}`}
-        onMouseDown={handleSettingsMouseDown}
-        onMouseUp={handleSettingsMouseUp}
-        onMouseLeave={handleSettingsMouseLeave}
-        onTouchStart={handleSettingsMouseDown}
-        onTouchEnd={handleSettingsMouseUp}
-        onTouchCancel={handleSettingsMouseLeave}
+        className="settings-button"
+        onClick={handleSettingsClick}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
           <path fill="none" d="M0 0h24v24H0z"/>
