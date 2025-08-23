@@ -1,5 +1,5 @@
 // Central location for app constants
-export const APP_VERSION = '0.5.6'; // Keep this in sync with package.json
+export const APP_VERSION = '0.7.2'; // Keep this in sync with package.json
 
 // Default settings for the application
 export const DEFAULT_SETTINGS = {

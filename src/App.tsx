@@ -157,7 +157,7 @@ function App() {
     }
     
     // Log app startup
-    logAction('Application Started', { version: '0.5.6' });
+    logAction('Application Started', { version: '0.7.2' });
   }, []);
 
   // Save the game state whenever it changes
